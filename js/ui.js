@@ -132,19 +132,41 @@
     document.getElementById('codex-btn-2').addEventListener('click', renderCodex);
   }
 
+  function codexItemHtml(e, codex) {
+    var entry = codex[e.id];
+    var unlocked = !!entry;
+    var html = '<div class="codex-item' + (unlocked ? '' : ' locked') + '">';
+    html += '<span class="codex-silhouette">' + (unlocked ? '●' : '■') + '</span>';
+    html += '<span class="codex-main">';
+    html += '<span class="codex-title">' + (unlocked ? e.title : '？？？') + '</span>';
+    var tags = '<span class="codex-tags">';
+    tags += '<span class="codex-tag rarity-' + (e.rarity || '') + '">' + (e.rarity || '') + '</span>';
+    if (e.limitedTo) {
+      tags += '<span class="codex-tag">' + e.limitedTo.join('/') + ' 限定</span>';
+    }
+    tags += '</span>';
+    html += tags;
+    html += '</span>';
+    if (unlocked) {
+      html += '<span class="codex-count">解鎖 ' + entry.count + ' 次 · ' + entry.generations.join('/') + '</span>';
+    }
+    html += '</div>';
+    return html;
+  }
+
   function renderCodex() {
     var codex = store.getCodex();
-    var all = UNREALIZED.endings.full.concat(UNREALIZED.endings.mid);
-    var html = '<header class="run-header"><h2>結局圖鑑</h2></header><div class="codex-list">';
-    all.forEach(function (e) {
-      var entry = codex[e.id];
-      var unlocked = !!entry;
-      html += '<div class="codex-item' + (unlocked ? '' : ' locked') + '">';
-      html += '<span class="codex-title">' + (unlocked ? e.title : '？？？') + '</span>';
-      if (e.limitedTo) html += '<span class="codex-tag">世代限定</span>';
-      if (unlocked) html += '<span class="codex-count">解鎖 ' + entry.count + ' 次</span>';
-      html += '</div>';
-    });
+    var fullEndings = UNREALIZED.endings.full;
+    var midEndings = UNREALIZED.endings.mid;
+    var unlockedFull = fullEndings.filter(function (e) { return codex[e.id]; }).length;
+    var unlockedMid = midEndings.filter(function (e) { return codex[e.id]; }).length;
+    var html = '<header class="run-header"><h2>結局圖鑑</h2></header>';
+    html += '<p class="codex-progress">完整結局：' + unlockedFull + ' / ' + fullEndings.length + ' · 中途收尾：' + unlockedMid + ' / ' + midEndings.length + '</p>';
+    html += '<h3 class="codex-section">完整結局</h3><div class="codex-list">';
+    fullEndings.forEach(function (e) { html += codexItemHtml(e, codex); });
+    html += '</div>';
+    html += '<h3 class="codex-section">中途收尾</h3><div class="codex-list">';
+    midEndings.forEach(function (e) { html += codexItemHtml(e, codex); });
     html += '</div>';
     html += '<div class="options">';
     html += '<button class="link-btn" id="back-btn">返回</button>';

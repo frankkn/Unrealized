@@ -221,9 +221,9 @@
       id: 'n5_emigrate', chapter: 5, title: '要不要移民', ageRange: '28–35歲',
       text: '為了孩子的教育、政治氛圍，或單純想換一個地方生活，你們認真討論起移民這件事。',
       options: [
-        { id: 'emigrate_go', label: '最後決定舉家搬走', effects: { bond: -1, money: -2 }, flags: ['移民'], next: 'GAME_END' },
-        { id: 'emigrate_stay', label: '討論了很久，最後決定留下來', effects: { self: -1, bond: 1 }, next: 'GAME_END' },
-        { id: 'emigrate_half', label: '你一個人先過去卡位，家人晚一點再說', effects: { bond: -2, money: 1 }, flags: ['移民'], next: 'GAME_END' }
+        { id: 'emigrate_go', label: '最後決定舉家搬走', effects: { bond: -1, money: -2 }, flags: ['移民'], next: 'n6_career_plateau' },
+        { id: 'emigrate_stay', label: '討論了很久，最後決定留下來', effects: { self: -1, bond: 1 }, next: 'n6_career_plateau' },
+        { id: 'emigrate_half', label: '你一個人先過去卡位，家人晚一點再說', effects: { bond: -2, money: 1 }, flags: ['移民'], next: 'n6_career_plateau' }
       ]
     }
 

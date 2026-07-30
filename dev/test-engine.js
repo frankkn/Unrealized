@@ -25,6 +25,7 @@ var win = {};
 evalFile('data/config.js', win, makeFakeStorage());
 evalFile('data/nodes-ch0-3.js', win, makeFakeStorage());
 evalFile('data/nodes-ch4-5.js', win, makeFakeStorage());
+evalFile('data/nodes-ch6-7.js', win, makeFakeStorage());
 evalFile('data/endings.js', win, makeFakeStorage());
 evalFile('js/state.js', win, makeFakeStorage());
 evalFile('js/engine.js', win, makeFakeStorage());
@@ -112,6 +113,25 @@ var forcedAccident = randomPlay(1990, 'M', function (node, options) {
 });
 assert(forcedAccident.visited.indexOf('n5_accident') !== -1, '選了 push_through（疲勞駕駛）之後應該要進入 n5_accident');
 
+// 4b. 隨機抽樣下「洗腎的日子/倒在辦公室」壓倒性地多——這是因為亂點會讓健康幾乎必crash到<=1。
+//    驗證這不是引擎的結構性 bug：只要玩家刻意避開傷健康的選項，健康是「可以」保住的。
+function healthProtectivePick(node, options) {
+  var scored = options.map(function (o) {
+    var healthDelta = (o.effects && o.effects.health) || 0;
+    return { o: o, score: healthDelta };
+  });
+  scored.sort(function (a, b) { return b.score - a.score; });
+  return scored[0].o;
+}
+var healthPreserved = false;
+UNREALIZED.config.generations.forEach(function (g) {
+  UNREALIZED.config.genders.forEach(function (gender) {
+    var result = randomPlay(g, gender, healthProtectivePick);
+    if (result.state.attrs.health > 1) healthPreserved = true;
+  });
+});
+assert(healthPreserved, '刻意保護健康的玩法，應該至少能讓某個世代/性別組合活著撐過健康的硬觸發');
+
 // 5. 節點可達性檢查：找出從未被隨機抽樣走到的節點（僅供參考，不當作硬性失敗）
 var allNodeIds = Object.keys(UNREALIZED.nodes);
 var unvisited = allNodeIds.filter(function (id) { return !visitedNodes[id] && id !== 'n5_accident'; });
@@ -136,9 +156,9 @@ UNREALIZED.config.generations.forEach(function (g) {
   assert(!/\{[^{}]+\}/.test(text), '詞彙替換後不應留下佔位符: ' + text);
 });
 
-// 8. 完整結局應至少有 20 個
+// 8. 完整結局應至少有 28 個
 var fullEndingCount = UNREALIZED.endings.full.length;
-assert(fullEndingCount >= 20, '完整結局應至少 20 個，目前 ' + fullEndingCount);
+assert(fullEndingCount >= 28, '完整結局應至少 28 個，目前 ' + fullEndingCount);
 
 // 9. 個人化段落：至少一個旗標組合能讓結局文字被加上額外段落
 var stateWithFlags = engine.createRunState(1990, 'F');

@@ -13,6 +13,12 @@
         text: '利息像水一樣，你怎麼填都填不滿那個洞。你以為借的是三個月的週轉，結果變成十年的循環利息。每個月薪水進來的那一天，還沒過夜就已經是別人的錢。你這輩子，好像沒有一天真的是自己的。'
       },
       {
+        id: 'END_倒在辦公室', tier: 'hard', tone: 'ruin', rarity: '少見',
+        when: { attr: { key: 'health', op: '<=', value: 1 }, attrs: [{ key: 'achieve', op: '>=', value: 7 }] },
+        title: '倒在辦公室',
+        text: '五十歲那年的心導管手術，公司裡沒有一個人真正記得你的職稱。你把一輩子最好的時間都給了那張辦公桌，換到的位置在你倒下的那一刻起，就已經有人在排隊了。'
+      },
+      {
         id: 'END_洗腎的日子', tier: 'hard', tone: 'ruin', rarity: '少見',
         when: { attr: { key: 'health', op: '<=', value: 1 } },
         title: '洗腎的日子',
@@ -35,6 +41,45 @@
         when: { generation: [1990, 2005], flagsAll: ['同性伴侶'], flagsNone: ['未出櫃'], attr: { key: 'bond', op: '>=', value: 7 } },
         title: '登記那天',
         text: '排隊的隊伍很長，你們手牽著手，前面跟後面的人都在做同一件事。等了那麼多年，這件事真的發生的時候，沒有想像中戲劇化，就是一張紙、一個章。晚上你們吃了一頓普通的晚餐，像所有結了婚的人那樣，平凡地開始接下來的日子。有些等待，終於等到了。'
+      },
+      {
+        id: 'END_一個人走的', tier: 'generation', tone: 'ruin', rarity: '少見', limitedTo: [1975],
+        when: function (state) { return state.generation === 1975 && state.chapter >= 7 && state.attrs.bond <= 1; },
+        title: '一個人走的',
+        text: '房東發現的時候，已經是三天以後。你這一輩子認識過不少人，但走到最後，沒有一個電話是打得通、也想得起來要打的。存摺最後一頁，蓋章的是別人替你蓋的。'
+      },
+      {
+        id: 'END_被騙走的晚年', tier: 'generation', tone: 'ruin', rarity: '少見', limitedTo: [1975, 1990],
+        when: function (state) {
+          return [1975, 1990].indexOf(state.generation) !== -1 && state.chapter >= 7 &&
+            state.attrs.bond <= 3 && state.attrs.money >= 3 && state.attrs.money <= 6;
+        },
+        title: '被騙走的晚年',
+        text: '一通電話，換走了你一輩子才存下來的積蓄。事後你想不明白的，反而不是那筆錢——是那段時間裡，好像也沒有誰真的會第一時間發現你出事。'
+      },
+      {
+        id: 'END_每天一瓶', tier: 'flagCombo', tone: 'ruin', rarity: '少見',
+        when: { flagsAll: ['壓抑'], attr: { key: 'bond', op: '<=', value: 3 } },
+        title: '每天一瓶',
+        text: '沒有哪一天是崩潰的那一天，只有一連好幾年，慢慢往下沉。你這輩子很少讓自己真的難過出來，於是它換了另一種方式留下來。日子還是照樣過，只是每天都要靠點什麼，才撐得過那個晚上。'
+      },
+      {
+        id: 'END_竹科的股票', tier: 'generation', tone: 'good', rarity: '少見', limitedTo: [1975],
+        when: { generation: 1975, attr: { key: 'money', op: '>=', value: 7 } },
+        title: '竹科的股票',
+        text: '那年配到的股票，你到現在都還記得掛牌那天的價格。賣早了還是沒賣，身邊的人各有各的版本，但你手上這份存摺，看起來是對的那一種。運氣占了不小的比例，你自己也承認。'
+      },
+      {
+        id: 'END_無子的晚年', tier: 'generation', tone: 'neutral', rarity: '少見', limitedTo: [2005],
+        when: function (state) { return state.generation === 2005 && state.chapter >= 7 && !!state.flags['丁客'] && state.attrs.bond <= 5; },
+        title: '無子的晚年',
+        text: '當年決定不生的時候，你想的是留給彼此更多空間。現在你想的是，等你們兩個都老到不能自己來，誰會是那個站出來的人。這個問題，你這代人比上一代更早想，也想得更清楚，但清楚不代表有答案。'
+      },
+      {
+        id: 'END_法拍', tier: 'flagCombo', tone: 'ruin', rarity: '稀有', limitedTo: [1990],
+        when: { generation: 1990, flagsAll: ['高槓桿'], attr: { key: 'money', op: '<=', value: 2 } },
+        title: '法拍',
+        text: '那間你以為是終點的房子，門上貼了紅單。你算過很多次，怎麼樣都補不回那個缺口。搬出去那天，你在巷口回頭看了一眼，那扇門後面本來應該是你的下半生。'
       },
       {
         id: 'END_三明治世代', tier: 'generation', tone: 'bittersweet', rarity: '世代限定', limitedTo: [1990],
@@ -101,6 +146,12 @@
         when: { flagsAll: ['複製教養'] },
         title: '循環的重量',
         text: '你曾經下定決心，絕對不要變成當年那個對你說這句話的大人。可是有一天，你聽見自己對孩子說出一模一樣的句子，語氣連停頓都一樣。你想收回來，但話已經說出去了。你變成了你曾經最不想變成的那種人，而你甚至沒發現是什麼時候開始的。'
+      },
+      {
+        id: 'END_剛好的人生', tier: 'attribute', tone: 'good', rarity: '隱藏', hidden: true,
+        when: function (state, h) { return h.isMidBand(state); },
+        title: '剛好的人生',
+        text: '你的存摺，沒有哪一頁特別亮眼，也沒有哪一頁特別糟。五個軸線都落在中間，不高不低，像是有人刻意調過的天秤。這比衝到極端難得多——大部分人不是活成太用力，就是活成太委屈。你剛好，就只是剛好。'
       },
       {
         id: 'END_靜靜的如果', tier: 'attribute', tone: 'bittersweet', rarity: '常見',

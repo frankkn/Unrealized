@@ -225,6 +225,18 @@ input:focus-visible {
   font-size: 1.02rem;
 }
 
+.codex-progress {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0 0 1rem;
+}
+.codex-section {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin: 1.2rem 0 0.5rem;
+  border-bottom: 1px solid var(--ink-soft);
+  padding-bottom: 0.2rem;
+}
 .codex-list {
   display: flex;
   flex-direction: column;
@@ -232,23 +244,46 @@ input:focus-visible {
 }
 .codex-item {
   display: flex;
-  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
   padding: 0.5rem 0.7rem;
   border: 1px solid var(--ink-soft);
   border-radius: 2px;
   background: rgba(255,255,255,0.4);
 }
 .codex-item.locked {
-  opacity: 0.45;
+  opacity: 0.5;
   filter: grayscale(1);
 }
+.codex-silhouette {
+  color: var(--stamp);
+  font-size: 0.7rem;
+}
+.codex-item.locked .codex-silhouette {
+  color: var(--ink-soft);
+}
+.codex-main {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.codex-tags {
+  display: inline-flex;
+  gap: 0.4rem;
+}
 .codex-tag {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
 }
 .codex-count {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--ink-soft);
+  white-space: nowrap;
 }
 
 @keyframes stamp-drop {
