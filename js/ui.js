@@ -115,11 +115,13 @@
 
   function showEnding(ending, isMid) {
     store.unlockEnding(ending.id, runState.generation, runState.gender, Date.now());
+    var fullText = isMid ? ending.text : engine.personalizeEnding(ending, runState);
+    var paragraphs = fullText.split('\n\n').map(function (p) { return '<p class="ending-text">' + p.replace(/\n/g, '<br>') + '</p>'; }).join('');
     var html = '';
     html += '<article class="page ending-page">';
     html += '<div class="stamp-circle stamp-drop">' + ending.title + '</div>';
     if (!isMid) html += '<div class="attr-reveal">' + attrRow(runState) + '</div>';
-    html += '<p class="ending-text">' + ending.text + '</p>';
+    html += paragraphs;
     html += '</article>';
     html += '<div class="options">';
     html += '<button class="primary-btn" id="again-btn">再玩一次</button>';

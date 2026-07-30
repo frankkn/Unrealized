@@ -162,9 +162,9 @@
       id: 'n3_first_love', chapter: 3, title: '第一次認真的關係', ageRange: '18–22歲',
       text: '這個階段，總會有一段關係，讓你第一次認真想到「我到底要跟誰過日子」。',
       options: [
-        { id: 'straight_stable', label: '跟一個普通、穩定的人談了戀愛，很快就要決定要不要走下去', effects: { bond: 1, self: -1 }, next: 'GAME_END' },
+        { id: 'straight_stable', label: '跟一個普通、穩定的人談了戀愛，很快就要決定要不要走下去', effects: { bond: 1, self: -1 }, next: 'n4_job' },
         { id: 'same_sex', label: '發現自己真正喜歡的是同性', effects: { self: 1, bond: -1 }, flags: ['同性伴侶'], next: 'n3_love_comingout' },
-        { id: 'solo', label: '沒特別談戀愛，把時間都留給自己', effects: { self: 1, bond: -2 }, next: 'GAME_END' }
+        { id: 'solo', label: '沒特別談戀愛，把時間都留給自己', effects: { self: 1, bond: -2 }, next: 'n4_job' }
       ]
     },
 
@@ -176,17 +176,17 @@
         { text: '你從小就知道這是合法的，衝突已經從法律轉移到餐桌跟辦公室。' }
       ],
       options: [
-        { id: '75_silent', requires: { generation: 1975 }, label: '決定誰都不說，讓大家以為你只是還沒「定下來」', effects: { self: -2, bond: 1 }, flags: ['未出櫃'], next: 'GAME_END' },
-        { id: '75_one_friend', requires: { generation: 1975 }, label: '只告訴一個你信任到底的朋友', effects: { bond: 1, self: -1 }, flags: ['未出櫃'], next: 'GAME_END' },
-        { id: '75_told_family', requires: { generation: 1975 }, label: '鼓起勇氣跟家裡說了，換來的是十年不再提起這件事', effects: { bond: -2, self: 1 }, flags: ['已出櫃'], next: 'GAME_END' },
+        { id: '75_silent', requires: { generation: 1975 }, label: '決定誰都不說，讓大家以為你只是還沒「定下來」', effects: { self: -2, bond: 1 }, flags: ['未出櫃'], next: 'n4_job' },
+        { id: '75_one_friend', requires: { generation: 1975 }, label: '只告訴一個你信任到底的朋友', effects: { bond: 1, self: -1 }, flags: ['未出櫃'], next: 'n4_job' },
+        { id: '75_told_family', requires: { generation: 1975 }, label: '鼓起勇氣跟家裡說了，換來的是十年不再提起這件事', effects: { bond: -2, self: 1 }, flags: ['已出櫃'], next: 'n4_job' },
 
-        { id: '90_registered', requires: { generation: 1990 }, label: '等到那一天，你們一起去戶政事務所登記', effects: { bond: 2, achieve: -1 }, flags: ['已出櫃'], next: 'GAME_END' },
-        { id: '90_family_ok', requires: { generation: 1990 }, label: '跟家裡出櫃，換來幾年的尷尬，但最後接受了', effects: { bond: -1, self: 1 }, flags: ['已出櫃'], next: 'GAME_END' },
-        { id: '90_partial', requires: { generation: 1990 }, label: '只在外面的世界出櫃，家裡那邊還沒打算說', effects: { self: -1, bond: 1 }, flags: ['未出櫃'], next: 'GAME_END' },
+        { id: '90_registered', requires: { generation: 1990 }, label: '等到那一天，你們一起去戶政事務所登記', effects: { bond: 2, achieve: -1 }, flags: ['已出櫃'], next: 'n4_job' },
+        { id: '90_family_ok', requires: { generation: 1990 }, label: '跟家裡出櫃，換來幾年的尷尬，但最後接受了', effects: { bond: -1, self: 1 }, flags: ['已出櫃'], next: 'n4_job' },
+        { id: '90_partial', requires: { generation: 1990 }, label: '只在外面的世界出櫃，家裡那邊還沒打算說', effects: { self: -1, bond: 1 }, flags: ['未出櫃'], next: 'n4_job' },
 
-        { id: '05_group_chat', requires: { generation: 2005 }, label: '在家庭群組裡直接說了，換來的是已讀不回三天', effects: { bond: -1, self: 1 }, flags: ['已出櫃'], next: 'GAME_END' },
-        { id: '05_workplace', requires: { generation: 2005 }, label: '在職場大方帶伴侶出席聚會，卻被「善意」排除在某些場合外', effects: { achieve: -1, self: 1 }, flags: ['已出櫃'], next: 'GAME_END' },
-        { id: '05_no_need', requires: { generation: 2005 }, label: '還沒打算對誰宣布，覺得這是自己的事，不需要誰批准', effects: { self: 1, bond: -1 }, flags: ['未出櫃'], next: 'GAME_END' }
+        { id: '05_group_chat', requires: { generation: 2005 }, label: '在家庭群組裡直接說了，換來的是已讀不回三天', effects: { bond: -1, self: 1 }, flags: ['已出櫃'], next: 'n4_job' },
+        { id: '05_workplace', requires: { generation: 2005 }, label: '在職場大方帶伴侶出席聚會，卻被「善意」排除在某些場合外', effects: { achieve: -1, self: 1 }, flags: ['已出櫃'], next: 'n4_job' },
+        { id: '05_no_need', requires: { generation: 2005 }, label: '還沒打算對誰宣布，覺得這是自己的事，不需要誰批准', effects: { self: 1, bond: -1 }, flags: ['未出櫃'], next: 'n4_job' }
       ]
     }
 
