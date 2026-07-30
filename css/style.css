@@ -1,0 +1,274 @@
+:root {
+  --ink: #1c2b4a;
+  --ink-soft: #33456b;
+  --paper: #f2e8cf;
+  --paper-dark: #e6d8ae;
+  --stamp: #b23a2e;
+  --gold: #b8891f;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--ink);
+  color: var(--ink);
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+
+#app {
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 1.5rem 1.25rem 3rem;
+  background: repeating-linear-gradient(
+      to bottom,
+      var(--paper) 0px,
+      var(--paper) 3px,
+      var(--paper-dark) 3px,
+      var(--paper) 4px
+    );
+  border-left: 6px double var(--gold);
+  border-right: 6px double var(--gold);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--stamp);
+  outline-offset: 2px;
+}
+
+.passbook-cover {
+  text-align: center;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+.passbook-cover h1 {
+  font-size: 2.2rem;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  margin: 0.2rem 0;
+}
+.subtitle {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.picker h2 {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  margin: 1.2rem 0 0.5rem;
+}
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.choice-btn {
+  flex: 1 1 auto;
+  min-width: 8rem;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 2px;
+}
+.choice-btn.selected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.primary-btn {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.8rem;
+  border: 2px solid var(--stamp);
+  background: var(--stamp);
+  color: var(--paper);
+  font-size: 1.05rem;
+  font-weight: bold;
+  border-radius: 2px;
+}
+.primary-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.link-btn {
+  display: block;
+  margin: 0.6rem auto 0;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.start-footer {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.settings-toggle {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.run-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.badge {
+  font-size: 0.8rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.page {
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid var(--ink-soft);
+  border-radius: 4px;
+  padding: 1.2rem;
+  position: relative;
+}
+.chapter-title {
+  margin: 0 0 0.8rem;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.age-range {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  font-weight: normal;
+}
+.node-text {
+  line-height: 1.9;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.option-btn {
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--ink);
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+  border-radius: 2px;
+  line-height: 1.5;
+}
+.option-btn:hover {
+  background: var(--paper-dark);
+}
+.quit-btn { margin-top: 1.2rem; }
+
+.ending-page { text-align: center; }
+.stamp-circle {
+  width: 8.5rem;
+  height: 8.5rem;
+  margin: 0 auto 1.2rem;
+  border: 4px solid var(--stamp);
+  border-radius: 50%;
+  color: var(--stamp);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transform: rotate(-8deg);
+  padding: 0.5rem;
+}
+.attr-reveal {
+  text-align: left;
+  margin: 1rem 0;
+}
+.attr-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+.attr-label { width: 4.5rem; color: var(--ink-soft); }
+.attr-bar {
+  flex: 1;
+  height: 0.5rem;
+  background: rgba(0,0,0,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.attr-fill { height: 100%; background: var(--gold); }
+.attr-value { width: 1.5rem; text-align: right; }
+.ending-text {
+  text-align: left;
+  line-height: 1.9;
+  font-size: 1.02rem;
+}
+
+.codex-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.codex-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--ink-soft);
+  border-radius: 2px;
+  background: rgba(255,255,255,0.4);
+}
+.codex-item.locked {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+.codex-tag {
+  font-size: 0.75rem;
+  color: var(--gold);
+}
+.codex-count {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+@keyframes stamp-drop {
+  0% { transform: scale(1.6) rotate(-20deg); opacity: 0; }
+  60% { transform: scale(0.95) rotate(4deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.stamp-drop { animation: stamp-drop 0.4s ease-out; }
+.stamp-circle.stamp-drop { animation: stamp-drop 0.5s ease-out; }
+
+html.no-motion .stamp-drop,
+html.no-motion .stamp-circle.stamp-drop {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp-drop, .stamp-circle.stamp-drop { animation: none; }
+}
+
+@media (max-width: 480px) {
+  #app { padding: 1rem 0.8rem 2rem; }
+  .passbook-cover h1 { font-size: 1.7rem; }
+  .choice-btn { min-width: 45%; }
+}
