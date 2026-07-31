@@ -233,6 +233,8 @@ tests.push(function (done) {
   boot(function (win, doc, app) {
     startRun(win, app, 1990, 'M');
     playOut(win, app);
+    var endingId = Object.keys(JSON.parse(win.localStorage.getItem('unrealized:codex') || '{}'))[0];
+    if (!endingId) { fail('結局沒有寫進圖鑑'); return done(); }
     var codexBtn = doc.getElementById('codex-btn-2');
     if (!codexBtn) { fail('結局畫面沒有圖鑑按鈕'); return done(); }
     click(win, codexBtn);
@@ -242,11 +244,45 @@ tests.push(function (done) {
     items.length === total ? ok(total + ' 個結局條目') : fail('條目數 ' + items.length + '，應為 ' + total);
     locked.length === total - 1 ? ok((total - 1) + ' 個未解鎖以剪影顯示') : fail('未解鎖數 ' + locked.length + '，應為 ' + (total - 1));
     app.querySelector('.codex-progress') ? ok('有解鎖進度') : fail('沒有解鎖進度');
-    doc.getElementById('back-btn') ? ok('有返回按鈕') : fail('沒有返回按鈕');
+
+    // 只確認按鈕存在是不夠的 —— 這顆按鈕曾經因為 renderNode() 拋例外而完全沒反應，
+    // 而「存在」的斷言照樣通過。要真的按下去，並檢查畫面確實換了。
+    var back = doc.getElementById('back-btn');
+    if (!back) { fail('沒有返回按鈕'); return done(); }
+    var countBefore = JSON.parse(win.localStorage.getItem('unrealized:codex'))[endingId].count;
+    click(win, back);
+    if (app.querySelector('.codex-list')) { fail('按了返回還停在圖鑑（按鈕沒反應）'); return done(); }
+    app.querySelector('.stamp-circle') ? ok('從結局進圖鑑，返回會回到結局畫面') : fail('返回之後跑到了別的畫面');
+    var countAfter = JSON.parse(win.localStorage.getItem('unrealized:codex'))[endingId].count;
+    countAfter === countBefore ? ok('返回不會重複累加解鎖次數') : fail('解鎖次數從 ' + countBefore + ' 變成 ' + countAfter);
+
+    click(win, doc.getElementById('codex-btn-2'));
     var clear = doc.getElementById('clear-btn');
     if (!clear) { fail('沒有清除紀錄按鈕'); return done(); }
     click(win, clear);
     !win.localStorage.getItem('unrealized:codex') ? ok('清除紀錄有效') : fail('清除後圖鑑還在');
+    doc.getElementById('back-btn') ? ok('清除之後返回按鈕還在') : fail('清除之後返回按鈕不見了');
+    done();
+  });
+});
+
+tests.push(function (done) {
+  console.log('\n=== 6b. 從開始畫面進圖鑑再返回 ===');
+  boot(function (win, doc, app) {
+    click(win, doc.getElementById('codex-btn'));
+    if (!app.querySelector('.codex-list')) { fail('開始畫面點圖鑑沒有進去'); return done(); }
+    ok('進得去圖鑑');
+    click(win, doc.getElementById('back-btn'));
+    app.querySelector('[data-gen]') ? ok('返回會回到開始畫面') : fail('返回之後不在開始畫面');
+    done();
+  });
+});
+
+tests.push(function (done) {
+  console.log('\n=== 6c. 遊戲進行中不會有進圖鑑的路徑 ===');
+  boot(function (win, doc, app) {
+    startRun(win, app, 1975, 'F');
+    doc.getElementById('codex-btn') ? fail('節點畫面不該有圖鑑按鈕') : ok('節點畫面沒有圖鑑入口，不會卡在回不去的狀態');
     done();
   });
 });

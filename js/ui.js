@@ -81,7 +81,7 @@
     if (startBtn) startBtn.addEventListener('click', function () { startRun(picked.generation, picked.gender); });
     var replayBtn = document.getElementById('replay-btn');
     if (replayBtn) replayBtn.addEventListener('click', function () { startRun(lastRun.generation, lastRun.gender); });
-    document.getElementById('codex-btn').addEventListener('click', renderCodex);
+    document.getElementById('codex-btn').addEventListener('click', function () { renderCodex(renderStart); });
     document.getElementById('motion-toggle').addEventListener('change', function (e) {
       settings.reducedMotion = e.target.checked;
       store.saveSettings(settings);
@@ -136,8 +136,14 @@
     });
   }
 
+  // 解鎖只能發生一次；重畫結局畫面（例如從圖鑑返回）不該再記一次，
+  // 否則圖鑑的「解鎖 N 次」會隨著你來回翻而虛胖
   function showEnding(ending, isMid) {
     store.unlockEnding(ending.id, runState.generation, runState.gender, Date.now());
+    renderEnding(ending, isMid);
+  }
+
+  function renderEnding(ending, isMid) {
     var fullText = isMid ? ending.text : engine.personalizeEnding(ending, runState);
     var paragraphs = fullText.split('\n\n').map(function (p) { return '<p class="ending-text">' + p.replace(/\n/g, '<br>') + '</p>'; }).join('');
     var html = '';
@@ -152,7 +158,9 @@
     html += '</div>';
     app.innerHTML = html;
     document.getElementById('again-btn').addEventListener('click', function () { runState = null; renderStart(); });
-    document.getElementById('codex-btn-2').addEventListener('click', renderCodex);
+    document.getElementById('codex-btn-2').addEventListener('click', function () {
+      renderCodex(function () { renderEnding(ending, isMid); });
+    });
   }
 
   function codexItemHtml(e, codex) {
@@ -177,7 +185,10 @@
     return html;
   }
 
-  function renderCodex() {
+  // returnTo 是「返回」要回去的畫面。原本這裡用 runState 是否存在來猜，
+  // 但一局結束後 runState 仍在、nodeId 卻已經是 null，renderNode() 會直接拋例外，
+  // 按鈕看起來就像沒反應。來源只有呼叫的人知道，所以由呼叫的人交代。
+  function renderCodex(returnTo) {
     var codex = store.getCodex();
     var fullEndings = UNREALIZED.endings.full;
     var midEndings = UNREALIZED.endings.mid;
@@ -196,11 +207,11 @@
     html += '<button class="link-btn" id="clear-btn">清除紀錄</button>';
     html += '</div>';
     app.innerHTML = html;
-    document.getElementById('back-btn').addEventListener('click', function () { runState ? renderNode() : renderStart(); });
+    document.getElementById('back-btn').addEventListener('click', returnTo || renderStart);
     document.getElementById('clear-btn').addEventListener('click', function () {
       store.clearAll();
       settings = store.getSettings();
-      renderCodex();
+      renderCodex(returnTo);
     });
   }
 
