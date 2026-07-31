@@ -1,2 +1,7 @@
 node_modules/
 package-lock.json
+
+# API key 絕對不進版本控制
+.env
+art/.env
+*.key
