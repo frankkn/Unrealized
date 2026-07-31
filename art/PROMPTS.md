@@ -32,6 +32,22 @@ no text, no watermark, no UI elements
 
 **負面提示**：`text, letters, watermark, signature, UI, HUD, face, close-up portrait, modern western city, cluttered composition`
 
+### 怎麼讓 45 張看起來像同一個人畫的
+
+45 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
+
+| 工具 | 作法 |
+|---|---|
+| **Midjourney** | `--sref <基準圖網址>` 鎖風格，再加 `--sw 100` 調強度。`--ar 3:4`。這是目前最好用的一致性工具 |
+| **Stable Diffusion 本機** | 固定 seed + 同一個 pixel-art LoRA + 同一組 sampler/steps。控制力最強，而且免費 |
+| **Leonardo.ai** | 選 Pixel Art 模型，開 Image Guidance 指向基準圖 |
+| **DALL·E / Bing** | 沒有風格參考功能，只能靠風格錨那段字。漂移會最明顯 |
+| **Imagen / Gemini** | 上傳基準圖當參考再描述差異 |
+
+**產圖順序也有差**：先產 `n0_family`（第一個節點，玩家第一眼看到的），滿意了再拿它當所有其他張的風格基準。不要先產第 7 章那些。
+
+> 一天 3–5 張、分兩週產完是完全合理的節奏——引擎是漸進式載入，丟一張就多一張，不用等全部齊。
+
 ### 台灣感的關鍵字（依場景挑用）
 
 不加這些的話，生出來會是通用的東亞城市，多半偏日本或中國。
