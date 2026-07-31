@@ -173,7 +173,9 @@
     html += tags;
     html += '</span>';
     if (unlocked) {
-      html += '<span class="codex-count">解鎖 ' + entry.count + ' 次 · ' + entry.generations.join('/') + '</span>';
+      var genders = (entry.genders || []).map(function (g) { return cfg.genderLabels[g] || g; }).join('/');
+      html += '<span class="codex-count">解鎖 ' + entry.count + ' 次 · ' + entry.generations.join('/') +
+        (genders ? ' · ' + genders : '') + '</span>';
     }
     html += '</div>';
     return html;
