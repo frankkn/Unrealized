@@ -5,3 +5,5 @@ package-lock.json
 .env
 art/.env
 *.key
+__pycache__/
+*.pyc
