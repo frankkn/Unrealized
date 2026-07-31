@@ -206,7 +206,13 @@
     return cfg.chapterAge[state.chapter] || 0;
   }
 
-  // ---- dev-mode 驗證：掃過所有節點，找出違反「沒有純加分選項」鐵則的選項 ----
+  // ---- dev-mode 驗證：掃過所有節點，找出違反「沒有免費的選擇」鐵則的選項 ----
+  // 鐵則約束的是「淨值」不是「一定要有下降」：任何選項至少變動兩軸，且五軸加總不得超過 +1。
+  // 早期版本強制「至少一軸下降」，但那是單邊約束——只規定要扣、沒規定要給，
+  // 於是每個選項平均都在扣，整局走完玩家的五軸總和被砍半。而且作者需要一個代價卻
+  // 沒有貼切的軸可扣時，就會隨手抓一軸，health 一度就是這樣變成萬用扣點的。
+  // 「人生沒有免費的選擇」講的是取捨，不是衰退。
+  var MAX_NET_GAIN = 1;
   function devValidateNodes() {
     var violations = [];
     Object.keys(UNREALIZED.nodes).forEach(function (nodeId) {
@@ -215,9 +221,11 @@
         if (opt.exemptRule) return;
         var effects = opt.effects || {};
         var changed = Object.keys(effects).filter(function (k) { return effects[k] !== 0; });
-        var hasDrop = changed.some(function (k) { return effects[k] < 0; });
-        if (changed.length < 2 || !hasDrop) {
-          violations.push(nodeId + ' / ' + opt.id + ' — 變動軸數:' + changed.length + ' 有下降:' + hasDrop);
+        var net = changed.reduce(function (sum, k) { return sum + effects[k]; }, 0);
+        if (changed.length < 2) {
+          violations.push(nodeId + ' / ' + opt.id + ' — 只變動 ' + changed.length + ' 軸，至少要兩軸');
+        } else if (net > MAX_NET_GAIN) {
+          violations.push(nodeId + ' / ' + opt.id + ' — 淨值 +' + net + '，超過上限 +' + MAX_NET_GAIN);
         }
       });
     });

@@ -142,7 +142,7 @@
       id: 'n3m_military', chapter: 3, title: '兵役', ageRange: '18–22歲',
       text: '接下來的{兵役長度}，你的世界從自己身上移開，移到一支部隊裡。',
       options: [
-        { id: 'grit_through', label: '把情緒都收起來，只求平安退伍', effects: { achieve: -1, money: -1, self: -1 }, flags: ['壓抑'], next: 'n3_first_love' },
+        { id: 'grit_through', label: '把情緒都收起來，只求平安退伍', effects: { achieve: -1, self: -1 }, flags: ['壓抑'], next: 'n3_first_love' },
         { id: 'make_bonds', label: '退伍時多了幾個能講真心話的朋友', effects: { achieve: -1, money: -1, bond: 1 }, next: 'n3_first_love' },
         { id: 'find_clarity', label: '在被抽走自由的時間裡，意外想清楚了自己到底要什麼', effects: { achieve: -1, money: -1, self: 1 }, next: 'n3_first_love' }
       ]

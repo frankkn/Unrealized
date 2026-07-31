@@ -30,7 +30,7 @@
       id: 'n6_midlife_unemployment', chapter: 6, title: '中年失業', ageRange: '35–50歲',
       text: '一次組織精簡，你的位置被劃掉了。',
       options: [
-        { id: 'quick_reemploy', label: '很快找到下一份工作，但薪水打了折', effects: { money: -1, achieve: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
+        { id: 'quick_reemploy', label: '很快找到下一份工作，但薪水打了折', effects: { bond: 1, money: -1, achieve: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
         { id: 'long_gap', label: '花了很長時間才找到下一份，存款一路在掉', effects: { money: -2, self: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
         { id: 'start_over', label: '利用這段空檔，做一件完全不一樣的事', effects: { self: 2, money: -1 }, next: AFTER_UNEMPLOYMENT_NEXT }
       ]
@@ -42,7 +42,7 @@
       options: [
         { id: 'repeat_pattern', label: '發現自己正在重複當年父母對你做的事，一時改不過來', effects: { bond: -1, self: -1 }, flags: ['複製教養'], next: 'n6_long_term_care' },
         { id: 'break_pattern', label: '努力練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: 'n6_long_term_care' },
-        { id: 'outsource', label: '把大部分教養的事都交給補習班或安親班，自己專心賺錢', effects: { money: -1, bond: -1 }, next: 'n6_long_term_care' }
+        { id: 'outsource', label: '把大部分教養的事都交給補習班或安親班，自己專心賺錢', effects: { achieve: 1, money: -1, bond: -1 }, next: 'n6_long_term_care' }
       ]
     },
 
@@ -50,7 +50,7 @@
       id: 'n6_long_term_care', chapter: 6, title: '長照黑洞', ageRange: '35–50歲',
       text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。',
       options: [
-        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { self: -2, achieve: -1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
+        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
         { id: 'share_siblings', label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
         { id: 'hire_full_time', label: '請了全天看護，把自己抽出來一部分', effects: { money: -2, self: 1 }, next: 'n6_marriage_crisis' }
       ]
@@ -125,7 +125,7 @@
       options: [
         { id: 'move_back', label: '決定搬回去，日子的步調整個慢了下來', effects: { bond: 1, health: 1, money: -1, achieve: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
         { id: 'bring_them', label: '把父母接到你現在住的地方', effects: { bond: 1, self: -1 }, next: 'n6_readjust' },
-        { id: 'commute', label: '選擇繼續兩地跑，哪邊都沒放下', effects: { health: -1, bond: -1 }, next: 'n6_readjust' }
+        { id: 'commute', label: '選擇繼續兩地跑，哪邊都沒放下', effects: { achieve: 1, health: -1, bond: -1 }, next: 'n6_readjust' }
       ]
     },
 

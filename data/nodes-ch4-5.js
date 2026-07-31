@@ -66,7 +66,7 @@
       id: 'n4_22k', chapter: 4, title: '{起薪}', ageRange: '22–28歲',
       text: '起薪{起薪}，你算了一下，連房租都吃緊。',
       options: [
-        { id: 'endure', label: '先忍著，騎驢找馬', effects: { money: -1, self: -1 }, next: 'n4_mlm' },
+        { id: 'endure', label: '先忍著，騎驢找馬', effects: { achieve: 1, money: -1, self: -1 }, next: 'n4_mlm' },
         { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, self: -1 }, next: 'n4_mlm' },
         { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: 'n4_mlm' }
       ]
