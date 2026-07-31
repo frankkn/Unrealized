@@ -71,7 +71,7 @@ The design rules above are checked by a script, not by good intentions. `node de
 - **Unplayable chapters** — chapters 0–3 are exhaustively enumerated, every branch, all six cohort × gender combinations
 - **Leaked placeholders** — the lexicon substitutes 26 era-specific terms into the script (`{起薪}` becomes *two-four*, *twenty-two K*, or *thirty-six, but rent is eighteen*), and no `{token}` may survive into rendered text
 
-Those checks cover the engine, which is pure data and logic and runs headless. The interface is the part a player actually touches, so `node dev/test-ui.js` hands `index.html` to a real DOM, loads every script the way a browser would, and clicks through to an ending — all six cohort × gender combinations, stopping early for a mid-ending, a cohort-locked option appearing for 1975 and staying hidden for 2005, multi-paragraph endings, the codex, clearing your history, reduced motion, and replaying your last run. A typo in a `<script src>`, a mis-typed element id, a handler that never got bound: those fail here instead of in front of a player.
+Those checks cover the engine, which is pure data and logic and runs headless. The interface is the part a player actually touches, so `node dev/test-ui.js` hands `index.html` to a real DOM, inlines every script from disk, and clicks through to an ending — all six cohort × gender combinations, stopping early for a mid-ending, a cohort-locked option appearing for 1975 and staying hidden for 2005, multi-paragraph endings, the codex, clearing your history, reduced motion, and replaying your last run. A typo in a `<script src>`, a mis-typed element id, a handler that never got bound: those fail here instead of in front of a player.
 
 This is how the health axis got caught. It had quietly become the stat writers docked whenever an option needed a downside, including on nodes whose narration had nothing to do with the body: across 153 options it summed +4 up against −44 down, and 40 of 44 nodes offered no way to recover any. 90% of runs ended in health collapse regardless of how you played. It read as a difficulty problem and was actually an attribution problem — the costs are now carried by the stats the text actually supports.
 
@@ -90,6 +90,7 @@ js/engine.js            state machine, stat maths, ending adjudication
 js/state.js             save / codex (localStorage)
 js/ui.js                DOM, animation, chapter transitions
 data/config.js          cohorts, lexicon, stat definitions, chapter baseline
+data/art.js             one pixel engraving per node
 data/nodes-ch0-3.js     chapters 0–3
 data/nodes-ch4-5.js     chapters 4–5
 data/nodes-ch6-7.js     chapters 6–7

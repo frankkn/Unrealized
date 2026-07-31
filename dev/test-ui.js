@@ -15,8 +15,27 @@ try {
 }
 
 var ROOT = path.join(__dirname, '..');
-var HTML = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 var errors = [];
+
+// index.html 的 <script src> 是相對路徑，交給 jsdom 的 resources:'usable' 去載，
+// 它會用 document 的 url 當 base —— 只要 url 是 http(s)，就會真的去打網路。
+// 這個站已經上線在 GitHub Pages，於是測試會抓「已部署」的那份，
+// 而不是本機剛改的那份；本機的修改根本沒被測到，還一路顯示通過。
+//
+// 改成先從磁碟把每一支 script 讀進來內嵌，整份文件零外部載入。
+// 順帶連 <script src> 的路徑有沒有打錯也一起測到了（讀不到就直接爆）。
+function inlineScripts(html) {
+  return html.replace(/<script\s+src="([^"]+)"\s*><\/script>/g, function (_, src) {
+    var file = path.join(ROOT, src);
+    if (!fs.existsSync(file)) {
+      throw new Error('index.html 指向一支不存在的 script: ' + src);
+    }
+    return '<script>\n' + fs.readFileSync(file, 'utf8') + '\n</script>';
+  });
+}
+var HTML = inlineScripts(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'));
+var remaining = HTML.match(/<script\s+src=/g);
+if (remaining) throw new Error('還有 ' + remaining.length + ' 支 script 沒被內嵌，測試可能會去打網路');
 function fail(m) { console.log('  x ' + m); errors.push(m); }
 function ok(m) { console.log('  v ' + m); }
 
@@ -24,9 +43,11 @@ function ok(m) { console.log('  v ' + m); }
 // script 是非同步載入的，固定 setTimeout 在機器忙的時候會不夠 —— 改成輪詢到真的就緒為止，
 // 這樣「載入失敗」與「還沒載完」才不會被混為一談。
 function boot(cb) {
+  // 不給 resources:'usable' —— script 已經全部內嵌，不該再有任何外部載入。
+  // url 只是為了讓 localStorage 有個非 opaque 的 origin 可以用。
   var dom = new JSDOM(HTML, {
-    url: 'https://frankkn.github.io/Unrealized/',
-    runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true
+    url: 'https://unrealized.test/',
+    runScripts: 'dangerously', pretendToBeVisual: true
   });
   dom.virtualConsole.on('jsdomError', function (e) { errors.push('jsdomError: ' + e.message); });
   var waited = 0;
@@ -81,6 +102,40 @@ tests.push(function (done) {
     btn && btn.disabled ? ok('未選擇時開始按鈕停用') : fail('沒選世代/性別就能開始');
     startRun(win, app, 1990, 'M');
     app.querySelector('.node-text') ? ok('選完可以開始遊戲') : fail('點了開始卻沒有進入節點');
+    done();
+  });
+});
+
+tests.push(function (done) {
+  console.log('\n=== 1b. 節點插圖 ===');
+  boot(function (win, doc, app) {
+    var U = win.UNREALIZED;
+    if (!U.art) { fail('UNREALIZED.art 不存在'); return done(); }
+    var ids = Object.keys(U.nodes);
+    var missing = ids.filter(function (id) { return !U.art[id]; });
+    missing.length ? fail('這些節點沒有插圖: ' + missing.join(', ')) : ok(ids.length + ' 個節點都有插圖');
+
+    var W = 28, H = 16, malformed = [];
+    Object.keys(U.art).forEach(function (id) {
+      var rows = U.art[id];
+      if (rows.length !== H) malformed.push(id + ' 高度' + rows.length);
+      rows.forEach(function (r, i) { if (r.length !== W) malformed.push(id + '[' + i + ']寬度' + r.length); });
+      if (!U.nodes[id]) malformed.push(id + ' 沒有對應節點');
+    });
+    malformed.length ? fail('圖格式有問題: ' + malformed.slice(0, 5).join('; ')) : ok('全部都是 ' + W + 'x' + H + '，沒有多餘的圖');
+
+    // 空白的圖等於沒畫，會靜靜地渲染成一片空
+    var blank = Object.keys(U.art).filter(function (id) {
+      return !U.art[id].some(function (r) { return /[12]/.test(r); });
+    });
+    blank.length ? fail('這些圖是全空的: ' + blank.join(', ')) : ok('沒有全空的圖');
+
+    startRun(win, app, 1990, 'M');
+    var svg = app.querySelector('svg.node-art');
+    if (!svg) { fail('節點畫面沒有渲染出插圖'); return done(); }
+    ok('插圖有渲染 (' + svg.querySelectorAll('rect').length + ' 個 rect)');
+    svg.getAttribute('shape-rendering') === 'crispEdges' ? ok('有 crispEdges，邊緣不會被糊掉') : fail('缺少 shape-rendering="crispEdges"');
+    svg.getAttribute('aria-hidden') === 'true' ? ok('對螢幕閱讀器隱藏（純裝飾）') : fail('插圖應該 aria-hidden');
     done();
   });
 });

@@ -15,6 +15,28 @@
     document.documentElement.classList.toggle('no-motion', !!settings.reducedMotion);
   }
 
+  // 像素圖轉 inline SVG。同一列連續同色併成一個 rect，省掉大量節點；
+  // shape-rendering="crispEdges" 是關鍵，否則放大後每一格邊緣都會被反鋸齒糊掉。
+  var ART_COLORS = { '1': 'var(--ink)', '2': 'var(--ink-soft)' };
+  function pixelArtSvg(rows) {
+    if (!rows || !rows.length) return '';
+    var w = rows[0].length, h = rows.length, out = '';
+    for (var y = 0; y < h; y++) {
+      var row = rows[y], start = 0, cur = row[0];
+      for (var x = 1; x <= w; x++) {
+        var c = x < w ? row[x] : null;
+        if (c !== cur) {
+          if (ART_COLORS[cur]) {
+            out += '<rect x="' + start + '" y="' + y + '" width="' + (x - start) + '" height="1" fill="' + ART_COLORS[cur] + '"/>';
+          }
+          cur = c; start = x;
+        }
+      }
+    }
+    return '<svg class="node-art" viewBox="0 0 ' + w + ' ' + h + '" shape-rendering="crispEdges" ' +
+      'role="img" aria-hidden="true" focusable="false">' + out + '</svg>';
+  }
+
   function attrRow(state) {
     return cfg.attributes.map(function (a) {
       return '<div class="attr-row"><span class="attr-label">' + a.label + '</span>' +
@@ -83,6 +105,7 @@
     html += '</header>';
     html += '<article class="page stamp-drop">';
     html += '<h2 class="chapter-title">第' + node.chapter + '章 · ' + node.title + '<span class="age-range">' + node.ageRange + '</span></h2>';
+    html += pixelArtSvg(UNREALIZED.art && UNREALIZED.art[node.id]);
     html += '<p class="node-text">' + engine.resolveText(node.text, runState) + '</p>';
     html += '</article>';
     html += '<div class="options">';

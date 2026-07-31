@@ -156,6 +156,18 @@ input:focus-visible {
   color: var(--ink-soft);
   font-weight: normal;
 }
+/* 節點插圖：像素雕版。寬度給滿但設上限，高度由 viewBox 比例自己算，
+   image-rendering: pixelated 是為了縮放時每一格仍然是硬邊，不被平滑掉。 */
+.node-art {
+  display: block;
+  width: 100%;
+  max-width: 15rem;
+  height: auto;
+  margin: 0.2rem auto 1rem;
+  image-rendering: pixelated;
+  opacity: 0.9;
+}
+
 .node-text {
   line-height: 1.9;
   font-size: 1.05rem;
