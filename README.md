@@ -1,119 +1,122 @@
-# UNREALIZED · 人生存摺
+<div align="right">
 
-> a Taiwanese life, in three generations
+**English** | [繁體中文](README.zh-TW.md)
 
-一款繁體中文的互動式人生選擇網頁遊戲。選出生年代與性別，從童年一路走到晚年，每個階段做一次選擇，最後翻開存摺，看看你蓋出了什麼樣的人生。
+</div>
 
-**核心命題：人生不只由你的選擇決定，還取決於你是哪一屆。**
+# UNREALIZED 📔 人生存摺
 
-**[▶ 開始遊玩](https://frankkn.github.io/Unrealized/)**
+**Pick a birth cohort and a gender, then walk from childhood to old age, one choice per chapter. At the end you open your passbook and see what kind of life you stamped into it — and which endings your era never offered you in the first place.**
 
----
+🔗 Live: **https://frankkn.github.io/Unrealized/**
 
-## 玩法
+## How to play
 
-1. 選擇出生年代（1975 / 1990 / 2005）與性別
-2. 從第 0 章（家庭起點）走到第 7 章（五十歲之後），每章做一次選擇
-3. 五軸屬性（財務、成就、關係、健康、自我一致）全程對你隱藏，只在結局揭曉
-4. 第 2 章起，隨時可以「就在這裡收尾，看看我的存摺」——中途收尾有自己的五個結局
-5. 解到的結局會存進圖鑑，未解鎖的以剪影顯示
+Open [https://frankkn.github.io/Unrealized/](https://frankkn.github.io/Unrealized/) in any browser. No sign-up, no install, no backend.
 
-共 **28 個完整結局 + 5 個中途結局**。部分結局是世代限定——圖鑑本身就在講一件事：**有些結局你這輩子解不到，因為你的時代沒給你那個選項。**
+It also runs straight from disk — download the repo and double-click `index.html`. There is no build step and no bundler; that is a design constraint, not an oversight.
 
-## 設計理念
+1. Choose a cohort — **1975 / 1990 / 2005** — and a gender
+2. Walk chapters 0 through 7, from the family you were born into to the years after fifty
+3. Five stats — money, achievement, bonds, health, and **self** (how close your choices ran to what you actually wanted) — move the whole way through, **hidden until the very end**
+4. From chapter 2 onward you may stop early: *"close the book here and see what I've got."* Stopping has five endings of its own
+5. Endings you reach are recorded in the codex; the ones you haven't are silhouettes
 
-**沒有免費的選擇。** 每個選項至少變動兩軸，且五軸加總不得超過 +1。取捨成立、爛交易也成立，但沒有任何選項能白拿。（`dev/test-engine.js` 會掃過所有節點強制執行。）
+**28 full endings and 5 early ones.** Some are cohort-locked.
 
-**但「沒有免費的選擇」講的是取捨，不是衰退。** 選擇之外還有一條基線：出社會之後薪水與年資本來就會長，到了晚年職位會還回去、身邊的人會慢慢散掉、身體會開始還債。少了這條，遊戲等於在說「人的一生是淨損耗」。基線刻意壓得比選項輕——選擇仍然是主角。唯一不在基線裡的是 `自我一致`：那一軸不會隨時間自己長出來，只能靠自己的選擇換。
+## What is this
 
-**毀滅結局必須可預防、有伏筆。** 健康在掉的時候，敘述會出現「你已經三年沒做健檢」這類暗示，但不顯示數值。車禍節點只在你選過「連續加班後騎車」或健康已經很差時才會出現——純隨機懲罰是不合格的設計。
+It's a life-choice game, in Traditional Chinese, set in Taiwan.
 
-**不寫自殺結局。** 就創作而言自殺也是偷懶的收尾——死亡把後果一次結清，玩家不用面對任何東西。真正痛的是活下來。所有財務崩潰類結局都往這個方向寫。
+Three people are born thirty years apart into the same country. They sit different entrance exams, serve different conscription lengths, walk into different housing markets, and meet the same-sex marriage law at ages that decide entirely what it means to them — too late, exactly in time, or so early they never knew it was ever in question.
 
-**`自我一致` 是最重要的一軸。** 它讓遊戲能做出「你什麼都有了，但那不是你要的」這種結局，比單純的成功／失敗有味道。
+UNREALIZED is built on one idea: **your life is not shaped only by your choices — it is shaped by which cohort you were born into.**
 
-**世代互文。** 2005 世代的父母設定成 1990 世代。玩過 1990 再玩 2005 的人，會發現自己在扮演上一輪主角的小孩。
+The name is an accounting term — *unrealized gains and losses* — and also "possibilities never realized." It is the one word that lets the best ending and the worst ending share a title.
 
-## 三個世代對照
+### The rules (non-negotiable)
 
-| | 1975（民國64年生） | 1990（民國79年生） | 2005（民國94年生） |
+- **No free choices.** Every option moves at least two of the five stats, and the five together may never net above +1. Tradeoffs stand, bad bargains stand, but nothing is ever pure gain. This is enforced, not merely intended
+- **But "no free choices" means tradeoff, not decay.** Alongside the choices runs a baseline: once you are working, pay and seniority accrue on their own; in old age the title goes back, the people around you thin out, the body settles its debts. Without it the game would be quietly asserting that a life is net loss. The baseline is deliberately lighter than any single choice — **the choices stay the story**
+- **`self` never accrues.** Money, achievement and bonds grow with time on their own. Living in line with what you actually want is the one thing you can only ever buy with a decision
+- **Ruinous endings are preventable and foreshadowed.** The narration warns you — *"you haven't had a health check in three years"* — and never shows a number. The car-accident node fires only if you earned the fatigue-driving flag or your health is already low. **A random punishment is a failure of design**
+- **No suicide endings, and no method described.** Death settles every consequence at once; the player is spared having to face anything. Surviving is what actually hurts, so every financial-collapse ending is written that way
+- **Stats are hidden for the entire run.** You are choosing from the narration, the way you would have at the time — not optimizing a number
+- **No real politicians or parties are praised or blamed.** The chapter 6 node about a family torn apart by politics is about the table going quiet, never about which side was right
+- **Some endings are locked to a cohort.** The codex quietly makes its own argument: there are endings you will never unlock, because your era never put them on the menu
+
+## The three generations
+
+| | Born 1975 | Born 1990 | Born 2005 |
 |---|---|---|---|
-| 童年 | 三代同住／眷村／農村 | 公寓、雙薪、鑰匙兒童 | 獨生子女，父母正好是1990那一代 |
-| 升學 | 高中聯考、大學聯考，錄取率約三成 | 學測指考、錄取率破九成、學歷通膨 | 108課綱、學習歷程、考得上但學校可能倒 |
-| 兵役（男） | 兩年 | 一年 | 四個月→2024恢復一年，正好卡到 |
-| 出社會 | 1997亞洲金融風暴、台商西進、竹科起飛 | 22K、無薪假、太陽花 | AI衝擊、疫情世代、遠距常態 |
-| 房子 | 還買得起（2003年前） | 眼睜睜看它漲走 | 已不在討論範圍 |
-| 同婚 | 一輩子都在非法與汙名中 | 2019通過時29歲，剛好趕上 | 從小就知道這是合法的 |
-| 演到 | 2025，50歲 | 2040，50歲 | 2055–2075，近未來推想 |
+| Childhood | Three generations under one roof; a military dependents' village, or a farm | Apartment, two working parents, latchkey kid | Only child — and your parents are the 1990 cohort |
+| School | Joint entrance exams, ~30% got a university place | GSAT and the exam scramble; >90% admitted, and a degree worth less for it | The 108 curriculum, portfolios — you'll get in, but the school may fold |
+| Conscription (men) | Two years | One year | Four months, restored to a year in 2024 — landing squarely on you |
+| Entering work | The 1997 Asian financial crisis, factories moving to China, Hsinchu taking off | 22K, unpaid leave, the Sunflower Movement | AI, the pandemic cohort, remote as default |
+| Housing | Still buyable, before 2003 | Watching it price itself away from you | No longer part of the conversation |
+| Same-sex marriage | Illegal and stigmatised your whole life | Passed in 2019, when you were 29 — just in time | Legal since before you can remember |
+| Plays until | 2025, age 50 | 2040, age 50 | 2055–2075, near-future speculation |
 
-性別不開新支線，只改內容與門檻。第 3 章是最重要的一次分歧：男性進兵役節點，女性進「提早兩年」節點——**兩邊都不是好處，是不同的成本。**
+**Gender opens no new branch — it changes what's inside.** Chapter 3 is the sharpest fork: men go to conscription, women to "two years ahead" in the workforce. **Neither is the advantage. They are different costs.**
 
-## 技術
+The 2005 cohort's parents are the 1990 cohort. Play 1990, then play 2005, and you'll notice you're playing the previous protagonist's child. Chapter 0 leaves the clues; it never says so.
 
-無建置流程。純 HTML + CSS + vanilla JS，直接開 `index.html` 就能玩，push 上 GitHub Pages 就能上線。無後端、無 API、無追蹤，localStorage 只用來存結局圖鑑與設定（可隨時清除）。
+## Honesty as infrastructure
+
+The design rules above are checked by a script, not by good intentions. `node dev/test-engine.js` runs on every change and fails on:
+
+- **Free lunches** — every option is scanned for the two-axis / net ≤ +1 rule; nothing is grandfathered
+- **Broken graph** — nodes unreachable from the start, and options pointing at nodes that don't exist
+- **Dead endings** — all 28 must be provably reachable. Uniform random play only finds 25, so the rest get targeted proofs. Four have windows too narrow for that (five stats all landing mid-range, or one stat stopping on an exact value) and are proven by replaying concrete paths found offline with `dev/find-paths.js`
+- **Unplayable chapters** — chapters 0–3 are exhaustively enumerated, every branch, all six cohort × gender combinations
+- **Leaked placeholders** — the lexicon substitutes 26 era-specific terms into the script (`{起薪}` becomes *two-four*, *twenty-two K*, or *thirty-six, but rent is eighteen*), and no `{token}` may survive into rendered text
+
+This is how the health axis got caught. It had quietly become the stat writers docked whenever an option needed a downside, including on nodes whose narration had nothing to do with the body: across 153 options it summed +4 up against −44 down, and 40 of 44 nodes offered no way to recover any. 90% of runs ended in health collapse regardless of how you played. It read as a difficulty problem and was actually an attribution problem — the costs are now carried by the stats the text actually supports.
+
+## Stack
+
+Plain HTML + CSS + vanilla JS. No framework, no bundler, no npm install, no backend, no API, no tracking, no analytics.
+
+Scripts are loaded with plain `<script>` tags rather than ES modules, specifically so the game still runs over `file://` after someone downloads a zip. Everything hangs off `window.UNREALIZED`.
+
+localStorage holds the ending codex, your settings, and your last cohort — nothing else — and there's a clear button inside the game. Every read and write is wrapped, so private browsing degrades instead of crashing.
 
 ```
-index.html              入口
-css/style.css           全部樣式
-js/engine.js            狀態機、屬性運算、結局判定
-js/state.js             存檔／圖鑑（localStorage）
-js/ui.js                DOM 操作、動畫、章節轉場
-data/config.js          世代設定、詞彙字典、屬性定義
-data/nodes-ch0-3.js     第 0–3 章節點
-data/nodes-ch4-5.js     第 4–5 章節點
-data/nodes-ch6-7.js     第 6–7 章節點
-data/endings.js         全部結局
-dev/test-engine.js      dev-only 自我檢查（不是遊戲的一部分）
+index.html              entry point
+css/style.css           all styling
+js/engine.js            state machine, stat maths, ending adjudication
+js/state.js             save / codex (localStorage)
+js/ui.js                DOM, animation, chapter transitions
+data/config.js          cohorts, lexicon, stat definitions, chapter baseline
+data/nodes-ch0-3.js     chapters 0–3
+data/nodes-ch4-5.js     chapters 4–5
+data/nodes-ch6-7.js     chapters 6–7
+data/endings.js         every ending
+dev/                    dev-only tooling, not part of the game
 ```
 
-內容與引擎分離——引擎完全不認識任何劇情內容，改劇本只動 `data/` 底下的檔案。
+**Content and engine are fully separate.** The engine knows nothing about the story — rewriting the entire script touches only `data/`.
 
-### 部署到 GitHub Pages
-
-Settings → Pages → Source 選 `Deploy from a branch`，branch 選 `master` / 根目錄 `/`，存檔即可。repo 根目錄的 `.nojekyll` 會讓 Pages 跳過 Jekyll 處理。
-
-### 開發驗證
+## Development
 
 ```bash
-node dev/test-engine.js
+node dev/test-engine.js     # the full validation suite described above
+node dev/find-paths.js      # regenerate rare-ending proof paths (add e.g. 3000 to widen the search)
 ```
 
-會檢查：所有選項是否違反「沒有純加分」鐵則、節點圖有無斷鏈或走不到的節點、第 0–3 章全枚舉是否都能通到第 4 章、隨機抽樣 4800 局是否都能正常判定結局、28 個完整結局是否每一個都真的可達（稀有結局用離線 beam search 找到的實際路徑重播驗證）、詞彙字典替換有無殘留佔位符。
+The rare endings are proven in the test suite by replaying concrete paths, so **any balance change invalidates them** — that's what `find-paths.js` is for. Rebalancing the health axis broke three of the four; the chapter baseline broke all four. Both times: rerun, paste back, done.
 
-少數稀有結局的條件範圍很窄（五軸都要落在中段、或某一軸要精準停在某個值），權重亂試找不到，`dev/test-engine.js` 裡直接寫死了幾條實際可行的路徑。**調整過數值平衡之後這些路徑會失效**，跑這個重新產生、貼回去即可：
+### Deploy
 
-```bash
-node dev/find-paths.js        # 找不到時可加大 beam width：node dev/find-paths.js 3000
-```
+Settings → Pages → Source: *Deploy from a branch*, branch `master`, folder `/ (root)`. The `.nojekyll` file at the repo root keeps Pages from running Jekyll over it.
+
+## Deliberately not building
+
+Accounts, cloud saves, leaderboards, achievements, share-to-unlock, analytics of any kind, difficulty settings, an undo button, and a visible stat display during play — seeing the numbers would turn a life into a spreadsheet, which is the one thing this can't be.
 
 ---
 
-# UNREALIZED (English)
-
-An interactive life-choice game in Traditional Chinese (Taiwanese usage). Pick a birth cohort and a gender, then walk from childhood to old age making one choice per chapter. At the end you open your "passbook" and see what kind of life you stamped into it.
-
-**The premise: your life isn't shaped only by your choices — it's shaped by which cohort you were born into.**
-
-**[▶ Play](https://frankkn.github.io/Unrealized/)**
-
-The name is an accounting term (*unrealized gains and losses*) and also "possibilities never realized." It's the one word that lets the best ending and the worst ending share the same title.
-
-### Design rules
-
-- **No free choices.** Every option moves at least two of the five hidden stats, and at least one must go *down*. A dev-mode validator enforces this across every node.
-- **Ruinous endings must be preventable and foreshadowed.** The narration hints ("you haven't had a health check in three years") without ever showing numbers. The car-accident node only fires if you earned the fatigue-driving flag or your health is already low — never as a random punishment.
-- **No suicide endings.** Death settles every consequence at once; surviving is what actually hurts. Financial-collapse endings are written that way.
-- **Some endings are cohort-locked.** The codex quietly makes its own argument: there are endings you will never unlock, because your era never offered you that option.
-
-Three cohorts (born 1975 / 1990 / 2005) live through the same Taiwan thirty years apart — different entrance exams, different conscription lengths, different housing markets, and a same-sex marriage law that arrives too late, just in time, or before you were old enough to notice.
-
-### Technical
-
-No build step. Plain HTML + CSS + vanilla JS — open `index.html` locally or serve it from GitHub Pages. No backend, no API, no tracking. localStorage holds only the ending codex and settings, and can be cleared from inside the game. Content is fully separated from the engine: the engine knows nothing about the story, so rewriting the script only touches `data/`.
-
-Run `node dev/test-engine.js` to validate node graph integrity, the no-free-choices rule, and that all 28 full endings are genuinely reachable.
-
----
+Some endings you will never unlock. Not because you played badly — because your era never offered them.
 
 ## License
 
