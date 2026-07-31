@@ -335,7 +335,7 @@ targetedProofs.forEach(function (t) {
 console.log('用策略腳本證明可達的結局（' + provenEndings.length + '/' + (targetedProofs.length + 4) + '）：', provenEndings);
 assert(unprovenEndings.length === 0, '這些結局用策略腳本都沒觸發到，可能真的無法到達: ' + JSON.stringify(unprovenEndings));
 
-// 5d. 場景圖的 prompt 清單：ID 打錯不會報錯，只會安靜地沿用雕版，所以在這裡比對
+// 5d. 場景圖的 prompt 清單：ID 打錯的話會產出一張永遠不會被載入的圖，所以在這裡比對
 var promptsPath = path.join(__dirname, '..', 'art', 'PROMPTS.md');
 if (fs.existsSync(promptsPath)) {
   var md = fs.readFileSync(promptsPath, 'utf8');
@@ -350,7 +350,7 @@ if (fs.existsSync(promptsPath)) {
   console.log('[UNREALIZED dev] art/PROMPTS.md 涵蓋全部 ' + nodeIds.length + ' 個節點。');
 }
 
-// 5e. 已經產好的場景圖：檔名對不上節點的話，遊戲會安靜地沿用雕版，從畫面上看不出來
+// 5e. 已經產好的場景圖：檔名對不上節點的話那張圖永遠不會被載入，而該節點會變成破圖
 var artDir = path.join(__dirname, '..', 'art');
 if (fs.existsSync(artDir)) {
   var webps = fs.readdirSync(artDir).filter(function (f) { return /\.webp$/i.test(f); });
@@ -360,6 +360,11 @@ if (fs.existsSync(artDir)) {
     .filter(function (id) { return nodeIdSet.indexOf(id) === -1; });
   assert(orphan.length === 0,
     'art/ 裡這些圖對不上任何節點，永遠不會被載入（檔名打錯？）: ' + orphan.join(', '));
+
+  var lackImage = nodeIdSet.filter(function (id) {
+    return webps.indexOf(id + '.webp') === -1;
+  });
+  assert(lackImage.length === 0, '這些節點沒有場景圖，畫面上會是破圖: ' + lackImage.join(', '));
 
   var bytes = webps.reduce(function (sum, f) { return sum + fs.statSync(path.join(artDir, f)).size; }, 0);
   var mb = bytes / 1048576;

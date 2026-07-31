@@ -15,50 +15,12 @@
     document.documentElement.classList.toggle('no-motion', !!settings.reducedMotion);
   }
 
-  // 像素圖轉 inline SVG。同一列連續同色併成一個 rect，省掉大量節點；
-  // shape-rendering="crispEdges" 是關鍵，否則放大後每一格邊緣都會被反鋸齒糊掉。
-  var ART_COLORS = { '1': 'var(--ink)', '2': 'var(--ink-soft)' };
-  function pixelArtSvg(rows) {
-    if (!rows || !rows.length) return '';
-    var w = rows[0].length, h = rows.length, out = '';
-    for (var y = 0; y < h; y++) {
-      var row = rows[y], start = 0, cur = row[0];
-      for (var x = 1; x <= w; x++) {
-        var c = x < w ? row[x] : null;
-        if (c !== cur) {
-          if (ART_COLORS[cur]) {
-            out += '<rect x="' + start + '" y="' + y + '" width="' + (x - start) + '" height="1" fill="' + ART_COLORS[cur] + '"/>';
-          }
-          cur = c; start = x;
-        }
-      }
-    }
-    return '<svg class="node-art" viewBox="0 0 ' + w + ' ' + h + '" shape-rendering="crispEdges" ' +
-      'role="img" aria-hidden="true" focusable="false">' + out + '</svg>';
-  }
-
-  // 場景圖走漸進式：先畫已經有的雕版，同時在背景試載 art/<nodeId>.webp，
-  // 載到了才換上去。所以 45 張還沒生完也能玩，每丟一張進 art/ 就自動多一張，
-  // 中途不會出現破圖，缺圖也不會留白。
-  var sceneCache = {};   // nodeId -> true 載得到 / false 沒有這張
-  function mountScene(nodeId) {
-    var box = document.querySelector('.node-scene[data-node="' + nodeId + '"]');
-    if (!box || sceneCache[nodeId] === false) return;
-    var src = 'art/' + nodeId + '.webp';
-    var img = new Image();
-    img.onload = function () {
-      sceneCache[nodeId] = true;
-      var live = document.querySelector('.node-scene[data-node="' + nodeId + '"]');
-      if (!live) return;                       // 玩家已經翻頁了
-      img.className = 'scene-img';
-      img.alt = '';
-      img.setAttribute('aria-hidden', 'true');
-      live.innerHTML = '';
-      live.appendChild(img);
-      live.classList.add('has-scene');
-    };
-    img.onerror = function () { sceneCache[nodeId] = false; };
-    img.src = src;
+  // 場景圖：直接輸出 <img>。45 張都在版控裡，所以不需要備援，也不需要
+  // 「先畫佔位再換圖」那套漸進載入 —— 少一層機制就少一層會壞的東西。
+  function sceneHtml(nodeId) {
+    return '<div class="node-scene">' +
+      '<img class="scene-img" src="art/' + nodeId + '.webp?v=3" alt="" aria-hidden="true">' +
+      '</div>';
   }
 
   function attrRow(state) {
@@ -140,10 +102,8 @@
       html += '<button class="link-btn quit-btn" id="quit-btn">就在這裡收尾，看看我的存摺</button>';
     }
     // 插圖擺在整頁最下方：先讀完敘述、做完選擇，畫面才收在那張圖上
-    html += '<div class="node-scene" data-node="' + node.id + '">' +
-      pixelArtSvg(UNREALIZED.art && UNREALIZED.art[node.id]) + '</div>';
+    html += sceneHtml(node.id);
     app.innerHTML = html;
-    mountScene(node.id);
 
     app.querySelectorAll('[data-opt]').forEach(function (btn) {
       btn.addEventListener('click', function () {

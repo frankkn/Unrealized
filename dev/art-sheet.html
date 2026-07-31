@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UNREALIZED — 插圖總覽（dev）</title>
+<title>UNREALIZED — 場景圖總覽（dev）</title>
 <!--
-  dev-only：把 data/art.js 的每一張圖排在一起，一次看完。
-  直接用瀏覽器打開這個檔案即可，不需要任何伺服器或安裝。
-  改完圖重新整理就好——這是唯一能快速判斷「哪張畫壞了」的方式。
+  dev-only：把 art/ 底下的 45 張場景圖依章節排在一起，一次看完。
+  直接用瀏覽器打開這個檔案即可，不需要伺服器或安裝任何東西。
+  重生某幾張之後重新整理就好 —— 這是判斷「哪張生壞了、哪張風格漂了」最快的方式。
 -->
 <style>
   :root {
     --ink: #1c2b4a; --ink-soft: #33456b;
-    --paper: #f2e8cf; --paper-dark: #e6d8ae;
-    --gold: #b8891f; --stamp: #b23a2e;
+    --paper: #f2e8cf; --gold: #b8891f; --stamp: #b23a2e;
   }
   * { box-sizing: border-box; }
   body {
@@ -21,42 +20,41 @@
     background: var(--ink); color: var(--paper);
     font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
   }
-  header { max-width: 70rem; margin: 0 auto 2rem; }
+  header { max-width: 72rem; margin: 0 auto 1.6rem; }
   h1 { font-size: 1.4rem; margin: 0 0 .3rem; letter-spacing: .05em; }
   .meta { color: var(--gold); font-size: .85rem; margin: 0; }
   .warn { color: var(--stamp); font-weight: 700; }
-  .controls { margin-top: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; font-size: .85rem; }
+  .controls { margin-top: 1rem; display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; font-size: .85rem; }
   .controls label { display: flex; gap: .4rem; align-items: center; cursor: pointer; }
 
-  .sheet {
-    max-width: 70rem; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 1.2rem;
+  .sheet { max-width: 72rem; margin: 0 auto; display: grid; gap: 1.1rem;
+           grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); }
+  .sheet.big { grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr)); }
+  figure { margin: 0; background: #10131c; border: 1px solid var(--ink-soft); border-radius: 3px; overflow: hidden; position: relative; }
+  figure img { display: block; width: 100%; height: auto; aspect-ratio: 3/4; object-fit: cover; background: #000; }
+  figure.missing { outline: 2px solid var(--stamp); }
+  .ph { aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; color: var(--stamp); font-size: .8rem; }
+  figcaption { padding: .45rem .55rem .6rem; font-family: ui-monospace, Menlo, monospace; font-size: .66rem; color: #8892a8; word-break: break-all; }
+  figcaption b { display: block; font-family: inherit; font-size: .8rem; color: var(--paper); font-weight: 700; margin-bottom: .1rem; }
+  .ch { grid-column: 1 / -1; margin: 1rem 0 -.3rem; font-size: .95rem; color: var(--gold);
+        border-bottom: 1px solid var(--ink-soft); padding-bottom: .3rem; }
+
+  /* 底部留白是最常見的生壞方式。疊一層漸層模擬遊戲裡文字壓上去的位置，
+     用來檢查重點有沒有掉進會被蓋掉的那三分之一。 */
+  .sheet.overlay figure::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 1.9rem; height: 33%;
+    background: linear-gradient(to top, rgba(242,232,207,.92), rgba(242,232,207,0));
+    pointer-events: none;
   }
-  figure {
-    margin: 0; background: repeating-linear-gradient(to bottom,
-      var(--paper) 0px, var(--paper) 3px, var(--paper-dark) 3px, var(--paper) 4px);
-    border: 1px solid var(--gold); border-radius: 2px; padding: .7rem .5rem .5rem;
-    text-align: center;
-  }
-  figure svg { display: block; width: 100%; height: auto; image-rendering: pixelated; }
-  figure img.scene { display: block; width: 100%; height: auto; image-rendering: pixelated; }
-  .tag { display: block; margin-top: .25rem; color: var(--gold); font-size: .62rem; letter-spacing: .1em; }
-  figcaption {
-    margin-top: .5rem; font-family: ui-monospace, Menlo, monospace;
-    font-size: .68rem; color: var(--ink-soft); word-break: break-all;
-  }
-  figcaption b { display: block; color: var(--ink); font-family: inherit; font-size: .78rem; font-weight: 700; }
-  .ch { grid-column: 1 / -1; margin: 1.2rem 0 -.4rem; font-size: .95rem; color: var(--gold); border-bottom: 1px solid var(--ink-soft); padding-bottom: .3rem; }
-  .problem { outline: 2px solid var(--stamp); }
 </style>
 </head>
 <body>
 <header>
-  <h1>UNREALIZED — 節點插圖總覽</h1>
+  <h1>UNREALIZED — 場景圖總覽</h1>
   <p class="meta" id="meta">載入中…</p>
   <div class="controls">
-    <label><input type="checkbox" id="big"> 放大兩倍</label>
-    <label><input type="checkbox" id="grid"> 顯示格線</label>
+    <label><input type="checkbox" id="big"> 放大</label>
+    <label><input type="checkbox" id="overlay"> 模擬文字區（檢查底部三分之一會不會蓋掉重點）</label>
   </div>
 </header>
 <div class="sheet" id="sheet"></div>
@@ -65,85 +63,53 @@
 <script src="../data/nodes-ch0-3.js"></script>
 <script src="../data/nodes-ch4-5.js"></script>
 <script src="../data/nodes-ch6-7.js"></script>
-<script src="../data/art.js"></script>
 <script>
 (function () {
-  var U = window.UNREALIZED, art = U.art, nodes = U.nodes;
-  var COLORS = { '1': '#1c2b4a', '2': '#33456b' };
-
-  function svg(rows, showGrid) {
-    var w = rows[0].length, h = rows.length, out = '';
-    for (var y = 0; y < h; y++) {
-      var row = rows[y], start = 0, cur = row[0];
-      for (var x = 1; x <= w; x++) {
-        var c = x < w ? row[x] : null;
-        if (c !== cur) {
-          if (COLORS[cur]) out += '<rect x="' + start + '" y="' + y + '" width="' + (x - start) + '" height="1" fill="' + COLORS[cur] + '"/>';
-          cur = c; start = x;
-        }
-      }
-    }
-    if (showGrid) {
-      for (var gx = 0; gx <= w; gx++) out += '<line x1="' + gx + '" y1="0" x2="' + gx + '" y2="' + h + '" stroke="#b8891f" stroke-width="0.03"/>';
-      for (var gy = 0; gy <= h; gy++) out += '<line x1="0" y1="' + gy + '" x2="' + w + '" y2="' + gy + '" stroke="#b8891f" stroke-width="0.03"/>';
-    }
-    return '<svg viewBox="0 0 ' + w + ' ' + h + '" shape-rendering="crispEdges">' + out + '</svg>';
-  }
-
-  function draw() {
-    var showGrid = document.getElementById('grid').checked;
-    var sheet = document.getElementById('sheet');
-    var order = Object.keys(nodes).sort(function (a, b) {
-      return nodes[a].chapter - nodes[b].chapter || a.localeCompare(b);
-    });
-    var html = '', lastCh = -1, missing = 0, malformed = 0;
-    order.forEach(function (id) {
-      var node = nodes[id];
-      if (node.chapter !== lastCh) {
-        lastCh = node.chapter;
-        html += '<h2 class="ch">第 ' + lastCh + ' 章</h2>';
-      }
-      var rows = art[id];
-      if (!rows) {
-        missing++;
-        html += '<figure class="problem"><div style="color:#b23a2e;padding:2rem 0">沒有圖</div>' +
-          '<figcaption><b>' + node.title + '</b>' + id + '</figcaption></figure>';
-        return;
-      }
-      var bad = rows.some(function (r) { return r.length !== rows[0].length; });
-      if (bad) malformed++;
-      html += '<figure data-node="' + id + '"' + (bad ? ' class="problem"' : '') + '>' + svg(rows, showGrid) +
-        '<figcaption><b>' + node.title + '</b>' + id +
-        '<span class="tag">雕版</span></figcaption></figure>';
-    });
-    sheet.innerHTML = html;
-    // 已經產好的場景圖優先顯示：試載 art/<id>.webp，載到了就換掉雕版，
-    // 這樣一眼看得出 45 張還缺哪幾張（沒有 inline handler，引號才不會出事）
-    sheet.querySelectorAll('figure[data-node]').forEach(function (fig) {
-      var img = new Image();
-      img.onload = function () {
-        var svgEl = fig.querySelector('svg');
-        if (svgEl) svgEl.remove();
-        img.className = 'scene';
-        img.alt = '';
-        fig.insertBefore(img, fig.firstChild);
-        fig.querySelector('.tag').textContent = '場景圖';
-      };
-      img.src = '../art/' + fig.dataset.node + '.webp';
-    });
-    document.getElementById('meta').innerHTML =
-      order.length + ' 個節點 · ' + Object.keys(art).length + ' 張圖' +
-      (missing || malformed
-        ? ' · <span class="warn">缺圖 ' + missing + '，格式錯誤 ' + malformed + '</span>'
-        : ' · 全部齊備');
-  }
-
-  document.getElementById('grid').addEventListener('change', draw);
-  document.getElementById('big').addEventListener('change', function (e) {
-    document.getElementById('sheet').style.gridTemplateColumns =
-      e.target.checked ? 'repeat(auto-fill, minmax(22rem, 1fr))' : 'repeat(auto-fill, minmax(11rem, 1fr))';
+  var nodes = window.UNREALIZED.nodes;
+  var sheet = document.getElementById('sheet');
+  var order = Object.keys(nodes).sort(function (a, b) {
+    return nodes[a].chapter - nodes[b].chapter || a.localeCompare(b);
   });
-  draw();
+
+  var html = '', lastCh = -1;
+  order.forEach(function (id) {
+    var node = nodes[id];
+    if (node.chapter !== lastCh) {
+      lastCh = node.chapter;
+      html += '<h2 class="ch">第 ' + lastCh + ' 章</h2>';
+    }
+    html += '<figure data-node="' + id + '">' +
+      '<img src="../art/' + id + '.webp" alt="">' +
+      '<figcaption><b>' + node.title + '</b>' + id + '</figcaption></figure>';
+  });
+  sheet.innerHTML = html;
+
+  // 缺圖要看得出來：img 載不到就換成佔位，否則只會看到一個破圖 icon
+  var missing = 0;
+  sheet.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('error', function () {
+      missing++;
+      var fig = img.parentNode;
+      fig.classList.add('missing');
+      img.remove();
+      fig.insertAdjacentHTML('afterbegin', '<div class="ph">缺圖</div>');
+      report();
+    });
+  });
+
+  function report() {
+    document.getElementById('meta').innerHTML =
+      order.length + ' 個節點 · ' +
+      (missing ? '<span class="warn">缺 ' + missing + ' 張</span>' : '全部齊備');
+  }
+  report();
+
+  document.getElementById('big').addEventListener('change', function (e) {
+    sheet.classList.toggle('big', e.target.checked);
+  });
+  document.getElementById('overlay').addEventListener('change', function (e) {
+    sheet.classList.toggle('overlay', e.target.checked);
+  });
 })();
 </script>
 </body>

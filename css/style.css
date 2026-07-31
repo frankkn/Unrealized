@@ -156,29 +156,13 @@ input:focus-visible {
   color: var(--ink-soft);
   font-weight: normal;
 }
-/* 節點插圖：像素雕版。寬度給滿但設上限，高度由 viewBox 比例自己算，
-   image-rendering: pixelated 是為了縮放時每一格仍然是硬邊，不被平滑掉。 */
-.node-art {
-  display: block;
-  width: 100%;
-  max-width: 15rem;
-  height: auto;
-  margin: 0.2rem auto 1rem;
-  image-rendering: pixelated;
-  opacity: 0.9;
-}
-
 /* 場景圖在整頁最下方，出血到 #app 的左右與底部邊緣。
    #app 的內距是 1.5rem 1.25rem 3rem，用負 margin 抵銷掉，讓圖真的貼到邊。 */
-.node-scene.has-scene {
+.node-scene {
   margin: 1.6rem -1.25rem -3rem;
   border-top: 1px solid var(--gold);
   background: var(--ink);
   overflow: hidden;
-}
-/* 還沒有場景圖時是雕版，維持在紙上、置中、不出血 */
-.node-scene:not(.has-scene) {
-  margin-top: 1.4rem;
 }
 .scene-img {
   display: block;
@@ -189,7 +173,7 @@ input:focus-visible {
   image-rendering: pixelated;
 }
 @media (max-width: 480px) {
-  .node-scene.has-scene { margin-left: -0.8rem; margin-right: -0.8rem; margin-bottom: -2rem; }
+  .node-scene { margin-left: -0.8rem; margin-right: -0.8rem; margin-bottom: -2rem; }
 }
 
 .node-text {

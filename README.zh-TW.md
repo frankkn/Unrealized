@@ -89,7 +89,6 @@ js/engine.js            狀態機、屬性運算、結局判定
 js/state.js             存檔／圖鑑（localStorage）
 js/ui.js                DOM 操作、動畫、章節轉場
 data/config.js          世代設定、詞彙字典、屬性定義、章節基線
-data/art.js             每個節點一張像素雕版插圖（備援）
 art/                    生成的場景圖，一個節點一張
 art/PROMPTS.md          45 個 prompt，一個節點一則
 data/nodes-ch0-3.js     第 0–3 章

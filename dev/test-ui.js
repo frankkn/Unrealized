@@ -26,7 +26,8 @@ var errors = [];
 // 順帶連 <script src> 的路徑有沒有打錯也一起測到了（讀不到就直接爆）。
 function inlineScripts(html) {
   return html.replace(/<script\s+src="([^"]+)"\s*><\/script>/g, function (_, src) {
-    var file = path.join(ROOT, src);
+    // src 會帶 ?v= 的快取版本號，要先去掉才對得到檔案
+    var file = path.join(ROOT, src.split('?')[0]);
     if (!fs.existsSync(file)) {
       throw new Error('index.html 指向一支不存在的 script: ' + src);
     }
@@ -107,28 +108,13 @@ tests.push(function (done) {
 });
 
 tests.push(function (done) {
-  console.log('\n=== 1b. 節點插圖 ===');
+  console.log('\n=== 1b. 節點場景圖 ===');
   boot(function (win, doc, app) {
-    var U = win.UNREALIZED;
-    if (!U.art) { fail('UNREALIZED.art 不存在'); return done(); }
-    var ids = Object.keys(U.nodes);
-    var missing = ids.filter(function (id) { return !U.art[id]; });
-    missing.length ? fail('這些節點沒有插圖: ' + missing.join(', ')) : ok(ids.length + ' 個節點都有插圖');
-
-    var W = 28, H = 16, malformed = [];
-    Object.keys(U.art).forEach(function (id) {
-      var rows = U.art[id];
-      if (rows.length !== H) malformed.push(id + ' 高度' + rows.length);
-      rows.forEach(function (r, i) { if (r.length !== W) malformed.push(id + '[' + i + ']寬度' + r.length); });
-      if (!U.nodes[id]) malformed.push(id + ' 沒有對應節點');
+    var ids = Object.keys(win.UNREALIZED.nodes);
+    var missing = ids.filter(function (id) {
+      return !fs.existsSync(path.join(ROOT, 'art', id + '.webp'));
     });
-    malformed.length ? fail('圖格式有問題: ' + malformed.slice(0, 5).join('; ')) : ok('全部都是 ' + W + 'x' + H + '，沒有多餘的圖');
-
-    // 空白的圖等於沒畫，會靜靜地渲染成一片空
-    var blank = Object.keys(U.art).filter(function (id) {
-      return !U.art[id].some(function (r) { return /[12]/.test(r); });
-    });
-    blank.length ? fail('這些圖是全空的: ' + blank.join(', ')) : ok('沒有全空的圖');
+    missing.length ? fail('這些節點沒有場景圖: ' + missing.join(', ')) : ok(ids.length + ' 個節點都有場景圖');
 
     startRun(win, app, 1990, 'M');
 
@@ -141,11 +127,14 @@ tests.push(function (done) {
     kids.indexOf(app.querySelector('.options')) < kids.indexOf(scene)
       ? ok('順序是 敘述 -> 選項 -> 插圖') : fail('選項跑到插圖後面了');
 
-    var svg = app.querySelector('svg.node-art');
-    if (!svg) { fail('節點畫面沒有渲染出插圖'); return done(); }
-    ok('插圖有渲染 (' + svg.querySelectorAll('rect').length + ' 個 rect)');
-    svg.getAttribute('shape-rendering') === 'crispEdges' ? ok('有 crispEdges，邊緣不會被糊掉') : fail('缺少 shape-rendering="crispEdges"');
-    svg.getAttribute('aria-hidden') === 'true' ? ok('對螢幕閱讀器隱藏（純裝飾）') : fail('插圖應該 aria-hidden');
+    // 容器裡只該有那一張圖，不該還躺著別的東西
+    scene.children.length === 1 && scene.firstElementChild.tagName === 'IMG'
+      ? ok('容器裡只有一張 <img>，沒有殘留的舊插圖') : fail('容器裡有 ' + scene.children.length + ' 個子元素');
+
+    var img = scene.querySelector('img.scene-img');
+    if (!img) { fail('沒有 scene-img'); return done(); }
+    /^art\/n[\w]+\.webp/.test(img.getAttribute('src')) ? ok('src 指向 art/ 底下的圖') : fail('src 不對: ' + img.getAttribute('src'));
+    img.getAttribute('aria-hidden') === 'true' ? ok('對螢幕閱讀器隱藏（純裝飾）') : fail('插圖應該 aria-hidden');
     done();
   });
 });
