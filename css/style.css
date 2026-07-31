@@ -257,7 +257,11 @@ html.scene-mode, body.scene-mode {
   line-height: 1.45;
   box-shadow: 0 2px 10px rgba(0,0,0,.35);
 }
-.scene-bottom .option-btn:hover { background: #fff; }
+/* 只在真的有 hover 的裝置上套用高亮。觸控裝置點擊後 :hover 會「黏」在最後
+   觸碰的座標上，而點選項會原地重畫出新按鈕，害那顆新按鈕無故變白（常常是最下面那個）。 */
+@media (hover: hover) {
+  .scene-bottom .option-btn:hover { background: #fff; }
+}
 .scene-bottom .quit-btn {
   margin: .1rem auto 0;
   color: rgba(242,232,207,.72);
