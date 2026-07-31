@@ -81,8 +81,12 @@
     },
 
     n6_financial_reckoning: {
-      id: 'n6_financial_reckoning', chapter: 6, title: '財務清算', ageRange: '35–50歲',
-      text: '這幾年欠的、借的、賭的，開始一筆一筆找上門。',
+      id: 'n6_financial_reckoning', chapter: 6, title: '財務盤點', ageRange: '35–50歲',
+      // 沒欠過錢的人不該看到「清算」——那是欠過的人才有的畫面
+      text: [
+        { when: { flagsAny: ['借貸', '高槓桿', '投機', '宗教金錢'] }, text: '這幾年欠的、借的、賭的，開始一筆一筆找上門。' },
+        { text: '四十幾歲的某個晚上，你第一次把所有的帳攤開來，認真算了一次。' }
+      ],
       options: [
         {
           id: 'foreclosure',
@@ -92,26 +96,40 @@
           exemptRule: true,
           endingId: 'END_法拍'
         },
-        { id: 'collections_call', label: '催收電話開始一天打好幾次', effects: { self: -1, bond: -1 }, next: 'n6_health_reckoning' },
+        // 催收電話只有真的欠過錢的人會遇到
+        { id: 'collections_call', requires: { flagsAny: ['借貸', '高槓桿', '投機'] }, label: '催收電話開始一天打好幾次', effects: { self: -1, bond: -1 }, next: 'n6_health_reckoning' },
         { id: 'manage_through', label: '把手上的東西重新盤點一次，勉強打平', effects: { money: 1, health: -1 }, next: 'n6_health_reckoning' },
-        { id: 'clean_sheet', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '這幾年算是穩住了，沒有欠誰什麼', effects: { self: 1, achieve: -1 }, next: 'n6_health_reckoning' }
+        { id: 'clean_sheet', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '這幾年算是穩住了，沒有欠誰什麼', effects: { self: 1, achieve: -1 }, next: 'n6_health_reckoning' },
+        { id: 'help_family', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '手頭還算鬆，借了一筆給周轉不過來的家人', effects: { bond: 2, money: -2 }, next: 'n6_health_reckoning' }
       ]
     },
 
     n6_health_reckoning: {
       id: 'n6_health_reckoning', chapter: 6, title: '健康清算', ageRange: '35–50歲',
-      text: '身體這幾年欠的債，也開始要還了。',
+      text: [
+        { when: { attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你在辦公室站起來的時候，眼前黑了三秒。醫生說再這樣下去，就不是警告了。' },
+        { text: '身體這幾年欠的債，也開始要還了。' }
+      ],
       options: [
+        // 健康見底時，這裡曾經只有「倒下」一個按鈕——遊戲把方向盤搶走，
+        // 那正是最說教也最不甘心的設計。現在倒下仍然在，但它是你選的，不是被判的。
         {
           id: 'collapse',
           requires: { attr: { key: 'health', op: '<=', value: 2 } },
-          label: '身體先撐不住了，你被送進醫院那天，才真正停下腳步',
+          label: '沒有停，手上的事還沒交代完',
           effects: {},
           exemptRule: true,
           endingId: [
             { when: { attr: { key: 'achieve', op: '>=', value: 7 } }, endingId: 'END_倒在辦公室' },
             { endingId: 'END_洗腎的日子' }
           ]
+        },
+        {
+          id: 'full_stop',
+          requires: { attr: { key: 'health', op: '<=', value: 2 } },
+          label: '請了長假，把手上的位置交出去，先把身體救回來',
+          effects: { health: 3, achieve: -2, money: -1 },
+          next: 'n6_return_home'
         },
         { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: 'n6_return_home' },
         { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2, achieve: -2 }, next: 'n6_return_home' },

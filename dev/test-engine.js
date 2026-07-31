@@ -225,17 +225,17 @@ function injuryPick(node, options, state) {
 // 離線找到一條「danger flag 數=0 且五軸都在[4,6]」的實際存在路徑，這裡直接重放驗證，
 // 比每次重新搜尋快得多，也更穩定。
 var LUCKY_MIDBAND_PATH = [
-  'n0_family/labor_family', 'n1_labor/self_taught', 'n2_high_school/no_school',
-  'n3_route/direct_work', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
-  'n4_job/big_corp', 'n4_where/stay_local', 'n4_westward/stay',
-  'n4_mlm/refuse_breakup', 'n5_career_move/big_jump', 'n5_marriage/marry_common',
+  'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/normal',
+  'n3_route/general_uni', 'n3m_military/find_clarity', 'n3_first_love/straight_stable',
+  'n4_job/sme', 'n4_where/abroad', 'n4_westward/stay',
+  'n4_mlm/refuse_breakup', 'n5_career_move/setback', 'n5_marriage/marry_common',
   'n5_children/undecided_m', 'n5_house/rent_forever', 'n5_invest/etf',
-  'n5_parents_ill/hire_caregiver', 'n5_body_signal/check', 'n5_overwork/pace_self',
+  'n5_parents_ill/institution', 'n5_body_signal/check', 'n5_overwork/pace_self',
   'n5_debt/grind_through', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
   'n6_career_plateau/push_more', 'n6_midlife_unemployment/start_over', 'n6_long_term_care/hire_full_time',
-  'n6_marriage_crisis/separate', 'n6_politics/silence', 'n6_financial_reckoning/collections_call',
-  'n6_health_reckoning/partial_care', 'n6_return_home/bring_them', 'n6_readjust/double_down',
-  'n7_retirement_prep/keep_working', 'n7_scam_call/recognize_immediately', 'n7_solo_aging/community',
+  'n6_marriage_crisis/stay_for_kids', 'n6_politics/silence', 'n6_financial_reckoning/manage_through',
+  'n6_health_reckoning/partial_care', 'n6_return_home/commute', 'n6_readjust/let_go',
+  'n7_retirement_prep/keep_working', 'n7_scam_call/recognize_immediately', 'n7_solo_aging/thriving_alone',
   'n7_body_ledger/careful', 'n7_look_back/regret'
 ];
 function playScriptedPath(generation, gender, path) {
@@ -265,8 +265,8 @@ var LUCKY_SELF_PATH = [
   'n5_debt/grind_through', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
   'n6_career_plateau/accept', 'n6_midlife_unemployment/start_over', 'n6_parenting/outsource',
   'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/work_it_out', 'n6_politics/try_understand',
-  'n6_financial_reckoning/clean_sheet', 'n6_health_reckoning/overwork_still', 'n6_return_home/move_back',
-  'n6_readjust/double_down', 'n7_retirement_prep/underprepared', 'n7_children_settlement/close',
+  'n6_financial_reckoning/help_family', 'n6_health_reckoning/overwork_still', 'n6_return_home/move_back',
+  'n6_readjust/double_down', 'n7_retirement_prep/underprepared', 'n7_children_settlement/distant',
   'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/indulge',
   'n7_look_back/proud'
 ];
@@ -275,14 +275,14 @@ var LUCKY_QUIET_PATH = [
   'n3_route/vocational_college', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
   'n4_job/family_biz', 'n4_22k/endure', 'n4_mlm/refuse_breakup',
   'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/undecided_m',
-  'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/institution',
-  'n5_body_signal/ignore', 'n5_overwork/pace_self', 'n5_debt/grind_through',
-  'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/accept',
-  'n6_midlife_unemployment/long_gap', 'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/stay_for_kids',
+  'n5_house/stay_family', 'n5_invest/etf', 'n5_parents_ill/institution',
+  'n5_body_signal/delegate_worry', 'n5_overwork/pace_self', 'n5_debt/grind_through',
+  'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/push_more',
+  'n6_midlife_unemployment/quick_reemploy', 'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/stay_for_kids',
   'n6_politics/silence', 'n6_financial_reckoning/manage_through', 'n6_health_reckoning/slow_down',
-  'n6_return_home/bring_them', 'n6_readjust/double_down', 'n7_retirement_prep/prepared',
-  'n7_scam_call/fall_for_it', 'n7_solo_aging/community', 'n7_body_ledger/careful',
-  'n7_look_back/accept'
+  'n6_return_home/move_back', 'n6_readjust/double_down', 'n7_retirement_prep/prepared',
+  'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/decline',
+  'n7_look_back/regret'
 ];
 
 // 22K的逆襲需要 achieve>=7 又要活著（health>1）、又不能被 hard tier 的錢/健康崩潰或更前面的
@@ -354,7 +354,7 @@ UNREALIZED.config.generations.forEach(function (g) {
 
 // 8. 完整結局應至少有 28 個
 var fullEndingCount = UNREALIZED.endings.full.length;
-assert(fullEndingCount >= 28, '完整結局應至少 28 個，目前 ' + fullEndingCount);
+assert(fullEndingCount >= 29, '完整結局應至少 29 個，目前 ' + fullEndingCount);
 
 // 9. 個人化段落：至少一個旗標組合能讓結局文字被加上額外段落
 var stateWithFlags = engine.createRunState(1990, 'F');
