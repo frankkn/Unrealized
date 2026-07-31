@@ -23,11 +23,14 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ART_DIR = os.path.join(ROOT, "art")
 
-# 依序嘗試；名稱會隨 Google 改版而變，前面的失敗就往後退
+# Imagen 系列（generate_images / predict）對新申請的 API key 已經全面關閉，
+# 錯誤訊息是「no longer available to new users」，換名稱沒有用。
+# 現在的路是 Gemini 原生圖像模型，走 generate_content，由便宜往貴排。
 MODELS = [
-    "imagen-4.0-fast-generate-001",
-    "imagen-4.0-generate-001",
-    "imagen-3.0-generate-002",
+    "gemini-3.1-flash-lite-image",
+    "gemini-2.5-flash-image",
+    "gemini-3.1-flash-image",
+    "gemini-3-pro-image",
 ]
 
 STYLE_ANCHOR = (
@@ -166,34 +169,47 @@ def main():
         last_err = None
         for candidate in candidates:
             try:
-                result = client.models.generate_images(
+                result = client.models.generate_content(
                     model=candidate,
-                    prompt=prompt,
-                    config=types.GenerateImagesConfig(
-                        number_of_images=1,
-                        aspect_ratio="3:4",
-                        output_mime_type="image/jpeg",
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_modalities=["Image"],
+                        image_config=types.ImageConfig(aspect_ratio="3:4"),
                     ),
                 )
-                images = getattr(result, "generated_images", None)
-                if not images:
+                data = None
+                for part in result.candidates[0].content.parts:
+                    inline = getattr(part, "inline_data", None)
+                    if inline and inline.data:
+                        data = inline.data
+                        break
+                if data is None:
                     # 多半是安全過濾擋掉了，換模型也沒用
                     last_err = "沒有回傳圖片（可能被安全過濾擋下）"
                     break
-                img = Image.open(io.BytesIO(images[0].image.image_bytes))
+                img = Image.open(io.BytesIO(data)).convert("RGB")
                 img.save(out, "WEBP", quality=80)
                 size_kb = os.path.getsize(out) // 1024
                 if model is None:
                     model = candidate
                     print(f"    使用模型：{candidate}")
-                print(f"    -> {out}  ({size_kb} KB)")
+                print(f"    -> {out}  ({img.width}x{img.height}, {size_kb} KB)")
                 ok += 1
                 last_err = None
                 break
             except Exception as exc:  # noqa: BLE001
                 last_err = exc
-                if "NOT_FOUND" in str(exc) or "not found" in str(exc).lower():
-                    continue          # 模型名稱不對，換下一個
+                text = str(exc)
+                if "RESOURCE_EXHAUSTED" in text or "429" in text:
+                    # 免費層對生圖的配額是 0，重試 45 次只是浪費時間
+                    sys.exit(
+                        "\n生圖配額為 0 —— 這把 key 的專案還沒開帳單。\n"
+                        "Gemini API 的免費層不含圖像生成（文字模型可以用，圖像 limit: 0）。\n"
+                        "到 https://aistudio.google.com/ 把這把 key 所屬的專案升級成付費，再重跑。\n"
+                        "45 張大約 US$2–7，看用到哪個模型。"
+                    )
+                if "NOT_FOUND" in text or "not found" in text.lower():
+                    continue          # 這個模型不能用，換下一個
                 break                 # 其他錯誤換模型也沒意義
 
         if last_err is not None:
@@ -204,7 +220,8 @@ def main():
             time.sleep(1)             # 客氣一點，避免撞速率限制
 
     print(f"\n完成 {ok} 張，失敗 {fail} 張。")
-    print("接著跑 `npm test` 檢查，或用瀏覽器打開 dev/art-sheet.html 看成果。")
+    if ok:
+        print("接著用瀏覽器打開 dev/art-sheet.html 看成果（會標示哪些已經是場景圖）。")
 
 
 if __name__ == "__main__":
