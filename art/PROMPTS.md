@@ -26,7 +26,7 @@ limited palette with strong cinematic lighting, warm practical light sources
 (street lamps, windows, neon signs) against deep blue shadow, soft glow bloom,
 solitary figure seen from behind, small in frame, no facial features visible,
 Taiwan setting, nostalgic and quiet mood, vertical 3:4 composition,
-important elements in upper two thirds, empty space at bottom third,
+important elements in the upper two thirds, lower third kept dark and uncluttered but still fully painted scenery, no blank margins,
 no text, no watermark, no UI elements
 ```
 

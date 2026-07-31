@@ -350,6 +350,27 @@ if (fs.existsSync(promptsPath)) {
   console.log('[UNREALIZED dev] art/PROMPTS.md 涵蓋全部 ' + nodeIds.length + ' 個節點。');
 }
 
+// 5e. 已經產好的場景圖：檔名對不上節點的話，遊戲會安靜地沿用雕版，從畫面上看不出來
+var artDir = path.join(__dirname, '..', 'art');
+if (fs.existsSync(artDir)) {
+  var webps = fs.readdirSync(artDir).filter(function (f) { return /\.webp$/i.test(f); });
+  var nodeIdSet = Object.keys(UNREALIZED.nodes);
+  var orphan = webps
+    .map(function (f) { return f.replace(/\.webp$/i, ''); })
+    .filter(function (id) { return nodeIdSet.indexOf(id) === -1; });
+  assert(orphan.length === 0,
+    'art/ 裡這些圖對不上任何節點，永遠不會被載入（檔名打錯？）: ' + orphan.join(', '));
+
+  var bytes = webps.reduce(function (sum, f) { return sum + fs.statSync(path.join(artDir, f)).size; }, 0);
+  var mb = bytes / 1048576;
+  if (webps.length) {
+    console.log('[UNREALIZED dev] 場景圖 ' + webps.length + '/' + nodeIdSet.length +
+      ' 張，合計 ' + mb.toFixed(1) + ' MB');
+  }
+  // repo 是給人 clone 下來雙擊就玩的，圖太肥會違背這個前提
+  assert(mb < 40, '場景圖合計 ' + mb.toFixed(1) + ' MB，太肥了 —— 壓一下品質或尺寸');
+}
+
 // 6. 中途收尾：章節 >= 2 時應該都能判定出一個中途結局
 [2, 3, 4, 5].forEach(function (chapter) {
   var s = engine.createRunState(1990, 'F');
