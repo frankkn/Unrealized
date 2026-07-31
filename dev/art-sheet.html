@@ -39,6 +39,8 @@
     text-align: center;
   }
   figure svg { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+  figure img.scene { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+  .tag { display: block; margin-top: .25rem; color: var(--gold); font-size: .62rem; letter-spacing: .1em; }
   figcaption {
     margin-top: .5rem; font-family: ui-monospace, Menlo, monospace;
     font-size: .68rem; color: var(--ink-soft); word-break: break-all;
@@ -110,10 +112,25 @@
       }
       var bad = rows.some(function (r) { return r.length !== rows[0].length; });
       if (bad) malformed++;
-      html += '<figure' + (bad ? ' class="problem"' : '') + '>' + svg(rows, showGrid) +
-        '<figcaption><b>' + node.title + '</b>' + id + '</figcaption></figure>';
+      html += '<figure data-node="' + id + '"' + (bad ? ' class="problem"' : '') + '>' + svg(rows, showGrid) +
+        '<figcaption><b>' + node.title + '</b>' + id +
+        '<span class="tag">雕版</span></figcaption></figure>';
     });
     sheet.innerHTML = html;
+    // 已經產好的場景圖優先顯示：試載 art/<id>.webp，載到了就換掉雕版，
+    // 這樣一眼看得出 45 張還缺哪幾張（沒有 inline handler，引號才不會出事）
+    sheet.querySelectorAll('figure[data-node]').forEach(function (fig) {
+      var img = new Image();
+      img.onload = function () {
+        var svgEl = fig.querySelector('svg');
+        if (svgEl) svgEl.remove();
+        img.className = 'scene';
+        img.alt = '';
+        fig.insertBefore(img, fig.firstChild);
+        fig.querySelector('.tag').textContent = '場景圖';
+      };
+      img.src = '../art/' + fig.dataset.node + '.webp';
+    });
     document.getElementById('meta').innerHTML =
       order.length + ' 個節點 · ' + Object.keys(art).length + ' 張圖' +
       (missing || malformed

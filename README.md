@@ -90,7 +90,9 @@ js/engine.js            state machine, stat maths, ending adjudication
 js/state.js             save / codex (localStorage)
 js/ui.js                DOM, animation, chapter transitions
 data/config.js          cohorts, lexicon, stat definitions, chapter baseline
-data/art.js             one pixel engraving per node
+data/art.js             one pixel engraving per node (fallback)
+art/                    generated scene images, one per node
+art/PROMPTS.md          the 45 prompts, one per node
 data/nodes-ch0-3.js     chapters 0–3
 data/nodes-ch4-5.js     chapters 4–5
 data/nodes-ch6-7.js     chapters 6–7

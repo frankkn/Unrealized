@@ -168,6 +168,27 @@ input:focus-visible {
   opacity: 0.9;
 }
 
+/* 場景圖：出血到頁緣，像護照或舊存摺上印的那種風景版畫。
+   .page 有 1.2rem 內距，用負 margin 抵銷掉，讓圖真的貼到邊。 */
+.node-scene.has-scene {
+  margin: 0.3rem -1.2rem 1.1rem;
+  border-top: 1px solid var(--ink-soft);
+  border-bottom: 1px solid var(--ink-soft);
+  background: var(--ink);
+  overflow: hidden;
+}
+.scene-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+@media (max-width: 480px) {
+  .node-scene.has-scene { margin-left: -0.8rem; margin-right: -0.8rem; }
+}
+
 .node-text {
   line-height: 1.9;
   font-size: 1.05rem;

@@ -37,6 +37,30 @@
       'role="img" aria-hidden="true" focusable="false">' + out + '</svg>';
   }
 
+  // 場景圖走漸進式：先畫已經有的雕版，同時在背景試載 art/<nodeId>.webp，
+  // 載到了才換上去。所以 45 張還沒生完也能玩，每丟一張進 art/ 就自動多一張，
+  // 中途不會出現破圖，缺圖也不會留白。
+  var sceneCache = {};   // nodeId -> true 載得到 / false 沒有這張
+  function mountScene(nodeId) {
+    var box = document.querySelector('.node-scene[data-node="' + nodeId + '"]');
+    if (!box || sceneCache[nodeId] === false) return;
+    var src = 'art/' + nodeId + '.webp';
+    var img = new Image();
+    img.onload = function () {
+      sceneCache[nodeId] = true;
+      var live = document.querySelector('.node-scene[data-node="' + nodeId + '"]');
+      if (!live) return;                       // 玩家已經翻頁了
+      img.className = 'scene-img';
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      live.innerHTML = '';
+      live.appendChild(img);
+      live.classList.add('has-scene');
+    };
+    img.onerror = function () { sceneCache[nodeId] = false; };
+    img.src = src;
+  }
+
   function attrRow(state) {
     return cfg.attributes.map(function (a) {
       return '<div class="attr-row"><span class="attr-label">' + a.label + '</span>' +
@@ -105,7 +129,8 @@
     html += '</header>';
     html += '<article class="page stamp-drop">';
     html += '<h2 class="chapter-title">第' + node.chapter + '章 · ' + node.title + '<span class="age-range">' + node.ageRange + '</span></h2>';
-    html += pixelArtSvg(UNREALIZED.art && UNREALIZED.art[node.id]);
+    html += '<div class="node-scene" data-node="' + node.id + '">' +
+      pixelArtSvg(UNREALIZED.art && UNREALIZED.art[node.id]) + '</div>';
     html += '<p class="node-text">' + engine.resolveText(node.text, runState) + '</p>';
     html += '</article>';
     html += '<div class="options">';
@@ -117,6 +142,7 @@
       html += '<button class="link-btn quit-btn" id="quit-btn">就在這裡收尾，看看我的存摺</button>';
     }
     app.innerHTML = html;
+    mountScene(node.id);
 
     app.querySelectorAll('[data-opt]').forEach(function (btn) {
       btn.addEventListener('click', function () {

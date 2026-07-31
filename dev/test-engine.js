@@ -335,6 +335,21 @@ targetedProofs.forEach(function (t) {
 console.log('用策略腳本證明可達的結局（' + provenEndings.length + '/' + (targetedProofs.length + 4) + '）：', provenEndings);
 assert(unprovenEndings.length === 0, '這些結局用策略腳本都沒觸發到，可能真的無法到達: ' + JSON.stringify(unprovenEndings));
 
+// 5d. 場景圖的 prompt 清單：ID 打錯不會報錯，只會安靜地沿用雕版，所以在這裡比對
+var promptsPath = path.join(__dirname, '..', 'art', 'PROMPTS.md');
+if (fs.existsSync(promptsPath)) {
+  var md = fs.readFileSync(promptsPath, 'utf8');
+  var promptIds = (md.match(/^### (\S+) —/gm) || []).map(function (l) {
+    return l.replace(/^### /, '').replace(/ —.*/, '');
+  });
+  var nodeIds = Object.keys(UNREALIZED.nodes);
+  var noPrompt = nodeIds.filter(function (n) { return promptIds.indexOf(n) === -1; });
+  var strayPrompt = promptIds.filter(function (p) { return nodeIds.indexOf(p) === -1; });
+  assert(noPrompt.length === 0, 'art/PROMPTS.md 少了這些節點的 prompt: ' + noPrompt.join(', '));
+  assert(strayPrompt.length === 0, 'art/PROMPTS.md 有對不上任何節點的 ID（多半是打錯字）: ' + strayPrompt.join(', '));
+  console.log('[UNREALIZED dev] art/PROMPTS.md 涵蓋全部 ' + nodeIds.length + ' 個節點。');
+}
+
 // 6. 中途收尾：章節 >= 2 時應該都能判定出一個中途結局
 [2, 3, 4, 5].forEach(function (chapter) {
   var s = engine.createRunState(1990, 'F');
