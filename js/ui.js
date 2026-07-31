@@ -138,7 +138,7 @@
 
   function renderEnding(ending, isMid) {
     setSceneMode(false);
-    var fullText = isMid ? ending.text : engine.personalizeEnding(ending, runState);
+    var fullText = isMid ? engine.substituteLexicon(ending.text, runState) : engine.personalizeEnding(ending, runState);
     var paragraphs = fullText.split('\n\n').map(function (p) { return '<p class="ending-text">' + p.replace(/\n/g, '<br>') + '</p>'; }).join('');
     var html = '';
     html += '<article class="page ending-page">';

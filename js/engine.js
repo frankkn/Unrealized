@@ -195,11 +195,13 @@
   }
 
   // 骨架文字選定後，依旗標插入最多兩段個人化段落（§7.5）
+  // 用 \n\n 串接（跟 UI 分段的規則一致），並統一跑一次詞彙替換——
+  // 現在的結局文字剛好都沒有 {token}，但少了這步，哪天結局裡寫了 {起薪} 就會漏替換
   function personalizeEnding(ending, state) {
     var pool = UNREALIZED.endings.personalizations || [];
     var matched = pool.filter(function (p) { return when(p.when, state); }).slice(0, 2);
-    if (!matched.length) return ending.text;
-    return ending.text + '\n\n' + matched.map(function (p) { return p.text; }).join('\n');
+    var parts = [ending.text].concat(matched.map(function (p) { return p.text; }));
+    return substituteLexicon(parts.join('\n\n'), state);
   }
 
   // ---- 給資料檔用的小工具（判定中途收尾／屬性型結局時要用）----
