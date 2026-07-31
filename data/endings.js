@@ -14,13 +14,13 @@
       },
       {
         id: 'END_倒在辦公室', tier: 'hard', tone: 'ruin', rarity: '少見',
-        when: { attr: { key: 'health', op: '<=', value: 1 }, attrs: [{ key: 'achieve', op: '>=', value: 7 }] },
+        when: { attr: { key: 'health', op: '<=', value: 0 }, attrs: [{ key: 'achieve', op: '>=', value: 7 }] },
         title: '倒在辦公室',
         text: '五十歲那年的心導管手術，公司裡沒有一個人真正記得你的職稱。你把一輩子最好的時間都給了那張辦公桌，換到的位置在你倒下的那一刻起，就已經有人在排隊了。'
       },
       {
         id: 'END_洗腎的日子', tier: 'hard', tone: 'ruin', rarity: '少見',
-        when: { attr: { key: 'health', op: '<=', value: 1 } },
+        when: { attr: { key: 'health', op: '<=', value: 0 } },
         title: '洗腎的日子',
         text: '健檢紅字你看過，但總覺得再撐一下沒關係。直到有一天，你的身體自己叫了停。現在你一週報到醫院三次，每次四小時，那些時間原本要拿去做別的事。你什麼都換到了，除了自己的身體。'
       },
@@ -40,7 +40,7 @@
       },
       {
         id: 'END_登記那天', tier: 'generation', tone: 'good', rarity: '少見', limitedTo: [1990, 2005],
-        when: { generation: [1990, 2005], flagsAll: ['同性伴侶'], flagsNone: ['未出櫃'], attr: { key: 'bond', op: '>=', value: 7 } },
+        when: { generation: [1990, 2005], flagsAll: ['同性伴侶'], flagsNone: ['未出櫃'], attr: { key: 'bond', op: '>=', value: 6 } },
         title: '登記那天',
         text: '排隊的隊伍很長，你們手牽著手，前面跟後面的人都在做同一件事。等了那麼多年，這件事真的發生的時候，沒有想像中戲劇化，就是一張紙、一個章。晚上你們吃了一頓普通的晚餐，像所有結了婚的人那樣，平凡地開始接下來的日子。有些等待，終於等到了。'
       },
@@ -67,7 +67,7 @@
       },
       {
         id: 'END_竹科的股票', tier: 'generation', tone: 'good', rarity: '少見', limitedTo: [1975],
-        when: { generation: 1975, attr: { key: 'money', op: '>=', value: 7 } },
+        when: { generation: 1975, attr: { key: 'money', op: '>=', value: 6 } },
         title: '竹科的股票',
         text: '那年配到的股票，你到現在都還記得掛牌那天的價格。賣早了還是沒賣，身邊的人各有各的版本，但你手上這份存摺，看起來是對的那一種。運氣占了不小的比例，你自己也承認。'
       },
@@ -91,7 +91,7 @@
       },
       {
         id: 'END_22K的逆襲', tier: 'generation', tone: 'good', rarity: '少見', limitedTo: [1990],
-        when: { generation: 1990, attr: { key: 'achieve', op: '>=', value: 7 } },
+        when: { generation: 1990, attr: { key: 'achieve', op: '>=', value: 6 } },
         title: '22K的逆襲',
         text: '起薪二萬二的那一年，你不覺得自己以後會走到現在這個位置。這中間沒有捷徑，就是一年一年，一格一格往上爬。偶爾想起當年那張薪資單，你會笑一下，不是苦笑，是真的覺得好笑。你花了比別人更久的時間，但你到了。'
       },
@@ -170,7 +170,7 @@
       },
       {
         id: 'END_家裡還很熱鬧', tier: 'attribute', tone: 'good', rarity: '常見',
-        when: { attr: { key: 'bond', op: '>=', value: 7 } },
+        when: { attr: { key: 'bond', op: '>=', value: 6 } },
         title: '家裡還很熱鬧',
         text: '你這輩子沒賺到什麼大錢，職稱也就那樣，同學會上你通常是坐在旁邊聽別人講的那一個。可是每到過年，你家永遠是最多人的那一間。孩子會回來，老朋友還是會約，連隔壁鄰居都習慣進來坐一下再走。到這個年紀你才看懂，時間放在哪裡，哪裡就會長出東西來。'
       },
@@ -184,7 +184,7 @@
         id: 'END_自己的路', tier: 'attribute', tone: 'good', rarity: '常見',
         // 原本還要求 achieve>=6，但結局文字講的是「你不覺得自己選錯」，跟成就無關——
         // 那個門檻等於在說「照自己想要的活，還得混出名堂才算數」，剛好是這個結局要反對的事
-        when: { attr: { key: 'self', op: '>=', value: 7 }, attrs: [{ key: 'health', op: '>=', value: 4 }] },
+        when: { attr: { key: 'self', op: '>=', value: 6 }, attrs: [{ key: 'health', op: '>=', value: 4 }] },
         title: '自己的路',
         text: '你走的路，跟身邊大部分人都不太一樣，但走到現在，你不覺得自己選錯了。中間當然有懷疑過、動搖過，但每次回頭看，你都還是慶幸自己沒有換方向。這條路沒有捷徑可以抄，你是真的一步一步走出來的。'
       },
