@@ -32,7 +32,7 @@
     //   到了晚年，職位會還回去、身邊的人會慢慢散掉、身體會開始還債。
     // 財務與成就是會累積的，自我一致不會——那一軸只能靠自己的選擇換來。
     chapterDrift: {
-      4: { money: 1, achieve: 1 },
+      4: { money: 1, achieve: 1, bond: 1 },
       5: { money: 1, achieve: 1, bond: 1 },
       6: { money: 1, achieve: 1, bond: 1 },
       7: { achieve: -1, bond: -1, health: -1 }

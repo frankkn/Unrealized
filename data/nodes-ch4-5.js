@@ -28,17 +28,31 @@
   Object.assign(UNREALIZED.nodes, {
 
     // ---------------- 第 4 章：二十二到二十八 · 第一份工作 ----------------
+    // 「做什麼」與「去哪裡」是兩個獨立的問題，硬塞成一題會變成七個選項的清單，
+    // 而且會漏掉「北漂進大公司」這種最常見的組合。拆成兩步之後每步都只有 3–5 個。
     n4_job: {
       id: 'n4_job', chapter: 4, title: '第一份工作', ageRange: '22–28歲',
-      text: '離開學校之後，第一個真正要面對的問題是：接下來要往哪裡走。',
+      text: '離開學校之後，第一個真正要面對的問題是：靠什麼過日子。',
       options: [
-        { id: 'big_corp', label: '進了一間大公司或外商，制度好，但也很卷', effects: { achieve: 2, bond: -1, health: -1 }, next: JOB_NEXT_GATE },
-        { id: 'public_job', label: '考上了公職，穩定，但升遷排隊排很長', effects: { money: 1, health: 1, achieve: -1, self: -1 }, flags: ['公職'], next: JOB_NEXT_GATE },
-        { id: 'sme', label: '進了一間中小企業，什麼都要學，也什麼都要做', effects: { achieve: 1, bond: -1 }, next: JOB_NEXT_GATE },
-        { id: 'beipiao', label: '離開家鄉，一個人到外地或大城市工作', effects: { money: 1, bond: -2 }, flags: ['北漂'], next: JOB_NEXT_GATE },
-        { id: 'study_abroad', label: '出國唸書或工作，把自己丟進一個全新的環境', effects: { achieve: 2, money: -2, bond: -1 }, flags: ['出國'], next: JOB_NEXT_GATE },
-        { id: 'freelance', label: '接案或創作，收入不穩，但時間是自己的', effects: { self: 2, health: 1, money: -2, achieve: -1 }, flags: ['接案'], next: JOB_NEXT_GATE },
-        { id: 'family_biz', label: '回去接家裡的生意，一切都已經是現成的', effects: { money: 1, self: -1, bond: -1 }, next: JOB_NEXT_GATE }
+        { id: 'big_corp', label: '進了一間大公司或外商，制度好，但也很卷', effects: { achieve: 2, bond: -1, health: -1 }, next: 'n4_where' },
+        { id: 'public_job', label: '考上了公職，穩定，但升遷排隊排很長', effects: { money: 1, health: 1, achieve: -1, self: -1 }, flags: ['公職'], next: 'n4_where' },
+        { id: 'sme', label: '進了一間中小企業，什麼都要學，也什麼都要做', effects: { achieve: 1, bond: -1 }, next: 'n4_where' },
+        { id: 'freelance', label: '接案或創作，收入不穩，但時間是自己的', effects: { self: 2, health: 1, money: -2, achieve: -1 }, flags: ['接案'], next: 'n4_where' },
+        // 接家業已經回答了「在哪裡」，直接跳過地點那一題
+        { id: 'family_biz', label: '回去接家裡的生意，一切都已經是現成的', effects: { money: 1, bond: 1, self: -2 }, next: JOB_NEXT_GATE }
+      ]
+    },
+
+    n4_where: {
+      id: 'n4_where', chapter: 4, title: '在哪裡落腳', ageRange: '22–28歲',
+      text: '工作決定了，接下來是另一個問題：這幾年，你要住在哪裡。',
+      options: [
+        { id: 'stay_local', label: '留在家鄉附近，機會少一點，但爸媽就在旁邊', effects: { bond: 1, achieve: -1 }, next: JOB_NEXT_GATE },
+        { id: 'beipiao', label: [
+            { when: { generation: 1975 }, text: '往北部走，租一間頂樓加蓋，開始一個人的生活' },
+            { text: '北漂到台北或新竹，租金吃掉三分之一的薪水' }
+          ], effects: { money: 1, bond: -2 }, flags: ['北漂'], next: JOB_NEXT_GATE },
+        { id: 'abroad', label: '出去，把自己丟進一個全新的環境', effects: { achieve: 2, money: -2, bond: -1 }, flags: ['出國'], next: JOB_NEXT_GATE }
       ]
     },
 
@@ -138,7 +152,7 @@
       text: '買房這件事，對你來說，{買房難度}。',
       options: [
         { id: 'buy_leverage', label: '砸下所有存款，外加一筆大額房貸，買了', effects: { money: -2, self: 1 }, flags: ['高槓桿'], next: 'n5_invest' },
-        { id: 'rent_forever', label: '放棄買房這件事，把錢花在別的地方', effects: { self: 1, money: 1, bond: -1 }, next: 'n5_invest' },
+        { id: 'rent_forever', label: '放棄買房這件事，把錢花在別的地方', effects: { self: 1, money: 1, achieve: -1 }, next: 'n5_invest' },
         { id: 'stay_family', label: '繼續跟家人住，省下這筆錢', effects: { money: 1, bond: -1, self: -1 }, next: 'n5_invest' }
       ]
     },
@@ -159,7 +173,9 @@
       options: [
         { id: 'care_f', requires: { gender: 'F' }, label: '大家看向你，好像照顧本來就該是你的事', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: 'n5_body_signal' },
         { id: 'money_m', requires: { gender: 'M' }, label: '你被期待的角色是出錢，不是出時間', effects: { money: -2, bond: 1 }, next: 'n5_body_signal' },
-        { id: 'hire_caregiver', label: '花錢請了看護，減輕一些負擔', effects: { money: -2, self: 1 }, next: 'n5_body_signal' }
+        { id: 'hire_caregiver', label: '花錢請了看護，減輕一些負擔', effects: { money: -2, self: 1 }, next: 'n5_body_signal' },
+        // 前面兩個是性別限定，少了這個的話不論男女都只看得到兩個選項
+        { id: 'institution', label: '送去機構，親戚開始在群組裡說你不孝', effects: { self: 1, health: 1, money: -1, bond: -1 }, next: 'n5_body_signal' }
       ]
     },
 

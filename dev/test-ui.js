@@ -20,16 +20,23 @@ var errors = [];
 function fail(m) { console.log('  x ' + m); errors.push(m); }
 function ok(m) { console.log('  v ' + m); }
 
-// 每個案例都開一個全新的 DOM，避免互相污染 localStorage 與模組狀態
+// 每個案例都開一個全新的 DOM，避免互相污染 localStorage 與模組狀態。
+// script 是非同步載入的，固定 setTimeout 在機器忙的時候會不夠 —— 改成輪詢到真的就緒為止，
+// 這樣「載入失敗」與「還沒載完」才不會被混為一談。
 function boot(cb) {
   var dom = new JSDOM(HTML, {
     url: 'https://frankkn.github.io/Unrealized/',
     runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true
   });
   dom.virtualConsole.on('jsdomError', function (e) { errors.push('jsdomError: ' + e.message); });
-  setTimeout(function () {
-    cb(dom.window, dom.window.document, dom.window.document.getElementById('app'));
-  }, 500);
+  var waited = 0;
+  (function poll() {
+    var win = dom.window, app = win.document.getElementById('app');
+    var ready = win.UNREALIZED && win.UNREALIZED.engine && app && app.innerHTML.trim();
+    if (ready || waited >= 10000) return cb(win, win.document, app);
+    waited += 25;
+    setTimeout(poll, 25);
+  })();
 }
 function click(win, el) { el.dispatchEvent(new win.MouseEvent('click', { bubbles: true })); }
 function startRun(win, app, generation, gender) {
