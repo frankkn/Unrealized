@@ -1,0 +1,15 @@
+{
+  "name": "unrealized",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dev tooling only. The game itself has zero dependencies and no build step - open index.html directly.",
+  "scripts": {
+    "test": "node dev/test-engine.js && node dev/test-ui.js",
+    "test:engine": "node dev/test-engine.js",
+    "test:ui": "node dev/test-ui.js",
+    "find-paths": "node dev/find-paths.js"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}

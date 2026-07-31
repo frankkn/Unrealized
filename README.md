@@ -71,11 +71,13 @@ The design rules above are checked by a script, not by good intentions. `node de
 - **Unplayable chapters** — chapters 0–3 are exhaustively enumerated, every branch, all six cohort × gender combinations
 - **Leaked placeholders** — the lexicon substitutes 26 era-specific terms into the script (`{起薪}` becomes *two-four*, *twenty-two K*, or *thirty-six, but rent is eighteen*), and no `{token}` may survive into rendered text
 
+Those checks cover the engine, which is pure data and logic and runs headless. The interface is the part a player actually touches, so `node dev/test-ui.js` hands `index.html` to a real DOM, loads every script the way a browser would, and clicks through to an ending — all six cohort × gender combinations, stopping early for a mid-ending, a cohort-locked option appearing for 1975 and staying hidden for 2005, multi-paragraph endings, the codex, clearing your history, reduced motion, and replaying your last run. A typo in a `<script src>`, a mis-typed element id, a handler that never got bound: those fail here instead of in front of a player.
+
 This is how the health axis got caught. It had quietly become the stat writers docked whenever an option needed a downside, including on nodes whose narration had nothing to do with the body: across 153 options it summed +4 up against −44 down, and 40 of 44 nodes offered no way to recover any. 90% of runs ended in health collapse regardless of how you played. It read as a difficulty problem and was actually an attribution problem — the costs are now carried by the stats the text actually supports.
 
 ## Stack
 
-Plain HTML + CSS + vanilla JS. No framework, no bundler, no npm install, no backend, no API, no tracking, no analytics.
+Plain HTML + CSS + vanilla JS. No framework, no bundler, no build step, no backend, no API, no tracking, no analytics. **Nothing to install in order to play** — the one dev dependency exists so the tests can drive a DOM, and never ships.
 
 Scripts are loaded with plain `<script>` tags rather than ES modules, specifically so the game still runs over `file://` after someone downloads a zip. Everything hangs off `window.UNREALIZED`.
 
@@ -100,9 +102,14 @@ dev/                    dev-only tooling, not part of the game
 ## Development
 
 ```bash
-node dev/test-engine.js     # the full validation suite described above
-node dev/find-paths.js      # regenerate rare-ending proof paths (add e.g. 3000 to widen the search)
+npm install          # jsdom, for the interface tests only
+npm test             # engine + interface
+npm run test:engine  # engine only - needs no dependencies at all
+npm run test:ui      # interface, against a real DOM
+npm run find-paths   # regenerate rare-ending proof paths (append e.g. 3000 to widen the search)
 ```
+
+**The dependency is for the tests, never for the game.** `index.html` still opens straight off disk with nothing installed — that is the whole point of the no-build constraint, and it is checked by the interface tests themselves, which load the page exactly as a browser does.
 
 The rare endings are proven in the test suite by replaying concrete paths, so **any balance change invalidates them** — that's what `find-paths.js` is for. Rebalancing the health axis broke three of the four; the chapter baseline broke all four. Both times: rerun, paste back, done.
 
