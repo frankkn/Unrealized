@@ -1,0 +1,26 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .paper { fill: #f2e8cf; }
+      .ink { fill: #1c2b4a; }
+      .inksoft { fill: #33456b; }
+      .gold { stroke: #b8891f; }
+      .stamp { fill: none; stroke: #b23a2e; }
+    </style>
+  </defs>
+  <rect width="1200" height="630" fill="#1c2b4a" />
+  <rect x="60" y="60" width="1080" height="510" class="paper" rx="4" />
+  <rect x="60" y="60" width="1080" height="510" fill="none" class="gold" stroke-width="4" rx="4" />
+  <rect x="76" y="76" width="1048" height="478" fill="none" class="gold" stroke-width="1" rx="2" />
+
+  <text x="600" y="270" text-anchor="middle" class="ink" font-family="'Noto Sans TC','PingFang TC',sans-serif" font-size="96" font-weight="700" letter-spacing="8">UNREALIZED</text>
+  <text x="600" y="335" text-anchor="middle" class="inksoft" font-family="'Noto Sans TC','PingFang TC',sans-serif" font-size="34">人生存摺</text>
+  <text x="600" y="380" text-anchor="middle" class="inksoft" font-family="Georgia,serif" font-size="20" font-style="italic">a Taiwanese life, in three generations</text>
+
+  <g transform="translate(945,470) rotate(-10)">
+    <circle r="72" class="stamp" stroke-width="5" />
+    <text x="0" y="8" text-anchor="middle" fill="#b23a2e" font-family="'Noto Sans TC','PingFang TC',sans-serif" font-size="26" font-weight="700">未實現</text>
+  </g>
+
+  <text x="600" y="460" text-anchor="middle" class="inksoft" font-family="'Noto Sans TC','PingFang TC',sans-serif" font-size="20">1975 · 1990 · 2005</text>
+</svg>

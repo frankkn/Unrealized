@@ -230,6 +230,59 @@
     return violations;
   }
 
+  // ---- dev-mode：靜態掃過節點圖，找出「從 startNode 走不到」的節點，以及指向不存在節點的斷鏈 ----
+  // 不評估 when 條件（不管條件真假都算一條可能的路），是寬鬆但足以抓錯字/漏接的判斷方式
+  function flattenNextTargets(nextField) {
+    if (!nextField) return [];
+    if (typeof nextField === 'string') return nextField === 'GAME_END' ? [] : [nextField];
+    if (Array.isArray(nextField)) {
+      return nextField.reduce(function (acc, variant) { return acc.concat(flattenNextTargets(variant.next)); }, []);
+    }
+    return [];
+  }
+
+  function devAnalyzeGraph() {
+    var visited = {};
+    var danglingLinks = [];
+    var queue = [cfg.startNode];
+    visited[cfg.startNode] = true;
+    while (queue.length) {
+      var id = queue.shift();
+      var node = UNREALIZED.nodes[id];
+      if (!node) continue;
+      node.options.forEach(function (opt) {
+        flattenNextTargets(opt.next).forEach(function (target) {
+          if (!UNREALIZED.nodes[target]) {
+            danglingLinks.push(node.id + ' / ' + opt.id + ' → 不存在的節點 "' + target + '"');
+            return;
+          }
+          if (!visited[target]) {
+            visited[target] = true;
+            queue.push(target);
+          }
+        });
+      });
+    }
+    var unreachableNodes = Object.keys(UNREALIZED.nodes).filter(function (id) { return !visited[id]; });
+    return { unreachableNodes: unreachableNodes, danglingLinks: danglingLinks };
+  }
+
+  function devReportGraph() {
+    var result = devAnalyzeGraph();
+    if (result.unreachableNodes.length) {
+      console.warn('[UNREALIZED dev] 從 startNode 走不到的節點：', result.unreachableNodes);
+    } else {
+      console.log('[UNREALIZED dev] 所有節點都能從 startNode 走到（靜態分析，未考慮 when 條件真假）。');
+    }
+    if (result.danglingLinks.length) {
+      console.warn('[UNREALIZED dev] 指向不存在節點的斷鏈：');
+      result.danglingLinks.forEach(function (l) { console.warn('  ' + l); });
+    } else {
+      console.log('[UNREALIZED dev] 沒有斷鏈。');
+    }
+    return result;
+  }
+
   UNREALIZED.engine = {
     createRunState: createRunState,
     hasFlag: hasFlag,
@@ -246,6 +299,8 @@
     getEnding: getEnding,
     personalizeEnding: personalizeEnding,
     devValidateNodes: devValidateNodes,
+    devAnalyzeGraph: devAnalyzeGraph,
+    devReportGraph: devReportGraph,
     helpers: {
       minAttrKey: minAttrKey,
       maxAttrKey: maxAttrKey,

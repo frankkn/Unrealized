@@ -26,7 +26,9 @@
       },
       {
         id: 'END_factory15', tier: 'generation', tone: 'bittersweet', rarity: '世代限定', limitedTo: [1975],
-        when: { generation: 1975, flagsAll: ['勞動'] },
+        // 只能透過 n1_labor 的 factory 選項直接觸發（state.endingId 已經設定），不該被一般判定撿到——
+        // 光有「勞動」旗標不代表走過那條路，所以這裡故意回傳 false
+        when: function () { return false; },
         title: '十五歲的工廠',
         text: '國中畢業那年，你以為只是先幫忙一段時間。三十年後回頭看，那段時間就是你的人生。同學裡有人念了大學、當了老師，你們偶爾在市場遇到，笑一笑就過去了。你沒有後悔，只是常常想，如果那年家裡撐得住，會不會有別的版本。'
       },
