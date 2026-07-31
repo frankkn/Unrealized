@@ -105,6 +105,17 @@
     return option.endingId;
   }
 
+  // 時間本身的效果：跨過的每一個章節各套用一次（一步跳過多章時不會漏算）
+  function applyChapterDrift(state, fromChapter, toChapter) {
+    for (var ch = fromChapter + 1; ch <= toChapter; ch++) {
+      var drift = cfg.chapterDrift[ch];
+      if (!drift) continue;
+      Object.keys(drift).forEach(function (key) {
+        state.attrs[key] = clamp(state.attrs[key] + drift[key]);
+      });
+    }
+  }
+
   // 套用選項效果，回傳 { ended, endingId } 讓 UI 決定下一步渲染
   function applyOption(state, node, option) {
     Object.keys(option.effects || {}).forEach(function (key) {
@@ -112,7 +123,10 @@
     });
     (option.flags || []).forEach(function (f) { addFlag(state, f); });
     state.history.push({ nodeId: node.id, optionId: option.id, chapter: node.chapter });
-    if (node.chapter > state.chapter) state.chapter = node.chapter;
+    if (node.chapter > state.chapter) {
+      applyChapterDrift(state, state.chapter, node.chapter);
+      state.chapter = node.chapter;
+    }
 
     var directEnding = resolveEndingId(option, state);
     if (directEnding) {

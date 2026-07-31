@@ -225,17 +225,17 @@ function injuryPick(node, options, state) {
 // 離線找到一條「danger flag 數=0 且五軸都在[4,6]」的實際存在路徑，這裡直接重放驗證，
 // 比每次重新搜尋快得多，也更穩定。
 var LUCKY_MIDBAND_PATH = [
-  'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/normal',
-  'n3_route/general_uni', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
-  'n4_job/big_corp', 'n4_westward/go_family', 'n4_mlm/refuse_breakup',
-  'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/undecided_m',
+  'n0_family/labor_family', 'n1_labor/skill', 'n2_high_school/no_school',
+  'n3_route/vocational_college', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
+  'n4_job/big_corp', 'n4_westward/stay', 'n4_mlm/refuse_breakup',
+  'n5_career_move/big_jump', 'n5_marriage/marry_common', 'n5_children/undecided_m',
   'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/money_m',
   'n5_body_signal/check', 'n5_overwork/pace_self', 'n5_debt/grind_through',
   'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/push_more',
   'n6_midlife_unemployment/start_over', 'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/separate',
   'n6_politics/silence', 'n6_financial_reckoning/manage_through', 'n6_health_reckoning/partial_care',
-  'n6_return_home/bring_them', 'n6_readjust/let_go', 'n7_retirement_prep/keep_working',
-  'n7_scam_call/almost_fell', 'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful',
+  'n6_return_home/bring_them', 'n6_readjust/keep_going', 'n7_retirement_prep/prepared',
+  'n7_scam_call/recognize_immediately', 'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful',
   'n7_look_back/regret'
 ];
 function playScriptedPath(generation, gender, path) {
@@ -256,32 +256,32 @@ function playScriptedPath(generation, gender, path) {
 // 尤其自己的路在 1990 世代還會被 achieve>=7 的「22K的逆襲」搶先卡走，必須把 achieve 精準停在 6，
 // 這種窄範圍一樣改成離線 beam search 找到的實際路徑，直接重播驗證
 var LUCKY_SELF_PATH = [
-  'n0_family/labor_family', 'n1_labor/self_taught', 'n2_high_school/elite',
+  'n0_family/labor_family', 'n1_labor/self_taught', 'n2_high_school/vocational',
   'n3_route/top_hot', 'n3m_military/find_clarity', 'n3_first_love/solo',
-  'n4_job/freelance', 'n4_westward/go', 'n4_mlm/refuse_breakup',
-  'n5_career_move/big_jump', 'n5_marriage/breakup_common', 'n5_children/undecided_m',
+  'n4_job/sme', 'n4_westward/go', 'n4_mlm/refuse_breakup',
+  'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/have_kids',
   'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/hire_caregiver',
   'n5_body_signal/delegate_worry', 'n5_overwork/pace_self', 'n5_debt/grind_through',
-  'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/push_more',
-  'n6_midlife_unemployment/start_over', 'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/work_it_out',
-  'n6_politics/silence', 'n6_financial_reckoning/collections_call', 'n6_health_reckoning/overwork_still',
-  'n6_return_home/move_back', 'n6_readjust/double_down', 'n7_retirement_prep/underprepared',
-  'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/indulge',
-  'n7_look_back/proud'
+  'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/accept',
+  'n6_midlife_unemployment/start_over', 'n6_parenting/outsource', 'n6_long_term_care/hire_full_time',
+  'n6_marriage_crisis/work_it_out', 'n6_politics/silence', 'n6_financial_reckoning/clean_sheet',
+  'n6_health_reckoning/overwork_still', 'n6_return_home/move_back', 'n6_readjust/double_down',
+  'n7_retirement_prep/underprepared', 'n7_children_settlement/close', 'n7_scam_call/recognize_immediately',
+  'n7_solo_aging/community', 'n7_body_ledger/indulge', 'n7_look_back/proud'
 ];
 var LUCKY_QUIET_PATH = [
-  'n0_family/single_mom', 'n1_single/bottle_up', 'n2_high_school/elite',
-  'n3_route/top_hot', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
-  'n4_job/study_abroad', 'n4_22k/endure', 'n4_mlm/refuse_breakup',
-  'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/have_kids',
-  'n5_house/rent_forever', 'n5_invest/avoid', 'n5_parents_ill/money_m',
+  'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/elite',
+  'n3_route/direct_work', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
+  'n4_job/public_job', 'n4_22k/endure', 'n4_mlm/refuse_breakup',
+  'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/undecided_m',
+  'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/money_m',
   'n5_body_signal/check', 'n5_overwork/pace_self', 'n5_debt/grind_through',
   'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/push_more',
-  'n6_midlife_unemployment/long_gap', 'n6_parenting/outsource', 'n6_long_term_care/hire_full_time',
-  'n6_marriage_crisis/work_it_out', 'n6_politics/silence', 'n6_financial_reckoning/clean_sheet',
-  'n6_health_reckoning/partial_care', 'n6_return_home/move_back', 'n6_readjust/double_down',
-  'n7_retirement_prep/underprepared', 'n7_children_settlement/close', 'n7_scam_call/recognize_immediately',
-  'n7_solo_aging/community', 'n7_body_ledger/careful', 'n7_look_back/accept'
+  'n6_midlife_unemployment/quick_reemploy', 'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/stay_for_kids',
+  'n6_politics/silence', 'n6_financial_reckoning/manage_through', 'n6_health_reckoning/slow_down',
+  'n6_return_home/move_back', 'n6_readjust/double_down', 'n7_retirement_prep/prepared',
+  'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/decline',
+  'n7_look_back/regret'
 ];
 
 // 22K的逆襲需要 achieve>=7 又要活著（health>1）、又不能被 hard tier 的錢/健康崩潰或更前面的
@@ -289,15 +289,15 @@ var LUCKY_QUIET_PATH = [
 var LUCKY_22K_PATH = [
   'n0_family/single_mom', 'n1_single/scholarship', 'n2_high_school/elite',
   'n3_route/general_uni', 'n3f_headstart/lean_in', 'n3_first_love/straight_stable',
-  'n4_job/public_job', 'n4f_interview/strategic_lie', 'n4_22k/endure',
-  'n4_mlm/join', 'n5_career_move/steady', 'n5_marriage/marry_common',
+  'n4_job/public_job', 'n4f_interview/honest', 'n4_22k/endure',
+  'n4_mlm/join', 'n5_career_move/big_jump', 'n5_marriage/marry_common',
   'n5_children/have_kids', 'n5_house/buy_leverage', 'n5_invest/etf',
   'n5_parents_ill/hire_caregiver', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
   'n5_debt/grind_through', 'n5_era_storm/hit_hard', 'n5_emigrate/emigrate_go',
-  'n6_career_plateau/push_more', 'n6_midlife_unemployment/long_gap', 'n6_parenting/repeat_pattern',
+  'n6_career_plateau/accept', 'n6_midlife_unemployment/quick_reemploy', 'n6_parenting/outsource',
   'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/work_it_out', 'n6_politics/fight',
-  'n6_financial_reckoning/collections_call', 'n6_health_reckoning/partial_care', 'n6_return_home/bring_them',
-  'n6_readjust/double_down', 'n7_retirement_prep/prepared', 'n7_children_settlement/close',
+  'n6_financial_reckoning/collections_call', 'n6_health_reckoning/partial_care', 'n6_return_home/move_back',
+  'n6_readjust/double_down', 'n7_retirement_prep/underprepared', 'n7_children_settlement/close',
   'n7_scam_call/fall_for_it', 'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful',
   'n7_look_back/regret'
 ];
