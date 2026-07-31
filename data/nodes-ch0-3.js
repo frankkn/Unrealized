@@ -45,7 +45,7 @@
       id: 'n1_bookish', chapter: 1, title: '國中', ageRange: '12–15歲',
       text: '書香家庭的期待很安靜，但一直都在。',
       options: [
-        { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, health: -1, bond: -1 }, next: 'n2_high_school' },
+        { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, bond: -1 }, next: 'n2_high_school' },
         { id: 'hobby', label: '偷偷把零用錢存起來，去學一個爸媽不知道的興趣', effects: { self: 1, achieve: -1, money: -1 }, next: 'n2_high_school' },
         { id: 'skip', label: '有一天早上站在校門口，就是怎麼都不想走進去', effects: { self: 1, bond: -1, achieve: -1 }, next: 'n2_high_school' }
       ]
@@ -55,8 +55,8 @@
       id: 'n1_labor', chapter: 1, title: '國中', ageRange: '12–15歲',
       text: '沒有人特別盯著你的功課，日子要自己想辦法過。',
       options: [
-        { id: 'self_taught', label: '沒人盯你，自己摸出一套讀書方法，不算頂尖但穩定', effects: { achieve: 1, self: 1, health: -1 }, next: 'n2_high_school' },
-        { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, achieve: -1, health: -1 }, next: 'n2_high_school' },
+        { id: 'self_taught', label: '沒人盯你，自己摸出一套讀書方法，不算頂尖但穩定', effects: { achieve: 1, self: 1, bond: -1 }, next: 'n2_high_school' },
+        { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, achieve: -1, self: -1 }, next: 'n2_high_school' },
         { id: 'skill', label: '幫忙家裡生意時，發現自己對做東西有一種說不出的手感', effects: { achieve: 1, self: 1, money: -1 }, next: 'n2_high_school' },
         {
           id: 'factory',
@@ -72,7 +72,7 @@
       id: 'n1_single', chapter: 1, title: '國中', ageRange: '12–15歲',
       text: '媽媽從沒說過辛苦，但你看得出來。',
       options: [
-        { id: 'scholarship', label: '把所有心力都放在考獎學金上，一分都不能浪費', effects: { achieve: 2, health: -1, bond: -1 }, next: 'n2_high_school' },
+        { id: 'scholarship', label: '把所有心力都放在考獎學金上，一分都不能浪費', effects: { achieve: 2, bond: -1 }, next: 'n2_high_school' },
         { id: 'part_time', label: '放學後開始打工，把薪水拿回家貼補', effects: { money: 1, health: -1, self: -1 }, next: 'n2_high_school' },
         { id: 'bottle_up', label: '學會把心事都收起來，在媽媽面前永遠說「我很好」', effects: { self: -1, bond: 1, health: -1 }, next: 'n2_high_school' }
       ]
@@ -90,7 +90,7 @@
             { when: { generation: 1990 }, text: '考上明星高中，但全班都跟你一樣是各校的第一名，排名瞬間變得殘酷' },
             { text: '把學習歷程做得又厚又漂亮，擠進了那間明星高中' }
           ],
-          effects: { achieve: 2, bond: -1, health: -1 },
+          effects: { achieve: 2, bond: -1 },
           flags: ['明星高中'],
           next: 'n3_route'
         },

@@ -50,7 +50,7 @@
       id: 'n6_long_term_care', chapter: 6, title: '長照黑洞', ageRange: '35–50歲',
       text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。',
       options: [
-        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { self: -2, health: -1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
+        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { self: -2, achieve: -1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
         { id: 'share_siblings', label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
         { id: 'hire_full_time', label: '請了全天看護，把自己抽出來一部分', effects: { money: -2, self: 1 }, next: 'n6_marriage_crisis' }
       ]
@@ -114,7 +114,7 @@
           ]
         },
         { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: 'n6_return_home' },
-        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, achieve: -1 }, next: 'n6_return_home' },
+        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2, achieve: -2 }, next: 'n6_return_home' },
         { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: 'n6_return_home' }
       ]
     },
@@ -123,7 +123,7 @@
       id: 'n6_return_home', chapter: 6, title: '返鄉', ageRange: '35–50歲',
       text: '離鄉多年之後，父母老了，老家空了下來。',
       options: [
-        { id: 'move_back', label: '決定搬回去', effects: { bond: 1, money: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
+        { id: 'move_back', label: '決定搬回去，日子的步調整個慢了下來', effects: { bond: 1, health: 1, money: -1, achieve: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
         { id: 'bring_them', label: '把父母接到你現在住的地方', effects: { bond: 1, self: -1 }, next: 'n6_readjust' },
         { id: 'commute', label: '選擇繼續兩地跑，哪邊都沒放下', effects: { health: -1, bond: -1 }, next: 'n6_readjust' }
       ]
@@ -134,7 +134,7 @@
       text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。',
       options: [
         { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, health: -1 }, next: 'n7_retirement_prep' },
-        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, achieve: -1 }, next: 'n7_retirement_prep' },
+        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1, achieve: -1 }, next: 'n7_retirement_prep' },
         { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { bond: 1, self: -1 }, next: 'n7_retirement_prep' }
       ]
     },
@@ -182,7 +182,7 @@
       options: [
         { id: 'thriving_alone', label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: 'n7_body_ledger' },
         { id: 'lonely', label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: 'n7_body_ledger' },
-        { id: 'community', label: '開始參加社區的活動，認識了一些新朋友', effects: { bond: 1, money: -1 }, next: 'n7_body_ledger' }
+        { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: 'n7_body_ledger' }
       ]
     },
 
@@ -202,7 +202,7 @@
       options: [
         { id: 'accept', label: '大致接受了這一路走來的樣子', effects: { self: 1, achieve: -1 }, next: 'GAME_END' },
         { id: 'regret', label: '有些地方你還是會想，如果當初不一樣就好了', effects: { self: -1, bond: 1 }, next: 'GAME_END' },
-        { id: 'proud', label: '為自己撐過來的這些年，感到一種安靜的驕傲', effects: { self: 1, health: -1 }, next: 'GAME_END' }
+        { id: 'proud', label: '為自己撐過來的這些年，感到一種安靜的驕傲', effects: { self: 2, bond: -1 }, next: 'GAME_END' }
       ]
     }
 

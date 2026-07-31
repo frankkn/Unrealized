@@ -33,11 +33,11 @@
       text: '離開學校之後，第一個真正要面對的問題是：接下來要往哪裡走。',
       options: [
         { id: 'big_corp', label: '進了一間大公司或外商，制度好，但也很卷', effects: { achieve: 2, bond: -1, health: -1 }, next: JOB_NEXT_GATE },
-        { id: 'public_job', label: '考上了公職，穩定，但升遷排隊排很長', effects: { money: 1, achieve: -1, self: -1 }, flags: ['公職'], next: JOB_NEXT_GATE },
-        { id: 'sme', label: '進了一間中小企業，什麼都要學，也什麼都要做', effects: { achieve: 1, health: -1 }, next: JOB_NEXT_GATE },
+        { id: 'public_job', label: '考上了公職，穩定，但升遷排隊排很長', effects: { money: 1, health: 1, achieve: -1, self: -1 }, flags: ['公職'], next: JOB_NEXT_GATE },
+        { id: 'sme', label: '進了一間中小企業，什麼都要學，也什麼都要做', effects: { achieve: 1, bond: -1 }, next: JOB_NEXT_GATE },
         { id: 'beipiao', label: '離開家鄉，一個人到外地或大城市工作', effects: { money: 1, bond: -2 }, flags: ['北漂'], next: JOB_NEXT_GATE },
         { id: 'study_abroad', label: '出國唸書或工作，把自己丟進一個全新的環境', effects: { achieve: 2, money: -2, bond: -1 }, flags: ['出國'], next: JOB_NEXT_GATE },
-        { id: 'freelance', label: '接案或創作，收入不穩，但時間是自己的', effects: { self: 2, money: -2 }, flags: ['接案'], next: JOB_NEXT_GATE },
+        { id: 'freelance', label: '接案或創作，收入不穩，但時間是自己的', effects: { self: 2, health: 1, money: -2, achieve: -1 }, flags: ['接案'], next: JOB_NEXT_GATE },
         { id: 'family_biz', label: '回去接家裡的生意，一切都已經是現成的', effects: { money: 1, self: -1, bond: -1 }, next: JOB_NEXT_GATE }
       ]
     },
@@ -67,7 +67,7 @@
       text: '起薪{起薪}，你算了一下，連房租都吃緊。',
       options: [
         { id: 'endure', label: '先忍著，騎驢找馬', effects: { money: -1, self: -1 }, next: 'n4_mlm' },
-        { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, health: -1 }, next: 'n4_mlm' },
+        { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, self: -1 }, next: 'n4_mlm' },
         { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: 'n4_mlm' }
       ]
     },
@@ -97,8 +97,8 @@
       id: 'n5_career_move', chapter: 5, title: '職涯的一次大波動', ageRange: '28–35歲',
       text: '三十歲前後，好幾個機會或警訊，同時擠進了你的職場生活。',
       options: [
-        { id: 'big_jump', label: '跳槽到一個更有挑戰的位置，薪資漲了不少', effects: { achieve: 2, health: -1, bond: -1 }, next: 'n5_marriage' },
-        { id: 'steady', label: '留在原本的位置，穩，但薪資幾年沒什麼變化', effects: { bond: 1, achieve: -1 }, next: 'n5_marriage' },
+        { id: 'big_jump', label: '跳槽到一個更有挑戰的位置，薪資漲了不少', effects: { achieve: 2, bond: -1, self: -1 }, next: 'n5_marriage' },
+        { id: 'steady', label: '留在原本的位置，穩，但薪資幾年沒什麼變化', effects: { bond: 1, health: 1, achieve: -1 }, next: 'n5_marriage' },
         { id: 'setback', label: '一次組織調整，你被降了職', effects: { achieve: -2, self: -1 }, next: 'n5_marriage' }
       ]
     },
@@ -126,7 +126,7 @@
       id: 'n5_children', chapter: 5, title: '有沒有孩子', ageRange: '28–35歲',
       text: '有沒有孩子，或什麼時候要決定，開始變成一個躲不掉的問題。',
       options: [
-        { id: 'have_kids', label: '決定生小孩', effects: { bond: 1, money: -2, health: -1 }, flags: ['有小孩'], next: 'n5_house' },
+        { id: 'have_kids', label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
         { id: 'dink', label: '決定不生，把資源留給彼此', effects: { money: 1, self: 1, bond: -1 }, flags: ['丁客'], next: 'n5_house' },
         { id: 'undecided_f', requires: { gender: 'F' }, label: '一直沒有決定，親戚每次見面都要問一次，你開始不太想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: 'n5_house' },
         { id: 'undecided_m', requires: { gender: 'M' }, label: '一直沒有決定，反正好像也沒那麼急', effects: { self: -1, bond: -1 }, next: 'n5_house' }
@@ -149,7 +149,7 @@
       options: [
         { id: 'etf', label: '選了{存款工具}那種穩穩來的方式', effects: { money: 1, self: -1 }, next: 'n5_parents_ill' },
         { id: 'leverage_trade', label: '開始融資當沖，想加速累積的速度', effects: { money: 2, health: -1 }, flags: ['投機'], next: 'n5_parents_ill' },
-        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, money: -1 }, next: 'n5_parents_ill' }
+        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, health: 1, money: -1, achieve: -1 }, next: 'n5_parents_ill' }
       ]
     },
 
@@ -157,7 +157,7 @@
       id: 'n5_parents_ill', chapter: 5, title: '長輩病了', ageRange: '28–35歲',
       text: '家裡長輩的健康出了狀況，誰來處理，變成一個很現實的問題。',
       options: [
-        { id: 'care_f', requires: { gender: 'F' }, label: '大家看向你，好像照顧本來就該是你的事', effects: { bond: 1, self: -2, health: -1 }, flags: ['照顧'], next: 'n5_body_signal' },
+        { id: 'care_f', requires: { gender: 'F' }, label: '大家看向你，好像照顧本來就該是你的事', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: 'n5_body_signal' },
         { id: 'money_m', requires: { gender: 'M' }, label: '你被期待的角色是出錢，不是出時間', effects: { money: -2, bond: 1 }, next: 'n5_body_signal' },
         { id: 'hire_caregiver', label: '花錢請了看護，減輕一些負擔', effects: { money: -2, self: 1 }, next: 'n5_body_signal' }
       ]
@@ -178,7 +178,7 @@
       text: '為了那個位置，你開始了一段長時間透支的日子。',
       options: [
         { id: 'push_through', label: '連續好幾個月加班到最後一班車，有一次騎車回家時差點打瞌睡', effects: { achieve: 1, health: -2 }, flags: ['疲勞駕駛'], next: OVERWORK_NEXT },
-        { id: 'pace_self', label: '試著把節奏放慢一點，升遷排在後面一點', effects: { self: 1, achieve: -1 }, next: OVERWORK_NEXT },
+        { id: 'pace_self', label: '試著把節奏放慢一點，升遷排在後面一點', effects: { self: 1, health: 1, achieve: -1 }, next: OVERWORK_NEXT },
         { id: 'burn_bridge', label: '直接跟主管說做不到，關係從此有點尷尬', effects: { bond: -1, self: 1, achieve: -1 }, next: OVERWORK_NEXT }
       ]
     },
