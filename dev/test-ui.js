@@ -108,7 +108,7 @@ tests.push(function (done) {
 });
 
 tests.push(function (done) {
-  console.log('\n=== 1b. 節點場景圖 ===');
+  console.log('\n=== 1b. 滿版場景版面 ===');
   boot(function (win, doc, app) {
     var ids = Object.keys(win.UNREALIZED.nodes);
     var missing = ids.filter(function (id) {
@@ -118,23 +118,35 @@ tests.push(function (done) {
 
     startRun(win, app, 1990, 'M');
 
-    // 插圖要在整頁最下方（敘述與選項之後）。順序被改回去很難靠眼睛發現，所以釘住。
-    var scene = app.querySelector('.node-scene');
-    if (!scene) { fail('節點畫面沒有插圖容器'); return done(); }
-    scene === app.lastElementChild ? ok('插圖在整頁最下方') :
-      fail('插圖不在最後，後面還有 ' + (app.lastElementChild && app.lastElementChild.className));
-    var kids = Array.prototype.slice.call(app.children);
-    kids.indexOf(app.querySelector('.options')) < kids.indexOf(scene)
-      ? ok('順序是 敘述 -> 選項 -> 插圖') : fail('選項跑到插圖後面了');
+    // 不捲動是硬需求：圖必須是背景層，不能是會把內容往下推的 <img>
+    var bg = app.querySelector('.scene-bg');
+    if (!bg) { fail('沒有 .scene-bg 背景層'); return done(); }
+    ok('場景是背景層，不會撐高頁面');
+    app.querySelector('img') ? fail('畫面上還有 <img>，會把內容往下推') : ok('節點畫面沒有任何 <img>');
+    /art\/n[\w]+\.webp/.test(bg.getAttribute('style') || '') ? ok('背景指向 art/ 底下的圖') : fail('背景圖不對');
 
-    // 容器裡只該有那一張圖，不該還躺著別的東西
-    scene.children.length === 1 && scene.firstElementChild.tagName === 'IMG'
-      ? ok('容器裡只有一張 <img>，沒有殘留的舊插圖') : fail('容器裡有 ' + scene.children.length + ' 個子元素');
+    doc.documentElement.classList.contains('scene-mode') ? ok('html 進入滿版模式') : fail('html 沒有 scene-mode');
+    app.classList.contains('scene-mode') ? ok('#app 進入滿版模式') : fail('#app 沒有 scene-mode');
 
-    var img = scene.querySelector('img.scene-img');
-    if (!img) { fail('沒有 scene-img'); return done(); }
-    /^art\/n[\w]+\.webp/.test(img.getAttribute('src')) ? ok('src 指向 art/ 底下的圖') : fail('src 不對: ' + img.getAttribute('src'));
-    img.getAttribute('aria-hidden') === 'true' ? ok('對螢幕閱讀器隱藏（純裝飾）') : fail('插圖應該 aria-hidden');
+    // 文字與選項要在底部那一層裡，壓在圖上
+    var bottom = app.querySelector('.scene-bottom');
+    if (!bottom) { fail('沒有 .scene-bottom'); return done(); }
+    bottom.querySelector('.node-text') ? ok('敘述在底部面板裡') : fail('敘述不在底部面板');
+    bottom.querySelectorAll('.option-btn').length > 0 ? ok('選項在底部面板裡') : fail('選項不在底部面板');
+    app.querySelector('.scene-top .scene-chapter') ? ok('章節標題在上方') : fail('沒有章節標題');
+    done();
+  });
+});
+
+tests.push(function (done) {
+  console.log('\n=== 1c. 離開節點後要解除鎖捲動 ===');
+  boot(function (win, doc, app) {
+    startRun(win, app, 1990, 'M');
+    doc.documentElement.classList.contains('scene-mode') ? ok('節點畫面鎖住捲動') : fail('節點畫面沒鎖捲動');
+    playOut(win, app);
+    !doc.documentElement.classList.contains('scene-mode') ? ok('結局畫面解除鎖定') : fail('結局畫面還鎖著，捲不動');
+    click(win, doc.getElementById('codex-btn-2'));
+    !doc.documentElement.classList.contains('scene-mode') ? ok('圖鑑可以捲動') : fail('圖鑑被鎖住捲不動');
     done();
   });
 });

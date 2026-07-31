@@ -156,24 +156,120 @@ input:focus-visible {
   color: var(--ink-soft);
   font-weight: normal;
 }
-/* 場景圖在整頁最下方，出血到 #app 的左右與底部邊緣。
-   #app 的內距是 1.5rem 1.25rem 3rem，用負 margin 抵銷掉，讓圖真的貼到邊。 */
-.node-scene {
-  margin: 1.6rem -1.25rem -3rem;
-  border-top: 1px solid var(--gold);
-  background: var(--ink);
+/* ---------- 滿版場景模式（只有節點畫面）----------
+   要求是「不捲動」：圖用 background-image 鋪滿一個 100dvh 的容器，
+   文字與選項絕對定位壓在上面。圖不是 <img>，所以不會把內容往下推，
+   捲軸自然就不存在。100dvh（不是 100vh）才不會被手機瀏覽器的網址列切掉。 */
+html.scene-mode, body.scene-mode {
   overflow: hidden;
+  height: 100%;
 }
-.scene-img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
+#app.scene-mode {
+  padding: 0;
+  border: none;
+  background: var(--ink);
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,.6);
+}
+
+.scene-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
   image-rendering: pixelated;
 }
-@media (max-width: 480px) {
-  .node-scene { margin-left: -0.8rem; margin-right: -0.8rem; margin-bottom: -2rem; }
+/* 上下各壓一層暗，讓標題與內文都壓得住；中間保持乾淨 */
+.scene-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(10,14,26,.72) 0%, rgba(10,14,26,0) 22%),
+    linear-gradient(to top, rgba(10,14,26,.95) 0%, rgba(10,14,26,.85) 28%, rgba(10,14,26,0) 52%);
+}
+
+.scene-top {
+  position: relative;
+  padding: 1.1rem 1.25rem 0;
+  text-align: center;
+}
+.scene-chapter {
+  margin: 0;
+  color: var(--paper);
+  font-size: clamp(1rem, 4.2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-shadow: 0 2px 8px rgba(0,0,0,.8);
+}
+/* 參考裡標題兩側的那對短線 */
+.scene-chapter::before, .scene-chapter::after {
+  content: '—';
+  color: var(--gold);
+  margin: 0 .6em;
+  font-weight: 400;
+}
+.scene-age {
+  margin: .35rem 0 0;
+  color: var(--gold);
+  font-size: clamp(.66rem, 2.8vw, .78rem);
+  letter-spacing: .08em;
+  text-shadow: 0 1px 6px rgba(0,0,0,.9);
+}
+
+.scene-bottom {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 0 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  max-height: 72%;
+  /* 正常情況下不會出現捲軸。但選項最多的節點（5 個、共上百字）在很矮的螢幕上
+     可能超過 max-height —— 那時寧可讓這一層自己捲，也不能被 overflow:hidden
+     切掉，因為被切掉的選項是按不到的，那是功能壞掉，不只是難看。 */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.scene-bottom .node-text {
+  margin: 0 0 .2rem;
+  color: var(--paper);
+  font-size: clamp(.9rem, 3.6vw, 1.02rem);
+  font-weight: 500;
+  line-height: 1.75;
+  text-shadow: 0 2px 10px rgba(0,0,0,.9);
+}
+.scene-bottom .options {
+  margin: 0;
+  gap: .45rem;
+}
+.scene-bottom .option-btn {
+  background: rgba(242,232,207,.94);
+  border: 1px solid rgba(184,137,31,.7);
+  border-radius: 6px;
+  color: var(--ink);
+  font-size: clamp(.82rem, 3.3vw, .92rem);
+  padding: .6rem .8rem;
+  line-height: 1.45;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+.scene-bottom .option-btn:hover { background: #fff; }
+.scene-bottom .quit-btn {
+  margin: .1rem auto 0;
+  color: rgba(242,232,207,.72);
+  font-size: .78rem;
+}
+
+/* 矮螢幕（橫向手機、小筆電）把每一格再收緊，維持不捲動 */
+@media (max-height: 680px) {
+  .scene-top { padding-top: .6rem; }
+  .scene-bottom { gap: .4rem; padding-bottom: .7rem; max-height: 80%; }
+  .scene-bottom .node-text { line-height: 1.55; }
+  .scene-bottom .option-btn { padding: .45rem .7rem; }
 }
 
 .node-text {
