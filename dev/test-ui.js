@@ -131,6 +131,16 @@ tests.push(function (done) {
     blank.length ? fail('這些圖是全空的: ' + blank.join(', ')) : ok('沒有全空的圖');
 
     startRun(win, app, 1990, 'M');
+
+    // 插圖要在整頁最下方（敘述與選項之後）。順序被改回去很難靠眼睛發現，所以釘住。
+    var scene = app.querySelector('.node-scene');
+    if (!scene) { fail('節點畫面沒有插圖容器'); return done(); }
+    scene === app.lastElementChild ? ok('插圖在整頁最下方') :
+      fail('插圖不在最後，後面還有 ' + (app.lastElementChild && app.lastElementChild.className));
+    var kids = Array.prototype.slice.call(app.children);
+    kids.indexOf(app.querySelector('.options')) < kids.indexOf(scene)
+      ? ok('順序是 敘述 -> 選項 -> 插圖') : fail('選項跑到插圖後面了');
+
     var svg = app.querySelector('svg.node-art');
     if (!svg) { fail('節點畫面沒有渲染出插圖'); return done(); }
     ok('插圖有渲染 (' + svg.querySelectorAll('rect').length + ' 個 rect)');

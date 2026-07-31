@@ -168,14 +168,17 @@ input:focus-visible {
   opacity: 0.9;
 }
 
-/* 場景圖：出血到頁緣，像護照或舊存摺上印的那種風景版畫。
-   .page 有 1.2rem 內距，用負 margin 抵銷掉，讓圖真的貼到邊。 */
+/* 場景圖在整頁最下方，出血到 #app 的左右與底部邊緣。
+   #app 的內距是 1.5rem 1.25rem 3rem，用負 margin 抵銷掉，讓圖真的貼到邊。 */
 .node-scene.has-scene {
-  margin: 0.3rem -1.2rem 1.1rem;
-  border-top: 1px solid var(--ink-soft);
-  border-bottom: 1px solid var(--ink-soft);
+  margin: 1.6rem -1.25rem -3rem;
+  border-top: 1px solid var(--gold);
   background: var(--ink);
   overflow: hidden;
+}
+/* 還沒有場景圖時是雕版，維持在紙上、置中、不出血 */
+.node-scene:not(.has-scene) {
+  margin-top: 1.4rem;
 }
 .scene-img {
   display: block;
@@ -186,7 +189,7 @@ input:focus-visible {
   image-rendering: pixelated;
 }
 @media (max-width: 480px) {
-  .node-scene.has-scene { margin-left: -0.8rem; margin-right: -0.8rem; }
+  .node-scene.has-scene { margin-left: -0.8rem; margin-right: -0.8rem; margin-bottom: -2rem; }
 }
 
 .node-text {

@@ -129,8 +129,6 @@
     html += '</header>';
     html += '<article class="page stamp-drop">';
     html += '<h2 class="chapter-title">第' + node.chapter + '章 · ' + node.title + '<span class="age-range">' + node.ageRange + '</span></h2>';
-    html += '<div class="node-scene" data-node="' + node.id + '">' +
-      pixelArtSvg(UNREALIZED.art && UNREALIZED.art[node.id]) + '</div>';
     html += '<p class="node-text">' + engine.resolveText(node.text, runState) + '</p>';
     html += '</article>';
     html += '<div class="options">';
@@ -141,6 +139,9 @@
     if (canQuit) {
       html += '<button class="link-btn quit-btn" id="quit-btn">就在這裡收尾，看看我的存摺</button>';
     }
+    // 插圖擺在整頁最下方：先讀完敘述、做完選擇，畫面才收在那張圖上
+    html += '<div class="node-scene" data-node="' + node.id + '">' +
+      pixelArtSvg(UNREALIZED.art && UNREALIZED.art[node.id]) + '</div>';
     app.innerHTML = html;
     mountScene(node.id);
 
