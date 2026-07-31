@@ -206,6 +206,7 @@
     document.getElementById('clear-btn').addEventListener('click', function () {
       store.clearAll();
       settings = store.getSettings();
+      applyMotionPref();
       renderCodex(returnTo);
     });
   }
