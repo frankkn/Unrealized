@@ -13,8 +13,16 @@
   // 那個節點的三個選項全都假設有伴侶，讀起來會完全不知所云。
   function relationshipUnderStrain(state) {
     if (!state.flags['成家'] && !state.flags['未婚']) return false;
-    // 關係還很好、又沒有把命拿去拼事業或照顧長輩的人，不該無緣無故遇到婚變
-    return state.attrs.bond <= 6 || state.attrs.achieve >= 7 || !!state.flags['照顧'];
+    // 條件只看關係本身有沒有真的被磨掉。
+    //
+    // 原本還接受「achieve >= 7」與「有照顧旗標」，兩個後來都失效了：
+    // 取消「提升必有犧牲」之後成就中位數變成 9，achieve>=7 於是 100% 成立；
+    // 而長照節點無條件對每個人跑、三個選項有兩個蓋上「照顧」。三個條件 OR 起來
+    // 等於沒有條件 —— 有伴侶的人 100% 會遇到婚變，這個事件也就不再是事件。
+    //
+    // 只留 bond <= 3 之後，區辨力反而最好：一直維持關係的玩法 0%，
+    // 真的疏忽了關係的 100%，兼顧的落在五成上下。
+    return state.attrs.bond <= 3;
   }
   var AFTER_CARE_NEXT = [
     { when: relationshipUnderStrain, next: 'n6_marriage_crisis' },
