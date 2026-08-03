@@ -48,7 +48,7 @@
       id: 'n4_job', chapter: 4, title: '第一份工作', ageRange: '22–28歲',
       text: '離開學校之後，第一個真正要面對的問題是：靠什麼過日子。',
       options: [
-        { id: 'big_corp', label: '進了一間大公司或外商，制度好，但也很卷', effects: { achieve: 2, bond: -1, health: -1 }, next: 'n4_where' },
+        { id: 'big_corp', label: '進了一間大公司或外商，制度好，但也很卷', effects: { achieve: 2, money: 1, bond: -1 }, next: 'n4_where' },
         { id: 'public_job', label: '考上了公職，穩定，但升遷排隊排很長', effects: { money: 1, health: 1, achieve: -1, self: -1 }, flags: ['公職'], next: 'n4_where' },
         { id: 'sme', label: '進了一間中小企業，什麼都要學，也什麼都要做', effects: { achieve: 1, bond: -1 }, next: 'n4_where' },
         { id: 'freelance', label: '接案或創作，收入不穩，但時間是自己的', effects: { self: 2, health: 1, money: -2, achieve: -1 }, flags: ['接案'], next: 'n4_where' },
@@ -61,7 +61,7 @@
       id: 'n4_where', chapter: 4, title: '在哪裡落腳', ageRange: '22–28歲',
       text: '工作決定了，接下來是另一個問題：這幾年，你要住在哪裡。',
       options: [
-        { id: 'stay_local', label: '留在家鄉附近，機會少一點，但爸媽就在旁邊', effects: { bond: 1, achieve: -1 }, next: JOB_NEXT_GATE },
+        { id: 'stay_local', label: '留在家鄉附近，機會少一點，但爸媽就在旁邊', effects: { bond: 1, health: 1 }, next: JOB_NEXT_GATE },
         { id: 'beipiao', label: [
             { when: { generation: 1975 }, text: '往北部走，租一間頂樓加蓋，開始一個人的生活' },
             { text: '北漂到台北或新竹，租金吃掉三分之一的薪水' }
@@ -125,9 +125,10 @@
       id: 'n5_career_move', chapter: 5, title: '職涯的一次大波動', ageRange: '28–35歲',
       text: '三十歲前後，好幾個機會或警訊，同時擠進了你的職場生活。',
       options: [
-        { id: 'big_jump', label: '跳槽到一個更有挑戰的位置，薪資漲了不少', effects: { achieve: 2, bond: -1, self: -1 }, next: 'n5_marriage' },
-        { id: 'steady', label: '留在原本的位置，穩，但薪資幾年沒什麼變化', effects: { bond: 1, health: 1, achieve: -1 }, next: 'n5_marriage' },
-        { id: 'setback', label: '一次組織調整，你被降了職', effects: { achieve: -2, self: -1 }, next: 'n5_marriage' }
+        { id: 'big_jump', label: '跳槽到一個更有挑戰的位置，薪資漲了不少', effects: { achieve: 2, money: 1, bond: -1 }, next: 'n5_marriage' },
+        { id: 'steady', label: '留在原本的位置，穩，年資一年一年疊上去', effects: { bond: 1, health: 1, achieve: 1 }, next: 'n5_marriage' },
+        { id: 'setback', label: '一次組織調整，你被降了職', effects: { achieve: -2, self: -1 }, next: 'n5_marriage' },
+        { id: 'it_worked', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '你手上那個做了很久的東西，這一年終於做起來了', effects: { achieve: 2, money: 1 }, next: 'n5_marriage' }
       ]
     },
 
@@ -210,7 +211,7 @@
       text: '為了那個位置，你開始了一段長時間透支的日子。',
       options: [
         { id: 'push_through', label: '連續好幾個月加班到最後一班車，有一次騎車回家時差點打瞌睡', effects: { achieve: 1, health: -2 }, flags: ['疲勞駕駛'], next: OVERWORK_NEXT },
-        { id: 'pace_self', label: '試著把節奏放慢一點，升遷排在後面一點', effects: { self: 1, health: 1, achieve: -1 }, next: OVERWORK_NEXT },
+        { id: 'pace_self', label: '試著把節奏放慢一點，升遷排在後面一點', effects: { self: 1, health: 1 }, next: OVERWORK_NEXT },
         { id: 'burn_bridge', label: '直接跟主管說做不到，關係從此有點尷尬', effects: { bond: -1, self: 1, achieve: -1 }, next: OVERWORK_NEXT }
       ]
     },

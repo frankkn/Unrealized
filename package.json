@@ -7,7 +7,8 @@
     "test": "node dev/test-engine.js && node dev/test-ui.js",
     "test:engine": "node dev/test-engine.js",
     "test:ui": "node dev/test-ui.js",
-    "find-paths": "node dev/find-paths.js"
+    "find-paths": "node dev/find-paths.js",
+    "swap-paths": "node dev/swap-paths.js"
   },
   "devDependencies": {
     "jsdom": "^29.1.1"

@@ -36,7 +36,7 @@ The name is an accounting term — *unrealized gains and losses* — and also "p
 
 ### The rules (non-negotiable)
 
-- **No free choices.** Every option moves at least two of the five stats, and the five together may never net above +1. Tradeoffs stand, bad bargains stand, but nothing is ever pure gain. This is enforced, not merely intended
+- **Choices have texture, not a mandatory tax.** Every option moves at least two of the five stats and the five together never net above +3 — enough that no single choice reverses a life, while leaving room for an option to be simply good. An earlier rule required every option to cost something; it turned out to mean that every healthy, family-first, slow-down choice quietly charged your career, which is a bleaker claim than intended
 - **But "no free choices" means tradeoff, not decay.** Alongside the choices runs a baseline: once you are working, pay and seniority accrue on their own; in old age the title goes back, the people around you thin out, the body settles its debts. Without it the game would be quietly asserting that a life is net loss. The baseline is deliberately lighter than any single choice — **the choices stay the story**
 - **`self` never accrues.** Money, achievement and bonds grow with time on their own. Living in line with what you actually want is the one thing you can only ever buy with a decision
 - **Ruinous endings are preventable and foreshadowed.** The narration warns you — *"you haven't had a health check in three years"* — and never shows a number. The car-accident node fires only if you earned the fatigue-driving flag or your health is already low. **A random punishment is a failure of design**
@@ -65,7 +65,7 @@ The 2005 cohort's parents are the 1990 cohort. Play 1990, then play 2005, and yo
 
 The design rules above are checked by a script, not by good intentions. `node dev/test-engine.js` runs on every change and fails on:
 
-- **Free lunches** — every option is scanned for the two-axis / net ≤ +1 rule; nothing is grandfathered
+- **Runaway options** — every option is scanned for the two-axis / net ≤ +3 rule; nothing is grandfathered
 - **Broken graph** — nodes unreachable from the start, and options pointing at nodes that don't exist
 - **Dead endings** — all 30 must be provably reachable. Uniform random play only finds most of them, so the rest get targeted proofs. Four have windows too narrow for that (five stats all landing mid-range, or one stat stopping on an exact value) and are proven by replaying concrete paths found offline with `dev/find-paths.js`
 - **Unplayable chapters** — chapters 0–3 are exhaustively enumerated, every branch, all six cohort × gender combinations
@@ -108,7 +108,7 @@ npm install          # jsdom, for the interface tests only
 npm test             # engine + interface
 npm run test:engine  # engine only - needs no dependencies at all
 npm run test:ui      # interface, against a real DOM
-npm run find-paths   # regenerate rare-ending proof paths (append e.g. 3000 to widen the search)
+npm run find-paths -- 3000 > paths.txt && npm run swap-paths -- paths.txt   # regenerate rare-ending proofs
 ```
 
 **The dependency is for the tests, never for the game.** `index.html` still opens straight off disk with nothing installed — that is the whole point of the no-build constraint, and it is checked by the interface tests themselves, which load the page exactly as a browser does.

@@ -46,9 +46,11 @@
       id: 'n6_career_plateau', chapter: 6, title: '事業高原', ageRange: '35–50歲',
       text: '你的職業生涯到了一個高原期，再往上，好像沒有位置留給你了。',
       options: [
-        { id: 'accept', label: '接受這裡就是頂點，把心力挪去別的地方', effects: { self: 1, achieve: -1 }, next: 'n6_midlife_unemployment' },
+        { id: 'accept', label: '接受這裡就是頂點，把心力挪去別的地方', effects: { self: 1, bond: 1 }, next: 'n6_midlife_unemployment' },
         { id: 'push_more', label: '還是拼著想往上擠，結果換來更多失望', effects: { health: -1, self: -1 }, next: 'n6_midlife_unemployment' },
-        { id: 'change_lane', label: '轉去一個新的領域重新開始，等於從頭來一次', effects: { achieve: -2, self: 1 }, next: 'n6_midlife_unemployment' }
+        { id: 'change_lane', label: '轉去一個新的領域重新開始，等於從頭來一次', effects: { achieve: -2, self: 1 }, next: 'n6_midlife_unemployment' },
+        // 有回報的選項刻意設成「要先投入過才看得到」——不是白送，是兌現
+        { id: 'headhunted', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '以前的同事來找你，那邊剛好缺一個你這種資歷的人', effects: { achieve: 2, money: 1 }, next: 'n6_midlife_unemployment' }
       ]
     },
 
@@ -58,7 +60,7 @@
       options: [
         { id: 'quick_reemploy', label: '很快找到下一份工作，但薪水打了折', effects: { bond: 1, money: -1, achieve: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
         { id: 'long_gap', label: '花了很長時間才找到下一份，存款一路在掉', effects: { money: -2, self: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
-        { id: 'start_over', label: '利用這段空檔，做一件完全不一樣的事', effects: { self: 2, money: -1 }, next: AFTER_UNEMPLOYMENT_NEXT }
+        { id: 'start_over', label: '利用這段空檔，做一件完全不一樣的事，後來真的做起來了', effects: { self: 2, achieve: 1, money: -1 }, next: AFTER_UNEMPLOYMENT_NEXT }
       ]
     },
 
@@ -125,7 +127,7 @@
         // 催收電話只有真的欠過錢的人會遇到
         { id: 'collections_call', requires: { flagsAny: ['借貸', '高槓桿', '投機'] }, label: '催收電話開始一天打好幾次', effects: { self: -1, bond: -1 }, next: 'n6_health_reckoning' },
         { id: 'manage_through', label: '把手上的東西重新盤點一次，勉強打平', effects: { money: 1, health: -1 }, next: 'n6_health_reckoning' },
-        { id: 'clean_sheet', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '這幾年算是穩住了，沒有欠誰什麼', effects: { self: 1, achieve: -1 }, next: 'n6_health_reckoning' },
+        { id: 'clean_sheet', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '這幾年算是穩住了，沒有欠誰什麼', effects: { self: 1, money: 1 }, next: 'n6_health_reckoning' },
         { id: 'help_family', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '手頭還算鬆，借了一筆給周轉不過來的家人', effects: { bond: 2, money: -2 }, next: 'n6_health_reckoning' }
       ]
     },
@@ -154,11 +156,11 @@
           id: 'full_stop',
           requires: { attr: { key: 'health', op: '<=', value: 2 } },
           label: '請了長假，把手上的位置交出去，先把身體救回來',
-          effects: { health: 3, achieve: -2, money: -1 },
+          effects: { health: 3, self: 1, achieve: -1 },
           next: 'n6_return_home'
         },
         { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: 'n6_return_home' },
-        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2, achieve: -2 }, next: 'n6_return_home' },
+        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: 'n6_return_home' },
         { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: 'n6_return_home' }
       ]
     },
@@ -178,7 +180,7 @@
       text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。',
       options: [
         { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n7_retirement_prep' },
-        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1, achieve: -1 }, next: 'n7_retirement_prep' },
+        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: 'n7_retirement_prep' },
         { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: 'n7_retirement_prep' }
       ]
     },
@@ -226,7 +228,8 @@
       options: [
         { id: 'thriving_alone', label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: 'n7_body_ledger' },
         { id: 'lonely', label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: 'n7_body_ledger' },
-        { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: 'n7_body_ledger' }
+        { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: 'n7_body_ledger' },
+        { id: 'they_stayed', requires: { attr: { key: 'bond', op: '>=', value: 6 } }, label: '老朋友還在，而且這幾年變成固定每個月約一次', effects: { bond: 2, self: 1 }, next: 'n7_body_ledger' }
       ]
     },
 
@@ -236,7 +239,8 @@
       options: [
         { id: 'careful', label: '很小心地維持著現有的狀態，盡量不讓它變得更差', effects: { health: 1, self: -1 }, next: 'n7_look_back' },
         { id: 'indulge', label: '決定不要那麼小心，想吃想做的都做，反正日子有限', effects: { self: 1, health: -1 }, next: 'n7_look_back' },
-        { id: 'decline', label: '這幾年，身體明顯走下坡，很多事已經做不到了', effects: { health: -2, bond: 1 }, next: 'n7_look_back' }
+        { id: 'decline', label: '這幾年，身體明顯走下坡，很多事已經做不到了', effects: { health: -2, bond: 1 }, next: 'n7_look_back' },
+        { id: 'paying_off', requires: { attr: { key: 'health', op: '>=', value: 6 } }, label: '這些年走路、游泳、按時回診，到這個年紀開始領回來', effects: { health: 1, self: 1, bond: 1 }, next: 'n7_look_back' }
       ]
     },
 
@@ -244,7 +248,7 @@
       id: 'n7_look_back', chapter: 7, title: '回望', ageRange: '50歲以後',
       text: '存摺走到最後一頁，你把它整本翻回第一頁，重新看了一次。',
       options: [
-        { id: 'accept', label: '大致接受了這一路走來的樣子', effects: { self: 1, achieve: -1 }, next: 'GAME_END' },
+        { id: 'accept', label: '大致接受了這一路走來的樣子', effects: { self: 2, bond: 1 }, next: 'GAME_END' },
         { id: 'regret', label: '有些地方你還是會想，如果當初不一樣就好了', effects: { self: -1, bond: 1 }, next: 'GAME_END' },
         { id: 'proud', label: '為自己撐過來的這些年，感到一種安靜的驕傲', effects: { self: 2, bond: -1 }, next: 'GAME_END' }
       ]

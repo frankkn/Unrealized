@@ -106,10 +106,15 @@ TARGETS.forEach(function (t) {
     return;
   }
   var steps = hit.history.map(function (h) { return h.nodeId + '/' + h.optionId; });
-  console.log('\n// ' + t.id + '  (' + hitCombo[0] + '/' + hitCombo[1] + ')  attrs: ' + JSON.stringify(hit.attrs));
-  console.log('var ' + t.constant + ' = [');
+  // 世代與路徑一起輸出。分開存的話，重生出來的路徑換了世代、而測試還寫死舊的，
+  // 會失敗在一個看起來毫不相干的「預期節點 A、實際節點 B」上——已經踩過兩次。
+  console.log('\n// ' + t.id + '  attrs: ' + JSON.stringify(hit.attrs));
+  console.log('var ' + t.constant + ' = {');
+  console.log('  gen: ' + hitCombo[0] + ', gender: ' + JSON.stringify(hitCombo[1]) + ',');
+  console.log('  path: [');
   for (var k = 0; k < steps.length; k += 3) {
-    console.log('  ' + steps.slice(k, k + 3).map(function (s) { return "'" + s + "'"; }).join(', ') + (k + 3 < steps.length ? ',' : ''));
+    console.log('    ' + steps.slice(k, k + 3).map(function (s) { return "'" + s + "'"; }).join(', ') + (k + 3 < steps.length ? ',' : ''));
   }
-  console.log('];');
+  console.log('  ]');
+  console.log('};');
 });
