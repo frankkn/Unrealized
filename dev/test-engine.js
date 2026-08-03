@@ -376,6 +376,19 @@ if (fs.existsSync(artDir)) {
   assert(mb < 40, '場景圖合計 ' + mb.toFixed(1) + ' MB，太肥了 —— 壓一下品質或尺寸');
 }
 
+// 5f. index.html 的快取版本號要一致。少推一個，那支檔案就會繼續吃舊快取，
+//     而症狀是「改了卻沒生效」——很難聯想到版本號沒跟上
+var idx = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+var vers = (idx.match(/(?:src|href)="[^"]+\?v=([^"&]*)"/g) || []).map(function (m) {
+  return m.match(/\?v=([^"&]*)"/)[1];
+});
+if (vers.length) {
+  var uniq = vers.filter(function (v, i) { return vers.indexOf(v) === i; });
+  assert(uniq.length === 1, 'index.html 的快取版本號不一致: ' + uniq.join(', '));
+  assert(uniq[0] !== '', 'index.html 有空的 ?v=');
+  console.log('[UNREALIZED dev] 快取版本號 v' + uniq[0] + '，' + vers.length + ' 個檔案一致。');
+}
+
 // 6. 中途收尾：章節 >= 2 時應該都能判定出一個中途結局
 [2, 3, 4, 5].forEach(function (chapter) {
   var s = engine.createRunState(1990, 'F');

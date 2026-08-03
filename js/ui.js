@@ -17,7 +17,17 @@
 
   // 節點畫面是滿版場景：圖當背景鋪滿整個視窗，文字與選項壓在上面。
   // 用 background-image 而不是 <img>，圖才不會把內容往下推，捲軸也就無從產生。
-  var ART_VERSION = '4';
+  // 從自己的 <script src="js/ui.js?v=N"> 讀版本號，而不是再寫死一個。
+  // 兩個地方各記一次的話一定會漂 —— 先前 index.html 已經推到 v6，這裡還停在 v4，
+  // 於是推進版本號並不會讓場景圖的快取失效。測試被內嵌時沒有 src，取不到就不帶。
+  var ART_VERSION = (function () {
+    var me = document.currentScript || document.querySelector('script[src*="js/ui.js"]');
+    var m = me && me.src && me.src.match(/[?&]v=([^&]*)/);
+    return m ? m[1] : '';
+  })();
+  function artSrc(nodeId) {
+    return 'art/' + nodeId + '.webp' + (ART_VERSION ? '?v=' + ART_VERSION : '');
+  }
 
   // 進出滿版模式時要一起切 html/body 的 overflow，
   // 否則圖鑑那種本來就該捲的畫面會被鎖住
@@ -93,7 +103,7 @@
     setSceneMode(true);
 
     var html = '';
-    html += '<div class="scene-bg" style="background-image:url(&quot;art/' + node.id + '.webp?v=' + ART_VERSION + '&quot;)"></div>';
+    html += '<div class="scene-bg" style="background-image:url(&quot;' + artSrc(node.id) + '&quot;)"></div>';
     html += '<header class="scene-top">';
     html += '<p class="scene-chapter">' + node.title + '</p>';
     html += '<p class="scene-age">' + cfg.generationLabels[runState.generation] + ' · ' + cfg.genderLabels[runState.gender] + ' · ' + node.ageRange + '</p>';
