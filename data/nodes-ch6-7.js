@@ -97,6 +97,9 @@
     n6_career_plateau: {
       id: 'n6_career_plateau', chapter: 6, title: '事業高原', ageRange: '35–50歲',
       text: [
+        // 回聲：第4章選的那條路，到這裡各自長成不同的天花板
+        { when: { flagsAll: ['接案'] }, text: '你這輩子沒有在同一間公司待超過三年。自由是真的，只是沒有人會來跟你談升遷。' },
+        { when: { flagsAll: ['公職'] }, text: '你的位置很穩，穩到你看得見自己十年後在哪一格。前面那幾個人，一個都還沒有要退。' },
         { when: { generation: 1975 }, text: '你在公司已經算資深，但上面那幾個位置，人都還沒有要退的意思。' },
         { when: { generation: 2005 }, text: '你的職位在幾次自動化之後被重新定義了兩遍，現在你很難跟家人解釋自己到底在做什麼。' },
         { text: '你的職業生涯到了一個高原期，再往上，好像沒有位置留給你了。' }
@@ -236,6 +239,9 @@
       id: 'n6_return_home', chapter: 6, title: '返鄉', ageRange: '35–50歲',
       text: [
         { when: { flagsAll: ['移民'] }, text: '你在另一個國家的第八年，家裡打電話來說父母的身體不行了。飛回來要轉兩趟，簽證還得重辦。' },
+        { when: { flagsAll: ['單親', '責任'] }, text: '媽媽老了。你從十幾歲就在幫她扛，這件事沒有哪一年真的結束過，只是這次換了一種扛法。' },
+        { when: { flagsAll: ['單親'] }, text: '媽媽老了。你這輩子欠她的那些年，現在輪到你有機會還一點回去。' },
+        { when: { flagsAll: ['北漂'] }, text: '你在這個城市住了二十年，還是覺得隨時可以打包走人。老家那邊，父母老了。' },
         { when: { generation: 1975 }, text: '離鄉多年之後，父母老了。那條街上的店一間一間換成你不認識的招牌，只有你家那扇門還是原來的。' },
         { when: { generation: 2005 }, text: '老家那一帶這幾年淹過兩次，留下來的人不多了。父母還是不肯搬。' },
         { text: '離鄉多年之後，父母老了，老家空了下來。' }
@@ -250,7 +256,12 @@
 
     n6_readjust: {
       id: 'n6_readjust', chapter: 6, title: '重新調整', ageRange: '35–50歲',
-      text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。',
+      text: [
+        { when: { flagsAll: ['書香'] }, text: '走到這裡你重新盤點了一次。從小到大你都在符合某一種期待，這是第一次你認真問，那到底是不是你要的。' },
+        { when: { flagsAll: ['勞動'] }, text: '走到這裡你重新盤點了一次。小時候家裡教你的是先做再說，做到這個年紀你才有空停下來想一下。' },
+        { when: { flagsAll: ['早熟'] }, text: '走到這裡你重新盤點了一次。你從很小就在替別人打算，算到現在才輪到自己。' },
+        { text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。' }
+      ],
       options: [
         { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n6_parent_dies' },
         { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: 'n6_parent_dies' },
@@ -263,6 +274,7 @@
     n6_parent_dies: {
       id: 'n6_parent_dies', chapter: 6, title: '那通電話', ageRange: '35–50歲',
       text: [
+        { when: { flagsAll: ['家庭政治撕裂'] }, text: '你們為了那件事吵到快兩年沒說話。清晨四點的電話打來的時候，你發現自己還記得他的號碼。' },
         { when: { flagsAll: ['照顧'] }, text: '照顧了那麼久，最後那通電話還是在清晨四點響起。你比自己以為的更早接起來。' },
         { when: { flagsAll: ['送機構'] }, text: '機構在清晨四點打來。你上一次去看，是三個星期前的事了。' },
         { when: { flagsAll: ['返鄉'] }, text: '你就睡在隔壁房間。清晨四點，你聽見的不是聲音，是突然安靜下來。' },
@@ -280,6 +292,8 @@
     n7_retirement_prep: {
       id: 'n7_retirement_prep', chapter: 7, title: '退休準備', ageRange: '50歲以後',
       text: [
+        { when: { flagsAll: ['接案'] }, text: '你這輩子沒有雇主，也就沒有人幫你提撥。這幾十年要靠什麼，全部寫在你自己那張表上。' },
+        { when: { flagsAll: ['公職'] }, text: '你的退休金是這一輩子最穩的一件事，穩到年金改革吵起來的時候，你不太敢在同學會上提。' },
         { when: { generation: 2005 }, text: '超高齡社會，勞保這件事，大家心裡都有個問號，但問題不是新的——只是這次輪到你。' },
         { text: '退休金、勞保、存款，你開始認真算一次，接下來這幾十年夠不夠用。在你這一代，退休保障是{退休保障}。' }
       ],
@@ -363,7 +377,12 @@
       options: [
         { id: 'accept', label: '大致接受了這一路走來的樣子', effects: { self: 2, bond: 1 }, next: 'GAME_END' },
         { id: 'regret', label: '有些地方你還是會想，如果當初不一樣就好了', effects: { self: -1, bond: 1 }, next: 'GAME_END' },
-        { id: 'proud', label: '為自己撐過來的這些年，感到一種安靜的驕傲', effects: { self: 2, bond: -1 }, next: 'GAME_END' }
+        { id: 'proud', label: '為自己撐過來的這些年，感到一種安靜的驕傲', effects: { self: 2, bond: -1 }, next: 'GAME_END' },
+        // 回望的最後一個選項照出身給，讓這一局真的收在「你是誰」上
+        { id: 'look_back_bookish', requires: { flagsAll: ['書香'] }, label: '第一頁是一張成績單。你想起那時候以為那就是全部', effects: { self: 1, bond: 1 }, next: 'GAME_END' },
+        { id: 'look_back_labor', requires: { flagsAll: ['勞動'] }, label: '第一頁是家裡那間店。你想起自己很小就知道錢是怎麼來的', effects: { self: 1, money: 1 }, next: 'GAME_END' },
+        { id: 'look_back_single', requires: { flagsAll: ['單親'] }, label: '第一頁只有一個人的字跡。你想起她從來沒說過辛苦', effects: { self: 1, bond: 2 }, next: 'GAME_END' },
+        { id: 'look_back_buried', requires: { flagsAll: ['送走父母'] }, label: '你翻到中間那幾頁停了很久，那是送走他們的那幾年', effects: { self: 1, bond: 1 }, next: 'GAME_END' }
       ]
     }
 

@@ -550,6 +550,29 @@ if (vers.length) {
   assert(found.length === 0, '不該同時成立的旗標組合: ' + found.map(function (k) { return k + ' ×' + bad[k]; }).join('；'));
 })();
 
+// 6f. 每個蓋上去的旗標，都要有地方讀它。曾經有 12 個旗標蓋了之後沒有任何條件讀——
+//     遊戲把「你是誰」記下來，然後再也沒提過，於是十二歲拿去唸書的孩子跟十五歲進工廠的人，
+//     到五十歲回望時讀到的是同一段字。
+(function noWriteOnlyFlags() {
+  var files = ['data/nodes-ch0-3.js', 'data/nodes-ch4-5.js', 'data/nodes-ch6-7.js'];
+  var nodeSrc = files.map(function (f) { return fs.readFileSync(path.join(__dirname, '..', f), 'utf8'); }).join('\n');
+  var endSrc = fs.readFileSync(path.join(__dirname, '..', 'data/endings.js'), 'utf8');
+  function names(re, src) {
+    var out = {};
+    (src.match(re) || []).forEach(function (m) {
+      (m.match(/'[^']+'/g) || []).forEach(function (q) { out[q.slice(1, -1)] = true; });
+    });
+    return out;
+  }
+  var written = names(/flags: \[[^\]]*\]/g, nodeSrc);
+  var read = names(/flags(?:All|Any|None): \[[^\]]*\]/g, nodeSrc + '\n' + endSrc);
+  // 條件函式直接讀 state.flags['x']，還有 helpers.hasFlag
+  (( nodeSrc + '\n' + endSrc).match(/flags\['([^']+)'\]|hasFlag\(state, '([^']+)'\)/g) || [])
+    .forEach(function (m) { read[m.match(/'([^']+)'/)[1]] = true; });
+  var writeOnly = Object.keys(written).filter(function (f) { return !read[f]; });
+  assert(writeOnly.length === 0, '這些旗標蓋了卻沒有任何地方讀（等於沒蓋）: ' + writeOnly.join(' '));
+})();
+
 // 7. 詞彙字典：至少 25 組，替換後不留佔位符，而且每一組都真的被用到。
 //    寫了 26 組卻只有 6 組出現在腳本裡過——字典查得到，但玩起來完全沒有時代感。
 var lexiconKeys = Object.keys(UNREALIZED.lexicon);
