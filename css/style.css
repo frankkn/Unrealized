@@ -5,6 +5,12 @@
   --paper-dark: #e6d8ae;
   --stamp: #b23a2e;
   --gold: #b8891f;
+  /* 圖鑑的號誌燈：結局的 tone 對應綠／黃／紅。原本每一顆都是 --stamp，
+     於是「22K的逆襲」跟「洗腎的日子」在清單上長得一模一樣。
+     色相都往印刷品那邊壓過，才不會在米色紙上跳出來 */
+  --tone-good: #4a7c3f;
+  --tone-mixed: #b8891f;
+  --tone-ruin: #b23a2e;
 }
 
 * { box-sizing: border-box; }
@@ -407,6 +413,10 @@ html.scene-mode, body.scene-mode {
   color: var(--stamp);
   font-size: 0.7rem;
 }
+.codex-silhouette.tone-good { color: var(--tone-good); }
+.codex-silhouette.tone-bittersweet,
+.codex-silhouette.tone-neutral { color: var(--tone-mixed); }
+.codex-silhouette.tone-ruin { color: var(--tone-ruin); }
 .codex-item.locked .codex-silhouette {
   color: var(--ink-soft);
 }

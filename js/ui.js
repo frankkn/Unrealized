@@ -185,7 +185,9 @@
     var entry = codex[e.id];
     var unlocked = isUnlockedFor(entry, generation);
     var html = '<div class="codex-item' + (unlocked ? '' : ' locked') + '" data-ending="' + e.id + '">';
-    html += '<span class="codex-silhouette">' + (unlocked ? '●' : '■') + '</span>';
+    // 未解鎖的不透露調性 —— 那等於先告訴你這個結局是好是壞
+    var toneClass = unlocked ? ' tone-' + (e.tone || '') : '';
+    html += '<span class="codex-silhouette' + toneClass + '">' + (unlocked ? '●' : '■') + '</span>';
     html += '<span class="codex-main">';
     html += '<span class="codex-title">' + (unlocked ? e.title : '？？？') + '</span>';
     var tags = '<span class="codex-tags">';

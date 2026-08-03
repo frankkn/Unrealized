@@ -214,7 +214,13 @@ tests.push(function (done) {
   boot(function (win, doc, app) {
     startRun(win, app, 1975, 'M');
     click(win, app.querySelectorAll('[data-opt]')[1]);   // 勞動出身
-    var factory = Array.prototype.filter.call(app.querySelectorAll('.option-btn'), function (b) { return b.textContent.indexOf('工廠') !== -1; })[0];
+    // 第0章後來多了「家裡幾個小孩」，這裡不再是「點一下就到國中」。
+    // 寫死步數會在每次插入節點時壞掉，所以改成往前走到看見工廠選項為止。
+    var factory = null;
+    for (var step = 0; step < 4 && !factory; step++) {
+      factory = Array.prototype.filter.call(app.querySelectorAll('.option-btn'), function (b) { return b.textContent.indexOf('工廠') !== -1; })[0];
+      if (!factory) click(win, app.querySelectorAll('[data-opt]')[0]);
+    }
     if (!factory) { fail('1975 應該要看得到工廠選項'); return done(); }
     ok('1975 看得到工廠選項');
     click(win, factory);
@@ -223,8 +229,13 @@ tests.push(function (done) {
     boot(function (win2, doc2, app2) {
       startRun(win2, app2, 2005, 'M');
       click(win2, app2.querySelectorAll('[data-opt]')[1]);
-      Array.prototype.some.call(app2.querySelectorAll('.option-btn'), function (b) { return b.textContent.indexOf('工廠') !== -1; })
-        ? fail('2005 不該看得到 1975 限定的工廠選項') : ok('2005 看不到工廠選項');
+      // 走同樣的步數，但 2005 從頭到尾都不該出現工廠
+      var sawFactory = false;
+      for (var s2 = 0; s2 < 4; s2++) {
+        if (Array.prototype.some.call(app2.querySelectorAll('.option-btn'), function (b) { return b.textContent.indexOf('工廠') !== -1; })) sawFactory = true;
+        click(win2, app2.querySelectorAll('[data-opt]')[0]);
+      }
+      sawFactory ? fail('2005 不該看得到 1975 限定的工廠選項') : ok('2005 看不到工廠選項');
       done();
     });
   });
@@ -278,6 +289,25 @@ tests.push(function (done) {
       ? ok((visible.length - unlockedHere) + ' 個未解鎖以剪影顯示')
       : fail('未解鎖數 ' + locked.length + '，應為 ' + (visible.length - unlockedHere));
     app.querySelector('.codex-progress') ? ok('有解鎖進度') : fail('沒有解鎖進度');
+
+    // 號誌燈：已解鎖的圓點要照結局的 tone 上色。原本每一顆都是紅的，
+    // 於是「22K的逆襲」跟「洗腎的日子」在清單上長得一模一樣。
+    var toneWrong = [];
+    var lockedLeak = 0;
+    Array.prototype.forEach.call(items, function (item) {
+      var id = item.getAttribute('data-ending');
+      var end = U2.endings.full.concat(U2.endings.mid).filter(function (e) { return e.id === id; })[0];
+      var dot = item.querySelector('.codex-silhouette');
+      var isLocked = item.classList.contains('locked');
+      if (isLocked) {
+        // 未解鎖不該透露調性 —— 那等於先告訴你這個結局是好是壞
+        if (/tone-/.test(dot.className)) lockedLeak++;
+        return;
+      }
+      if (end && !dot.classList.contains('tone-' + end.tone)) toneWrong.push(id + '(' + end.tone + ')');
+    });
+    toneWrong.length === 0 ? ok('已解鎖的圓點都照 tone 上色') : fail('圓點顏色不對: ' + toneWrong.join(', '));
+    lockedLeak === 0 ? ok('未解鎖的圓點不透露調性') : fail(lockedLeak + ' 個未解鎖條目洩漏了 tone');
 
     // 只確認按鈕存在是不夠的 —— 這顆按鈕曾經因為 renderNode() 拋例外而完全沒反應，
     // 而「存在」的斷言照樣通過。要真的按下去，並檢查畫面確實換了。
