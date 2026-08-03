@@ -22,7 +22,7 @@ It also runs straight from disk — download the repo and double-click `index.ht
 4. From chapter 2 onward you may stop early: *"close the book here and see what I've got."* Stopping has five endings of its own
 5. Endings you reach are recorded in the codex; the ones you haven't are silhouettes
 
-**29 full endings and 5 early ones.** Some are cohort-locked.
+**30 full endings and 5 early ones.** Some are cohort-locked.
 
 ## What is this
 
@@ -67,7 +67,7 @@ The design rules above are checked by a script, not by good intentions. `node de
 
 - **Free lunches** — every option is scanned for the two-axis / net ≤ +1 rule; nothing is grandfathered
 - **Broken graph** — nodes unreachable from the start, and options pointing at nodes that don't exist
-- **Dead endings** — all 29 must be provably reachable. Uniform random play only finds most of them, so the rest get targeted proofs. Four have windows too narrow for that (five stats all landing mid-range, or one stat stopping on an exact value) and are proven by replaying concrete paths found offline with `dev/find-paths.js`
+- **Dead endings** — all 30 must be provably reachable. Uniform random play only finds most of them, so the rest get targeted proofs. Four have windows too narrow for that (five stats all landing mid-range, or one stat stopping on an exact value) and are proven by replaying concrete paths found offline with `dev/find-paths.js`
 - **Unplayable chapters** — chapters 0–3 are exhaustively enumerated, every branch, all six cohort × gender combinations
 - **Leaked placeholders** — the lexicon substitutes 26 era-specific terms into the script (`{起薪}` becomes *two-four*, *twenty-two K*, or *thirty-six, but rent is eighteen*), and no `{token}` may survive into rendered text
 

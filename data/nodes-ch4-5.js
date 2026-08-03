@@ -140,7 +140,7 @@
       ],
       options: [
         { id: 'marry_common', requires: { flagsNone: ['同性伴侶'] }, label: '決定結婚，辦了一場{婚禮排場}', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
-        { id: 'stay_unmarried', requires: { flagsNone: ['同性伴侶'] }, label: '決定不婚，繼續在一起，但不進入法律關係', effects: { self: 1, achieve: -1 }, flags: ['未婚'], next: 'n5_children' },
+        { id: 'stay_unmarried', requires: { flagsNone: ['同性伴侶'] }, label: '決定不婚，繼續在一起，但不進入法律關係', effects: { self: 1, bond: -1 }, flags: ['未婚'], next: 'n5_children' },
         { id: 'breakup_common', requires: { flagsNone: ['同性伴侶'] }, label: '這段關係，最後還是走到了分開', effects: { bond: -2, self: 1 }, next: 'n5_children' },
 
         { id: 'register_lgbt', requires: { flagsAll: ['同性伴侶'], generation: [1990, 2005] }, label: '一起去登記，正式成為法律上的家人', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
@@ -177,7 +177,7 @@
       options: [
         { id: 'etf', label: '選了{存款工具}那種穩穩來的方式', effects: { money: 1, self: -1 }, next: 'n5_parents_ill' },
         { id: 'leverage_trade', label: '開始融資當沖，想加速累積的速度', effects: { money: 2, health: -1 }, flags: ['投機'], next: 'n5_parents_ill' },
-        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, health: 1, money: -1, achieve: -1 }, next: 'n5_parents_ill' }
+        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, health: 1, money: -1 }, next: 'n5_parents_ill' }
       ]
     },
 

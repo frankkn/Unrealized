@@ -155,7 +155,10 @@
   // ---- 結局判定 §7.5 ----
   // 依序：硬觸發 → 世代限定 → 旗標組合 → 最突出屬性 → 兜底
   // 同一 tier 內用資料檔的排列順序，先中者勝
-  var TIER_ORDER = ['hard', 'generation', 'flagCombo', 'attribute', 'fallback'];
+  // 'whole' 排在單軸與世代限定之前：描述「整個人生的形狀」的結局，
+  // 比「某一軸很突出」更難達成也更準確，不該被單軸的搶先蓋掉。
+  // （但仍然排在 hard 之後——身體歸零就是身體歸零，其他再好都不改變那件事。）
+  var TIER_ORDER = ['hard', 'whole', 'generation', 'flagCombo', 'attribute', 'fallback'];
 
   function findMatch(list, state) {
     for (var i = 0; i < list.length; i++) {

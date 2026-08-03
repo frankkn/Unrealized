@@ -180,7 +180,7 @@
         { id: '75_one_friend', requires: { generation: 1975 }, label: '只告訴一個你信任到底的朋友', effects: { bond: 1, self: -1 }, flags: ['未出櫃'], next: 'n4_job' },
         { id: '75_told_family', requires: { generation: 1975 }, label: '鼓起勇氣跟家裡說了，換來的是十年不再提起這件事', effects: { bond: -2, self: 1 }, flags: ['已出櫃'], next: 'n4_job' },
 
-        { id: '90_registered', requires: { generation: 1990 }, label: '等到那一天，你們一起去戶政事務所登記', effects: { bond: 2, achieve: -1 }, flags: ['已出櫃'], next: 'n4_job' },
+        { id: '90_registered', requires: { generation: 1990 }, label: '等到那一天，你們一起去戶政事務所登記', effects: { bond: 2, money: -1 }, flags: ['已出櫃'], next: 'n4_job' },
         { id: '90_family_ok', requires: { generation: 1990 }, label: '跟家裡出櫃，換來幾年的尷尬，但最後接受了', effects: { bond: -1, self: 1 }, flags: ['已出櫃'], next: 'n4_job' },
         { id: '90_partial', requires: { generation: 1990 }, label: '只在外面的世界出櫃，家裡那邊還沒打算說', effects: { self: -1, bond: 1 }, flags: ['未出櫃'], next: 'n4_job' },
 
