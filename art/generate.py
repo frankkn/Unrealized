@@ -1,5 +1,5 @@
 """
-產生 46 張節點場景圖。
+產生 49 張節點場景圖。
 
 用法：
     1. 到 https://aistudio.google.com/apikey 產一把 key
@@ -48,6 +48,9 @@ NODES = {
     "n1_bookish": "night, a child's study desk under a single warm desk lamp, open textbooks and stacked reference books, apartment window showing blue night outside, student seen from behind, cramped but tidy room",
     "n1_labor": "late afternoon, small family workshop with half-open roller shutter, tools and cardboard boxes, fluorescent tube light, child seen from behind helping out, worn concrete floor",
     "n1_single": "late night, exterior of an old apartment block, only one window lit warm yellow among many dark ones, scooters parked below, overhead power lines, lonely quiet street",
+    "n1_teacher": "empty classroom after school in Taiwan, late golden light through louvred windows, a teacher's desk with stacked exercise books and a red pen, one student seen from behind standing in the doorway, chalk dust in the light, ceiling fan",
+    "n2_first_failure": "night, a school corridor noticeboard with a posted results list, one teenager seen from behind standing very still in front of it, single fluorescent tube overhead, the rest of the corridor dark, bicycle shed visible through the window",
+    "n3_first_money": "night, a small Taiwanese convenience store or eatery just after closing, warm light, one young person seen from behind counting bills at the counter, scooter parked outside, first wage",
     "n2_high_school": "early morning, Taiwanese high school gate with concrete wall and bicycle shed, uniformed student seen from behind walking in, soft dawn light, banyan tree, quiet before the bell",
     "n3_route": "night, a fork in the road, one path leading toward a lit railway station in the distance, the other into a dim residential lane, street lamp at the junction, young person seen from behind with a bag, stars overhead",
     "n3m_military": "dawn, military base parade ground, silhouettes of soldiers in formation, flagpole, low mist, cold blue light with a sliver of sunrise, one figure seen from behind",
@@ -207,7 +210,7 @@ def main():
                         "\n生圖配額為 0 —— 這把 key 的專案還沒開帳單。\n"
                         "Gemini API 的免費層不含圖像生成（文字模型可以用，圖像 limit: 0）。\n"
                         "到 https://aistudio.google.com/ 把這把 key 所屬的專案升級成付費，再重跑。\n"
-                        "46 張大約 US$2–7，看用到哪個模型。"
+                        "49 張大約 US$2–7，看用到哪個模型。"
                     )
                 if "NOT_FOUND" in text or "not found" in text.lower():
                     continue          # 這個模型不能用，換下一個

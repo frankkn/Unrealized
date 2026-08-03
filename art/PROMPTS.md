@@ -1,6 +1,6 @@
 # 場景圖生成指南
 
-46 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
+49 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
 
 ---
 
@@ -10,7 +10,7 @@
 |---|---|
 | 檔名 | `art/<節點ID>.webp`（例：`art/n0_family.webp`）ID 就是下面每一節的標題 |
 | 比例 | **3:4 直式**（832×1088 或 768×1024） |
-| 格式 | WebP，品質 80。46 張控制在 15MB 內，repo 才不會腫 |
+| 格式 | WebP，品質 80。49 張控制在 15MB 內，repo 才不會腫 |
 | 內容 | **畫面裡不要有任何文字**——字會蓋在圖上，圖裡再有字會打架 |
 | 構圖 | 重要的東西放在**上半部**。下緣會被文字與選項壓住，底部三分之一會被漸層蓋掉 |
 
@@ -18,7 +18,7 @@
 
 ## 風格錨（每一則 prompt 都要接上這段）
 
-一致性全靠這段。**不要每張改寫它**，否則 46 張會像 46 個不同的遊戲。
+一致性全靠這段。**不要每張改寫它**，否則 49 張會像 49 個不同的遊戲。
 
 ```
 pixel art illustration, 16-bit JRPG background art style, detailed dithering,
@@ -32,9 +32,9 @@ no text, no watermark, no UI elements
 
 **負面提示**：`text, letters, watermark, signature, UI, HUD, face, close-up portrait, modern western city, cluttered composition`
 
-### 怎麼讓 46 張看起來像同一個人畫的
+### 怎麼讓 49 張看起來像同一個人畫的
 
-46 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
+49 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
 
 | 工具 | 作法 |
 |---|---|
@@ -75,6 +75,18 @@ no text, no watermark, no UI elements
 `late night, exterior of an old apartment block, only one window lit warm yellow among many dark ones, scooters parked below, overhead power lines, lonely quiet street`
 
 ## 第 2–3 章
+
+### n1_teacher — 那個老師
+> 放學後的空教室，斜射的夕陽，講桌上一疊作業本。
+`empty classroom after school in Taiwan, late golden light through louvred windows, a teacher's desk with stacked exercise books and a red pen, one student seen from behind standing in the doorway, chalk dust in the light, ceiling fan`
+
+### n2_first_failure — 第一次真的失敗
+> 夜裡的公佈欄，一張放榜名單，一個人站著不動。
+`night, a school corridor noticeboard with a posted results list, one teenager seen from behind standing very still in front of it, single fluorescent tube overhead, the rest of the corridor dark, bicycle shed visible through the window`
+
+### n3_first_money — 第一筆自己賺的錢
+> 打烊後的店裡，暖燈，數著鈔票的背影。
+`night, a small Taiwanese convenience store or eatery just after closing, warm light, one young person seen from behind counting bills at the counter, scooter parked outside, first wage`
 
 ### n2_high_school — 十五到十八
 > 清晨校門口，制服學生的背影，圍牆與腳踏車棚。

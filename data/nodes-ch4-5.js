@@ -65,10 +65,25 @@
     { next: 'n6_career_plateau' }
   ];
 
+  // 「你開始認真想，要怎麼處理手上這筆不上不下的存款」——手上要真的有那筆錢
+  function hasSavingsToWorryAbout(state) { return state.attrs.money >= 4; }
+  var INVEST_OR_SKIP = [
+    { when: hasSavingsToWorryAbout, next: 'n5_invest' },
+    { next: 'n5_parents_ill' }
+  ];
+  // 「為了那個位置，你開始了一段長時間透支的日子」——要先有那個位置在追
+  function chasingAPosition(state) { return state.attrs.achieve >= 5; }
+
   var OVERWORK_NEXT = [
     { when: accidentForeshadowed, next: 'n5_accident' },
     { when: hasCashShortfall, next: 'n5_debt' },
     { next: 'n5_era_storm' }
+  ];
+  // 這個要定義在 OVERWORK_NEXT 之後：var 會提升但值是 undefined，
+  // 寫在前面等於 next 指向 undefined —— 引擎現在會當場丟例外，但更早發現更好
+  var OVERWORK_OR_SKIP = [
+    { when: chasingAPosition, next: 'n5_overwork' },
+    { next: OVERWORK_NEXT }
   ];
 
   Object.assign(UNREALIZED.nodes, {
@@ -225,15 +240,19 @@
       id: 'n5_house', chapter: 5, title: '房子', ageRange: '28–35歲',
       text: '買房這件事，對你來說，{買房難度}。',
       options: [
-        { id: 'buy_leverage', label: '砸下所有存款，外加一筆大額房貸，買了', effects: { money: -2, self: 1 }, flags: ['高槓桿'], next: 'n5_invest' },
-        { id: 'rent_forever', label: '放棄買房這件事，把錢花在別的地方', effects: { self: 1, money: 1, achieve: -1 }, next: 'n5_invest' },
-        { id: 'stay_family', label: '繼續跟家人住，省下這筆錢', effects: { money: 1, bond: -1, self: -1 }, next: 'n5_invest' }
+        { id: 'buy_leverage', label: '砸下所有存款，外加一筆大額房貸，買了', effects: { money: -2, self: 1 }, flags: ['高槓桿'], next: INVEST_OR_SKIP },
+        { id: 'rent_forever', label: '放棄買房這件事，把錢花在別的地方', effects: { self: 1, money: 1, achieve: -1 }, next: INVEST_OR_SKIP },
+        { id: 'stay_family', label: '繼續跟家人住，省下這筆錢', effects: { money: 1, bond: -1, self: -1 }, next: INVEST_OR_SKIP }
       ]
     },
 
     n5_invest: {
       id: 'n5_invest', chapter: 5, title: '那筆存款', ageRange: '28–35歲',
-      text: '你開始認真想，要怎麼處理手上這筆不上不下的存款。',
+      text: [
+        { when: { flagsAll: ['早知道存'] }, text: '你從十八歲那筆打工錢就開始存了。現在這筆數字，是那個習慣累積出來的。' },
+        { when: { flagsAll: ['第一次揮霍'] }, text: '你開始認真想這筆存款怎麼處理。你很清楚自己花錢的樣子——十八歲那筆錢就是一次花完的。' },
+        { text: '你開始認真想，要怎麼處理手上這筆不上不下的存款。' }
+      ],
       options: [
         { id: 'etf', label: '選了{存款工具}那種穩穩來的方式', effects: { money: 1, self: -1 }, next: 'n5_parents_ill' },
         { id: 'leverage_trade', label: '開始融資當沖，想加速累積的速度', effects: { money: 2, health: -1 }, flags: ['投機'], next: 'n5_parents_ill' },
@@ -243,7 +262,10 @@
 
     n5_parents_ill: {
       id: 'n5_parents_ill', chapter: 5, title: '長輩病了', ageRange: '28–35歲',
-      text: '家裡長輩的健康出了狀況，誰來處理，變成一個很現實的問題。',
+      text: [
+        { when: { flagsAll: ['貼補家用'] }, text: '家裡長輩的健康出了狀況。從十八歲那筆打工錢開始，你就一直是家裡拿錢出來的那個。' },
+        { text: '家裡長輩的健康出了狀況，誰來處理，變成一個很現實的問題。' }
+      ],
       options: [
         { id: 'care_f', requires: { gender: 'F' }, label: '大家看向你，好像照顧本來就該是你的事', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: 'n5_body_signal' },
         { id: 'money_m', requires: { gender: 'M' }, label: '你被期待的角色是出錢，不是出時間', effects: { money: -2, bond: 1 }, next: 'n5_body_signal' },
@@ -258,11 +280,11 @@
       id: 'n5_body_signal', chapter: 5, title: '身體的訊號', ageRange: '28–35歲',
       text: '你已經好幾年沒有好好做過健檢了。身體有些訊號，你處理的方式是{醫療資訊來源}。',
       options: [
-        { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -2, achieve: 1 }, next: 'n5_overwork' },
-        { id: 'check', label: '抽空去檢查了一次，報告上有幾個字讓你多想了一下', effects: { health: 1, self: -1 }, next: 'n5_overwork' },
-        { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: 'n5_overwork' },
+        { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -2, achieve: 1 }, next: OVERWORK_OR_SKIP },
+        { id: 'check', label: '抽空去檢查了一次，報告上有幾個字讓你多想了一下', effects: { health: 1, self: -1 }, next: OVERWORK_OR_SKIP },
+        { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: OVERWORK_OR_SKIP },
         // 有錢沒時間的人真的會走這條：拿錢換回一點身體，不必拿成就去換
-        { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: 'n5_overwork' }
+        { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: OVERWORK_OR_SKIP }
       ]
     },
 

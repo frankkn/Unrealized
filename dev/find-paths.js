@@ -89,7 +89,8 @@ var TARGETS = [
       c += Math.max(0, 7 - s.attrs.money) * 6;
       // 同性伴侶那條線在世代 tier 有兩個結局（登記那天／一輩子沒說出口）會先攔截
       if (s.flags['同性伴侶']) c += 400;
-      if (s.flags['丁客']) c += 200;               // 2005 的「無子的晚年」
+      // 「無子的晚年」現在有兩個來源：丁客（有伴侶決定不生）與 無子（單身路線算過之後不生）
+      if (s.flags['丁客'] || s.flags['無子']) c += 200;
       if (s.flags['照顧']) c += 100;               // 1990 的「三明治世代」
       c += shadowCount(s) * 8;
       return c;
@@ -119,6 +120,22 @@ TARGETS.forEach(function (t) {
     var finals = beam(c[0], c[1], WIDTH, t.cost);
     for (var j = 0; j < finals.length; j++) {
       if (engine.evaluateEnding(finals[j]).id === t.id) { hit = finals[j]; hitCombo = c; break; }
+    }
+  }
+  // beam 找不到不代表不可達：cost 是人手調的，幾個項互相拉扯時會把搜尋帶進死路。
+  // END_沒被時代選中 就是這樣——beam width 8000 找不到，純亂數兩萬局卻命中 93 次。
+  // 所以退回亂數硬試，比繼續調權重省事得多。
+  if (!hit) {
+    for (var r = 0; r < 60000 && !hit; r++) {
+      var rc = t.combos[r % t.combos.length];
+      var st = engine.createRunState(rc[0], rc[1]);
+      for (var step = 0; step < 80 && !st.ended; step++) {
+        var nd = engine.getNode(st.nodeId);
+        var opts = engine.visibleOptions(nd, st).filter(function (o) { return !o.endingId; });
+        if (!opts.length) break;
+        engine.applyOption(st, nd, opts[Math.floor(Math.random() * opts.length)]);
+      }
+      if (st.ended && engine.evaluateEnding(st).id === t.id) { hit = st; hitCombo = rc; }
     }
   }
   if (!hit) {

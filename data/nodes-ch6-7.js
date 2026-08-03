@@ -86,6 +86,15 @@
   }
   function notAlone(state) { return !livesAloneNow(state); }
 
+  // 「離鄉多年之後，父母老了，老家空了下來」——留在家鄉附近的人沒有這一段
+  function everLeftHome(state) {
+    return !!(state.flags['北漂'] || state.flags['出國'] || state.flags['西進'] || state.flags['移民']);
+  }
+  var RETURN_OR_SKIP = [
+    { when: everLeftHome, next: 'n6_return_home' },
+    { next: 'n6_readjust' }
+  ];
+
   var AFTER_RETIREMENT_NEXT = [
     { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
     { next: 'n7_scam_call' }
@@ -98,6 +107,8 @@
       id: 'n6_career_plateau', chapter: 6, title: '事業高原', ageRange: '35–50歲',
       text: [
         // 回聲：第4章選的那條路，到這裡各自長成不同的天花板
+        { when: { flagsAll: ['收手'] }, text: '再往上你也想過，但你這輩子在那次之後，就很少再讓自己那樣投入一件事了。' },
+        { when: { flagsAll: ['再試一次'] }, text: '你的職業生涯到了高原期。十七歲那年你隔年再試了一次，這次的問題是還有沒有隔年。' },
         { when: { flagsAll: ['接案'] }, text: '你這輩子沒有在同一間公司待超過三年。自由是真的，只是沒有人會來跟你談升遷。' },
         { when: { flagsAll: ['公職'] }, text: '你的位置很穩，穩到你看得見自己十年後在哪一格。前面那幾個人，一個都還沒有要退。' },
         { when: { generation: 1975 }, text: '你在公司已經算資深，但上面那幾個位置，人都還沒有要退的意思。' },
@@ -205,6 +216,7 @@
     n6_health_reckoning: {
       id: 'n6_health_reckoning', chapter: 6, title: '健康清算', ageRange: '35–50歲',
       text: [
+        { when: { flagsAll: ['自責'], attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你在辦公室站起來的時候，眼前黑了三秒。第一個念頭是自己怎麼把身體搞成這樣——你一直都是這樣想事情的。' },
         { when: { attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你在辦公室站起來的時候，眼前黑了三秒。醫生說再這樣下去，就不是警告了。' },
         { text: '身體這幾年欠的債，也開始要還了。' }
       ],
@@ -229,9 +241,9 @@
           effects: { health: 3, self: 1, achieve: -1 },
           next: 'n6_return_home'
         },
-        { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: 'n6_return_home' },
-        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: 'n6_return_home' },
-        { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: 'n6_return_home' }
+        { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: RETURN_OR_SKIP },
+        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: RETURN_OR_SKIP },
+        { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: RETURN_OR_SKIP }
       ]
     },
 
@@ -257,6 +269,8 @@
     n6_readjust: {
       id: 'n6_readjust', chapter: 6, title: '重新調整', ageRange: '35–50歲',
       text: [
+        { when: { flagsAll: ['被看見'] }, text: '走到這裡你重新盤點了一次。當年那個老師看見的東西，你這些年到底有沒有真的長出來。' },
+        { when: { flagsAll: ['被否定'] }, text: '走到這裡你重新盤點了一次。你發現自己一路在證明的，其實是三十年前那句話說錯了。' },
         { when: { flagsAll: ['書香'] }, text: '走到這裡你重新盤點了一次。從小到大你都在符合某一種期待，這是第一次你認真問，那到底是不是你要的。' },
         { when: { flagsAll: ['勞動'] }, text: '走到這裡你重新盤點了一次。小時候家裡教你的是先做再說，做到這個年紀你才有空停下來想一下。' },
         { when: { flagsAll: ['早熟'] }, text: '走到這裡你重新盤點了一次。你從很小就在替別人打算，算到現在才輪到自己。' },
