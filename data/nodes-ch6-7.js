@@ -77,6 +77,15 @@
     { next: AFTER_UNEMPLOYMENT_NEXT }
   ];
 
+  // 五十歲以後是不是一個人住：分開了、或本來就沒有過伴侶
+  function livesAloneNow(state) {
+    // 「單身」要排在前面：同性伴侶分手之後那個旗標仍然留著（好幾個結局讀它），
+    // 只看伴侶類旗標會判成「有人陪」
+    if (state.flags['分開'] || state.flags['單身']) return true;
+    return !state.flags['成家'] && !state.flags['同性伴侶'] && !state.flags['未婚'];
+  }
+  function notAlone(state) { return !livesAloneNow(state); }
+
   var AFTER_RETIREMENT_NEXT = [
     { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
     { next: 'n7_scam_call' }
@@ -147,7 +156,7 @@
       text: '多年下來累積的疲乏，在某一次爆發之後，關係走到了一個分岔點。',
       options: [
         { id: 'work_it_out', label: '決定去諮商，把話攤開來講', effects: { bond: 1, money: -1 }, next: 'n6_politics' },
-        { id: 'separate', label: '決定分開，各自過各自的生活', effects: { bond: -2, self: 1 }, next: 'n6_politics' },
+        { id: 'separate', label: '決定分開，各自過各自的生活', effects: { bond: -2, self: 1 }, flags: ['分開'], next: 'n6_politics' },
         { id: 'stay_for_kids', label: '為了孩子先不分開，把感情放到最後順位', effects: { self: -2, bond: 1 }, next: 'n6_politics' }
       ]
     },
@@ -170,7 +179,7 @@
       id: 'n6_financial_reckoning', chapter: 6, title: '財務盤點', ageRange: '35–50歲',
       // 沒欠過錢的人不該看到「清算」——那是欠過的人才有的畫面
       text: [
-        { when: { flagsAny: ['借貸', '高槓桿', '投機', '宗教金錢'] }, text: '這幾年欠的、借的、賭的，開始一筆一筆找上門。' },
+        { when: { flagsAny: ['借貸', '高槓桿', '投機'] }, text: '這幾年欠的、借的、賭的，開始一筆一筆找上門。' },
         { text: '四十幾歲的某個晚上，你第一次把所有的帳攤開來，認真算了一次。' }
       ],
       options: [
@@ -226,12 +235,14 @@
     n6_return_home: {
       id: 'n6_return_home', chapter: 6, title: '返鄉', ageRange: '35–50歲',
       text: [
+        { when: { flagsAll: ['移民'] }, text: '你在另一個國家的第八年，家裡打電話來說父母的身體不行了。飛回來要轉兩趟，簽證還得重辦。' },
         { when: { generation: 1975 }, text: '離鄉多年之後，父母老了。那條街上的店一間一間換成你不認識的招牌，只有你家那扇門還是原來的。' },
         { when: { generation: 2005 }, text: '老家那一帶這幾年淹過兩次，留下來的人不多了。父母還是不肯搬。' },
         { text: '離鄉多年之後，父母老了，老家空了下來。' }
       ],
       options: [
-        { id: 'move_back', label: '決定搬回去，日子的步調整個慢了下來', effects: { bond: 1, health: 1, money: -1, achieve: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
+        { id: 'move_back', requires: { flagsNone: ['移民'] }, label: '決定搬回去，日子的步調整個慢了下來', effects: { bond: 1, health: 1, money: -1, achieve: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
+        { id: 'move_back_home', requires: { flagsAll: ['移民'] }, label: '把那邊的一切收掉，搬回來', effects: { bond: 2, health: 1, money: -2, achieve: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
         { id: 'bring_them', label: '把父母接到你現在住的地方', effects: { bond: 1, self: -1 }, next: 'n6_readjust' },
         { id: 'commute', label: '選擇繼續兩地跑，哪邊都沒放下', effects: { achieve: 1, money: -1, bond: -1 }, next: 'n6_readjust' }
       ]
@@ -306,15 +317,24 @@
     },
 
     n7_solo_aging: {
-      id: 'n7_solo_aging', chapter: 7, title: '老後獨居', ageRange: '50歲以後',
+      id: 'n7_solo_aging', chapter: 7, title: '老後的日子', ageRange: '50歲以後',
+      // 原本標題是「老後獨居」，敘述直接寫「你現在一個人住」，但這個節點對每個人都跑——
+      // 成家、有小孩、bond 9 的人也會被告知他獨居（6000 局裡有 555 局）。
+      // 老後是每個人都有的一段，獨居不是；所以節點留著，分成兩種老後。
       text: [
-        { when: { generation: 1975 }, text: '同一條巷子裡，剩下的老鄰居也都一個人住了。你們偶爾在門口點個頭。' },
-        { when: { generation: 2005 }, text: '這棟樓一半的門後面都是一個人。管理室每天早上確認一次，有沒有人到中午還沒開門。' },
-        { text: '你現在一個人住，大部分時間都是自己一個人。' }
+        { when: livesAloneNow, text: [
+            { when: { generation: 1975 }, text: '同一條巷子裡，剩下的老鄰居也都一個人住了。你們偶爾在門口點個頭。' },
+            { when: { generation: 2005 }, text: '這棟樓一半的門後面都是一個人。管理室每天早上確認一次，有沒有人到中午還沒開門。' },
+            { text: '你現在一個人住，大部分時間都是自己一個人。' }
+          ] },
+        { when: { generation: 2005 }, text: '兩個人的作息都慢了下來。這棟樓一半的門後面是一個人，你們算是少數。' },
+        { text: '工作退了，該忙的都忙完了，家裡剩下你們兩個，日子重新安靜下來。' }
       ],
       options: [
-        { id: 'thriving_alone', label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: 'n7_body_ledger' },
-        { id: 'lonely', label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: 'n7_body_ledger' },
+        { id: 'thriving_alone', requires: livesAloneNow, label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: 'n7_body_ledger' },
+        { id: 'lonely', requires: livesAloneNow, label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: 'n7_body_ledger' },
+        { id: 'comfortable_silence', requires: notAlone, label: '兩個人的安靜變成一種默契，不用講話也知道對方在哪一間', effects: { bond: 1, self: 1 }, next: 'n7_body_ledger' },
+        { id: 'same_roof', requires: notAlone, label: '同一個屋簷下，你們各過各的，話一年比一年少', effects: { bond: -1, self: -1 }, next: 'n7_body_ledger' },
         { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: 'n7_body_ledger' },
         { id: 'they_stayed', requires: { attr: { key: 'bond', op: '>=', value: 6 } }, label: '老朋友還在，而且這幾年變成固定每個月約一次', effects: { bond: 2, self: 1 }, next: 'n7_body_ledger' }
       ]

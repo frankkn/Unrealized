@@ -77,12 +77,16 @@
     });
   }
 
+  // 跟 resolveNext 一樣要能嵌套：有些敘述是兩個維度交叉的（是不是一個人住 × 世代），
+  // 攤平寫會變成一串條件都要重複寫一遍，而漏掉一格是看不出來的。
   function resolveText(field, state) {
-    var raw;
-    if (typeof field === 'string') raw = field;
-    else if (Array.isArray(field)) raw = pickVariant(field, state, 'text');
-    else raw = '';
-    return substituteLexicon(raw || '', state);
+    var raw = field;
+    var guard = 0;
+    while (Array.isArray(raw)) {
+      if (++guard > 10) throw new Error('text 的變體陣列嵌套太深，可能繞成環了');
+      raw = pickVariant(raw, state, 'text');
+    }
+    return substituteLexicon(typeof raw === 'string' ? raw : '', state);
   }
 
   function getNode(id) {
@@ -218,7 +222,10 @@
   function personalizeEnding(ending, state) {
     var pool = UNREALIZED.endings.personalizations || [];
     var matched = pool.filter(function (p) { return when(p.when, state); }).slice(0, 2);
-    var parts = [ending.text].concat(matched.map(function (p) { return p.text; }));
+    // 結局本文也走 resolveText：有些結局的前提不是二分的（有沒有小孩、有沒有伴侶），
+    // 條件收緊會讓結局變得太難拿到，改寫成通用的又會失去具體的畫面。
+    // 讓它能用變體陣列，就可以「同一個結局，兩種家裡」。
+    var parts = [resolveText(ending.text, state)].concat(matched.map(function (p) { return p.text; }));
     return substituteLexicon(parts.join('\n\n'), state);
   }
 

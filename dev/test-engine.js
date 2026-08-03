@@ -227,15 +227,15 @@ function injuryPick(node, options, state) {
 var LUCKY_MIDBAND_PATH = {
   gen: 1975, gender: "M",
   path: [
-    'n0_family/single_mom', 'n1_single/scholarship', 'n2_high_school/normal',
-    'n3_route/top_hot', 'n3m_military/find_clarity', 'n3_first_love/solo',
+    'n0_family/gov_family', 'n1_bookish/hobby', 'n2_high_school/vocational',
+    'n3_route/top_hot', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
     'n4_job/family_biz', 'n4_westward/stay', 'n4_mlm/refuse_breakup',
-    'n5_career_move/setback', 'n5_marriage/stay_single', 'n5_children/nephews',
-    'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/institution',
-    'n5_body_signal/ignore', 'n5_overwork/pace_self', 'n5_era_storm/dodge',
+    'n5_career_move/setback', 'n5_marriage/breakup_common', 'n5_children/nephews',
+    'n5_house/stay_family', 'n5_invest/avoid', 'n5_parents_ill/institution',
+    'n5_body_signal/ignore', 'n5_overwork/burn_bridge', 'n5_era_storm/dodge',
     'n6_career_plateau/push_more', 'n6_politics/silence', 'n6_health_reckoning/partial_care',
-    'n6_return_home/move_back', 'n6_readjust/double_down', 'n6_parent_dies/relief_and_guilt',
-    'n7_retirement_prep/keep_working', 'n7_scam_call/recognize_immediately', 'n7_solo_aging/community',
+    'n6_return_home/move_back', 'n6_readjust/double_down', 'n6_parent_dies/was_there',
+    'n7_retirement_prep/prepared', 'n7_scam_call/recognize_immediately', 'n7_solo_aging/community',
     'n7_body_ledger/indulge', 'n7_look_back/regret'
   ]
 };
@@ -262,13 +262,13 @@ var LUCKY_SELF_PATH = {
     'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/elite',
     'n3_route/liked_major', 'n3f_headstart/push_back', 'n3_first_love/solo',
     'n4_job/freelance', 'n4_where/stay_local', 'n4f_interview/honest',
-    'n4_westward/go', 'n5_career_move/steady', 'n5_marriage/stay_single',
-    'n5_children/nephews', 'n5_house/stay_family', 'n5_invest/avoid',
-    'n5_parents_ill/hire_caregiver', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
+    'n4_westward/go', 'n5_career_move/big_jump', 'n5_marriage/stay_single',
+    'n5_children/considered_alone', 'n5_house/stay_family', 'n5_invest/avoid',
+    'n5_parents_ill/hire_caregiver', 'n5_body_signal/pay_for_it', 'n5_overwork/pace_self',
     'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/accept',
     'n6_long_term_care/hire_full_time', 'n6_politics/try_understand', 'n6_health_reckoning/overwork_still',
     'n6_return_home/commute', 'n6_readjust/let_go', 'n6_parent_dies/was_there',
-    'n7_retirement_prep/keep_working', 'n7_scam_call/recognize_immediately', 'n7_solo_aging/community',
+    'n7_retirement_prep/keep_working', 'n7_scam_call/almost_fell', 'n7_solo_aging/community',
     'n7_body_ledger/indulge', 'n7_look_back/accept'
   ]
 };
@@ -278,13 +278,13 @@ var LUCKY_QUIET_PATH = {
     'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/elite',
     'n3_route/vocational_college', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
     'n4_job/public_job', 'n4_where/stay_local', 'n4_replaced/push_up',
-    'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/undecided_m',
-    'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/institution',
-    'n5_body_signal/ignore', 'n5_overwork/pace_self', 'n5_era_storm/dodge',
-    'n5_emigrate/emigrate_stay', 'n6_career_plateau/headhunted', 'n6_politics/silence',
+    'n5_career_move/steady', 'n5_marriage/breakup_common', 'n5_children/nephews',
+    'n5_house/stay_family', 'n5_invest/etf', 'n5_parents_ill/institution',
+    'n5_body_signal/pay_for_it', 'n5_overwork/push_through', 'n5_accident/own_injury',
+    'n5_era_storm/dodge', 'n6_career_plateau/headhunted', 'n6_politics/silence',
     'n6_health_reckoning/slow_down', 'n6_return_home/bring_them', 'n6_readjust/let_go',
-    'n6_parent_dies/handled_it', 'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell',
-    'n7_solo_aging/lonely', 'n7_body_ledger/decline', 'n7_look_back/regret'
+    'n6_parent_dies/handled_it', 'n7_retirement_prep/prepared', 'n7_scam_call/recognize_immediately',
+    'n7_solo_aging/community', 'n7_body_ledger/decline', 'n7_look_back/regret'
   ]
 };
 
@@ -304,7 +304,7 @@ var LUCKY_22K_PATH = {
     'n6_politics/fight', 'n6_financial_reckoning/collections_call', 'n6_health_reckoning/overwork_still',
     'n6_return_home/bring_them', 'n6_readjust/let_go', 'n6_parent_dies/was_there',
     'n7_retirement_prep/prepared', 'n7_children_settlement/close', 'n7_scam_call/recognize_immediately',
-    'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful', 'n7_look_back/accept'
+    'n7_solo_aging/comfortable_silence', 'n7_body_ledger/careful', 'n7_look_back/accept'
   ]
 };
 
@@ -320,7 +320,7 @@ var LUCKY_ERA_PATH = {
     'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/change_lane',
     'n6_midlife_unemployment/quick_reemploy', 'n6_politics/silence', 'n6_health_reckoning/overwork_still',
     'n6_return_home/move_back', 'n6_readjust/double_down', 'n6_parent_dies/was_there',
-    'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell', 'n7_solo_aging/thriving_alone',
+    'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell', 'n7_solo_aging/comfortable_silence',
     'n7_body_ledger/careful', 'n7_look_back/accept'
   ]
 };
@@ -484,6 +484,70 @@ if (vers.length) {
     assert(rate > 0.05, id + ' 只有 ' + (rate * 100).toFixed(0) + '% 會觸發，門檻可能寫壞了');
     assert(rate < 0.95, id + ' 有 ' + (rate * 100).toFixed(0) + '% 會觸發，門檻等於沒有');
   });
+})();
+
+// 6d. 敘述與實況不能互相矛盾。前提檢查（6c）看的是「節點該不該出現」，
+//     這裡看的是「出現的那段文字，講的事情在這一局成不成立」——
+//     例如對成家有小孩的人說「你現在一個人住」，或對沒有小孩的人說「孩子還會回來吃飯」。
+//     這種錯畫面不會壞，只會荒謬，而且只在特定旗標組合下出現。
+(function narrationMatchesReality() {
+  var CLAIMS = [
+    { re: /一個人住|獨居/, ok: function (s) { return s.flags['分開'] || s.flags['單身'] || (!s.flags['成家'] && !s.flags['同性伴侶'] && !s.flags['未婚']); }, what: '說「一個人住」，但這局有伴侶' },
+    { re: /孩子(會|還|大了|長大)|你的小孩/, ok: function (s) { return !!s.flags['有小孩']; }, what: '把孩子當既成事實，但這局沒有小孩' },
+    { re: /你們兩個|另一半|老伴/, ok: function (s) { return s.flags['成家'] || s.flags['同性伴侶'] || s.flags['未婚']; }, what: '提到伴侶，但這局沒有' },
+    { re: /欠的、借的、賭的|催收/, ok: function (s) { return s.flags['借貸'] || s.flags['高槓桿'] || s.flags['投機']; }, what: '提到債務，但這局沒欠過錢' }
+  ];
+  var bad = {}, rnd = 987654321;
+  function next() { rnd = (rnd * 1103515245 + 12345) & 0x7fffffff; return rnd / 0x7fffffff; }
+  for (var i = 0; i < 3000; i++) {
+    var s = engine.createRunState(UNREALIZED.config.generations[i % 3], i % 2 ? 'F' : 'M'), guard = 0;
+    while (!s.ended && guard++ < 80) {
+      var node = engine.getNode(s.nodeId);
+      var opts = engine.visibleOptions(node, s);
+      var txt = engine.resolveText(node.text, s);
+      CLAIMS.forEach(function (c) {
+        if (c.re.test(txt) && !c.ok(s)) bad[node.id + ' — ' + c.what] = (bad[node.id + ' — ' + c.what] || 0) + 1;
+      });
+      engine.applyOption(s, node, opts[Math.floor(next() * opts.length)]);
+    }
+    var end = engine.evaluateEnding(s);
+    if (!end) continue;
+    var full = engine.personalizeEnding(end, s);
+    CLAIMS.forEach(function (c) {
+      if (c.re.test(full) && !c.ok(s)) bad[end.id + ' — ' + c.what] = (bad[end.id + ' — ' + c.what] || 0) + 1;
+    });
+  }
+  var found = Object.keys(bad);
+  assert(found.length === 0, '敘述跟這一局的實況矛盾:\n    ' +
+    found.map(function (k) { return bad[k] + ' 次  ' + k; }).join('\n    '));
+})();
+
+// 6e. 旗標組合上的矛盾：同時成立就代表某個節點的選項少了 requires
+(function impossibleFlagPairs() {
+  var IMPOSSIBLE = [
+    { a: '丁客', b: '有小孩', what: '決定不生，卻有小孩' },
+    { a: '單身', b: '成家', what: '單身旗標沒被清掉，卻又成家' },
+    { a: '送機構', b: '照顧', what: '第5章送機構，第6章又自己扛' }
+  ];
+  var bad = {}, rnd = 55555;
+  function next() { rnd = (rnd * 1103515245 + 12345) & 0x7fffffff; return rnd / 0x7fffffff; }
+  for (var i = 0; i < 3000; i++) {
+    var s = engine.createRunState(UNREALIZED.config.generations[i % 3], i % 2 ? 'F' : 'M'), guard = 0;
+    while (!s.ended && guard++ < 80) {
+      var node = engine.getNode(s.nodeId);
+      var opts = engine.visibleOptions(node, s);
+      engine.applyOption(s, node, opts[Math.floor(next() * opts.length)]);
+    }
+    IMPOSSIBLE.forEach(function (p) {
+      if (s.flags[p.a] && s.flags[p.b]) bad[p.a + '+' + p.b + '（' + p.what + '）'] = (bad[p.a + '+' + p.b + '（' + p.what + '）'] || 0) + 1;
+    });
+    // 1975 的同性伴侶要有小孩，只有走過一段對外的婚姻這一條路
+    if (s.generation === 1975 && s.flags['同性伴侶'] && s.flags['有小孩'] && !s.flags['未出櫃']) {
+      bad['1975 同性伴侶有小孩、卻沒走過那段對外婚姻'] = (bad['1975 同性伴侶有小孩、卻沒走過那段對外婚姻'] || 0) + 1;
+    }
+  }
+  var found = Object.keys(bad);
+  assert(found.length === 0, '不該同時成立的旗標組合: ' + found.map(function (k) { return k + ' ×' + bad[k]; }).join('；'));
 })();
 
 // 7. 詞彙字典：至少 25 組，替換後不留佔位符，而且每一組都真的被用到。

@@ -176,7 +176,7 @@
       options: [
         { id: 'marry_common', requires: { flagsNone: ['同性伴侶', '單身'] }, label: '決定結婚，辦了一場{婚禮排場}', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
         { id: 'stay_unmarried', requires: { flagsNone: ['同性伴侶', '單身'] }, label: '決定不婚，繼續在一起，但不進入法律關係', effects: { self: 1, bond: -1 }, flags: ['未婚'], next: 'n5_children' },
-        { id: 'breakup_common', requires: { flagsNone: ['同性伴侶', '單身'] }, label: '這段關係，最後還是走到了分開', effects: { bond: -2, self: 1 }, next: 'n5_children' },
+        { id: 'breakup_common', requires: { flagsNone: ['同性伴侶', '單身'] }, label: '這段關係，最後還是走到了分開', effects: { bond: -2, self: 1 }, flags: ['單身'], next: 'n5_children' },
 
         // 單身專屬：遇到人就把「單身」這個狀態拿掉，不然下游會一直以為你還是一個人
         { id: 'met_someone', requires: { flagsAll: ['單身'] }, label: '三十幾歲那年真的遇到一個人，這次你沒有再往後退', effects: { bond: 2, self: 1, money: -1 }, flags: ['成家'], unflags: ['單身'], next: 'n5_children' },
@@ -186,7 +186,7 @@
         { id: 'register_lgbt', requires: { flagsAll: ['同性伴侶'], generation: [1990, 2005] }, label: '一起去登記，正式成為法律上的家人', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
         { id: 'no_register_lgbt', requires: { flagsAll: ['同性伴侶'], generation: [1990, 2005] }, label: '決定不登記，反正感情才是真的', effects: { self: 1, bond: -1 }, next: 'n5_children' },
         { id: 'closeted_partner_1975', requires: { flagsAll: ['同性伴侶'], generation: 1975 }, label: '用室友的名義生活在一起，對外什麼都不能說', effects: { bond: 1, self: -2 }, flags: ['未出櫃'], next: 'n5_children' },
-        { id: 'breakup_lgbt_1975', requires: { flagsAll: ['同性伴侶'], generation: 1975 }, label: '長期活在沒有法律保障的關係裡，某次爭吵後分開了', effects: { bond: -2, self: -1 }, next: 'n5_children' }
+        { id: 'breakup_lgbt_1975', requires: { flagsAll: ['同性伴侶'], generation: 1975 }, label: '長期活在沒有法律保障的關係裡，某次爭吵後分開了', effects: { bond: -2, self: -1 }, flags: ['單身'], next: 'n5_children' }
       ]
     },
 
@@ -198,10 +198,14 @@
         { text: '有沒有孩子，或什麼時候要決定，開始變成一個躲不掉的問題。在你這一代，帶小孩這件事是{育兒資源}。' }
       ],
       options: [
-        { id: 'have_kids', requires: { flagsNone: ['單身'] }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
+        { id: 'have_kids', requires: { flagsNone: ['單身'], generation: [1990, 2005] }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
+        // 1975 的異性戀伴侶走原本那條；同性伴侶在那個年代要有小孩，
+        // 現實上只有一條路，而那條路的代價是把自己收起來
+        { id: 'have_kids_1975', requires: { flagsNone: ['單身', '同性伴侶'], generation: 1975 }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
+        { id: 'married_out_1975', requires: { flagsAll: ['同性伴侶'], generation: 1975 }, label: '家裡壓了很多年，你走進一段對外的婚姻，也有了孩子', effects: { bond: 1, money: -1, self: -2 }, flags: ['有小孩', '未出櫃', '壓抑'], next: 'n5_house' },
         { id: 'dink', requires: { flagsNone: ['單身'] }, label: '決定不生，把資源留給彼此', effects: { money: 1, self: 1, bond: -1 }, flags: ['丁客'], next: 'n5_house' },
         { id: 'nephews', requires: { flagsAll: ['單身'] }, label: '把姪子外甥當自己的孩子疼，紅包給得比誰都大', effects: { bond: 2, money: -1 }, next: 'n5_house' },
-        { id: 'considered_alone', requires: { flagsAll: ['單身'] }, label: '認真算過一個人生養小孩的可能，最後決定不要', effects: { self: 1, bond: -1 }, flags: ['丁客'], next: 'n5_house' },
+        { id: 'considered_alone', requires: { flagsAll: ['單身'] }, label: '認真算過一個人生養小孩的可能，最後決定不要', effects: { self: 1, bond: -1 }, flags: ['無子'], next: 'n5_house' },
         { id: 'undecided_f', requires: { gender: 'F', flagsNone: ['單身'] }, label: '一直沒有決定，親戚每次見面都要問一次，你開始不太想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: 'n5_house' },
         { id: 'undecided_m', requires: { gender: 'M', flagsNone: ['單身'] }, label: '一直沒有決定，反正好像也沒那麼急', effects: { self: -1, bond: -1 }, next: 'n5_house' }
       ]
@@ -300,6 +304,7 @@
       id: 'n5_emigrate', chapter: 5, title: '要不要移民', ageRange: '28–35歲',
       text: [
         { when: { flagsNone: ['成家', '有小孩'] }, text: '你認真查了一次移民的門檻、成本、要放掉什麼。在你這一代，{移民管道}。' },
+        { when: { flagsNone: ['有小孩'] }, text: '政治氛圍，工作機會，或單純想換一個地方生活——你們認真討論起移民這件事。在你這一代，{移民管道}。' },
         { text: '為了孩子的教育、政治氛圍，或單純想換一個地方生活，你們認真討論起移民這件事。在你這一代，{移民管道}。' }
       ],
       options: [
