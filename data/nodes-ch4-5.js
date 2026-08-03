@@ -91,7 +91,7 @@
       text: '你剛學會、還不算熟練的入門工作，被一個模型接手了。',
       options: [
         { id: 'pivot', label: '轉去一個模型還碰不到的領域，從頭學', effects: { achieve: -1, money: -1, self: 1 }, flags: ['被取代'], next: 'n4_mlm' },
-        { id: 'push_up', label: '拼命把自己往上擠，做那些模型還做不到的事', effects: { achieve: 1, health: -1 }, flags: ['被取代'], next: 'n4_mlm' },
+        { id: 'push_up', label: '拼命把自己往上擠，做那些模型還做不到的事', effects: { achieve: 1, self: -1 }, flags: ['被取代'], next: 'n4_mlm' },
         { id: 'freeze', label: '花了很長一段時間，才決定下一步是什麼', effects: { self: -1, money: -1 }, flags: ['被取代'], next: 'n4_mlm' }
       ]
     },
@@ -185,7 +185,9 @@
       options: [
         { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -2, achieve: 1 }, next: 'n5_overwork' },
         { id: 'check', label: '抽空去檢查了一次，報告上有幾個字讓你多想了一下', effects: { health: 1, self: -1 }, next: 'n5_overwork' },
-        { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: 'n5_overwork' }
+        { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: 'n5_overwork' },
+        // 有錢沒時間的人真的會走這條：拿錢換回一點身體，不必拿成就去換
+        { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: 'n5_overwork' }
       ]
     },
 

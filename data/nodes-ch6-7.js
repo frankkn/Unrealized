@@ -143,7 +143,7 @@
       options: [
         { id: 'move_back', label: '決定搬回去，日子的步調整個慢了下來', effects: { bond: 1, health: 1, money: -1, achieve: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
         { id: 'bring_them', label: '把父母接到你現在住的地方', effects: { bond: 1, self: -1 }, next: 'n6_readjust' },
-        { id: 'commute', label: '選擇繼續兩地跑，哪邊都沒放下', effects: { achieve: 1, health: -1, bond: -1 }, next: 'n6_readjust' }
+        { id: 'commute', label: '選擇繼續兩地跑，哪邊都沒放下', effects: { achieve: 1, money: -1, bond: -1 }, next: 'n6_readjust' }
       ]
     },
 
@@ -151,7 +151,7 @@
       id: 'n6_readjust', chapter: 6, title: '重新調整', ageRange: '35–50歲',
       text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。',
       options: [
-        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, health: -1 }, next: 'n7_retirement_prep' },
+        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n7_retirement_prep' },
         { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1, achieve: -1 }, next: 'n7_retirement_prep' },
         { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { bond: 1, self: -1 }, next: 'n7_retirement_prep' }
       ]
@@ -165,7 +165,7 @@
         { text: '退休金、勞保、存款，你開始認真算一次，接下來這幾十年夠不夠用。' }
       ],
       options: [
-        { id: 'prepared', label: '這些年陸續準備了退休金，現在看起來還算夠用', effects: { money: 1, achieve: -1 }, next: AFTER_RETIREMENT_NEXT },
+        { id: 'prepared', label: '這些年陸續準備了退休金，現在看起來還算夠用', effects: { money: 1, health: 1, achieve: -1, self: -1 }, next: AFTER_RETIREMENT_NEXT },
         { id: 'underprepared', label: '手上的錢，沒有你以為的那麼夠用', effects: { money: -2, self: -1 }, next: AFTER_RETIREMENT_NEXT },
         { id: 'keep_working', label: '決定不真正退休，能做多久就做多久', effects: { money: 1, health: -1 }, next: AFTER_RETIREMENT_NEXT }
       ]
