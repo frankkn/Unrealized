@@ -163,11 +163,28 @@
       id: 'n3_route', chapter: 3, title: '十八到二十二', ageRange: '18–22歲',
       text: '離開高中之後，路開始明顯分岔。',
       options: [
-        { id: 'top_hot', label: '考上頂大的熱門科系，大家都說你以後不用愁', effects: { achieve: 2, self: -1, bond: -1 }, flags: ['頂大'], next: GENDER_GATE },
-        { id: 'general_uni', label: '上了一間普通大學的普通科系，日子照著課表走', effects: { bond: 1, achieve: -1 }, next: GENDER_GATE },
-        { id: 'liked_major', label: '選了自己真的喜歡的科系，雖然大家都問你以後要幹嘛', effects: { self: 2, money: -1, achieve: -1 }, flags: ['喜歡的科系'], next: GENDER_GATE },
-        { id: 'vocational_college', label: '念了專科，提早一步進職場學東西', effects: { money: 1, achieve: -1, self: -1 }, next: GENDER_GATE },
-        { id: 'direct_work', label: '沒有繼續念，直接進去工作，比同齡人早幾年開始存錢', effects: { money: 1, bond: -1, self: -1 }, next: GENDER_GATE }
+        { id: 'top_hot', label: '考上頂大的熱門科系，大家都說你以後不用愁', effects: { achieve: 2, self: -1, bond: -1 }, flags: ['頂大'], next: 'n3_the_friends' },
+        { id: 'general_uni', label: '上了一間普通大學的普通科系，日子照著課表走', effects: { bond: 1, achieve: -1 }, next: 'n3_the_friends' },
+        { id: 'liked_major', label: '選了自己真的喜歡的科系，雖然大家都問你以後要幹嘛', effects: { self: 2, money: -1, achieve: -1 }, flags: ['喜歡的科系'], next: 'n3_the_friends' },
+        { id: 'vocational_college', label: '念了專科，提早一步進職場學東西', effects: { money: 1, achieve: -1, self: -1 }, next: 'n3_the_friends' },
+        { id: 'direct_work', label: '沒有繼續念，直接進去工作，比同齡人早幾年開始存錢', effects: { money: 1, bond: -1, self: -1 }, next: 'n3_the_friends' }
+      ]
+    },
+
+    // bond 這一軸把家人、伴侶、朋友混在一起：一個把心力放朋友、沒放家庭的人，
+    // 數值上跟相反的人一模一樣。不加第六軸（會動到 UI、鐵則、36 個結局），
+    // 改用旗標把友誼串成一條線，由第6章與結局讀回來。
+    n3_the_friends: {
+      id: 'n3_the_friends', chapter: 3, title: '那幾個朋友', ageRange: '18–22歲',
+      text: [
+        { when: { flagsAll: ['被看見'] }, text: '那幾年你身邊有一群人。跟國中那個老師不一樣，這些人不是因為看好你才在。' },
+        { text: '那幾年你身邊有一群人，你們幾乎每天都膩在一起，講的話大部分都不重要。' }
+      ],
+      options: [
+        { id: 'inner_circle', label: '其中有一個，你什麼都跟他說，包括不敢跟家裡說的', effects: { bond: 2, self: 1 }, flags: ['死黨'], next: GENDER_GATE },
+        { id: 'many_shallow', label: '你認識很多人，場子裡都有你，但沒有誰特別近', effects: { bond: 1, self: -1 }, flags: ['人面廣'], next: GENDER_GATE },
+        { id: 'drifted', label: '畢業之後那群人一個一個散了，你也沒特別去追', effects: { self: 1, bond: -2 }, flags: ['朋友走散'], next: GENDER_GATE },
+        { id: 'carried_them', label: '你一直是那個張羅一切的人，累，但被需要的感覺不壞', effects: { bond: 2, health: -1, money: -1 }, flags: ['人面廣'], next: GENDER_GATE }
       ]
     },
 

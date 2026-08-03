@@ -95,6 +95,16 @@
     { next: 'n6_readjust' }
   ];
 
+  // 「一個老朋友打來」——前提是還有人有你的號碼。
+  // 十八歲就讓那群人一個一個散掉的人，這通電話不會響。
+  function someoneStillHasYourNumber(state) {
+    return !!(state.flags['死黨'] || state.flags['人面廣']);
+  }
+  var FRIEND_OR_SKIP = [
+    { when: someoneStillHasYourNumber, next: 'n6_old_friend' },
+    { next: 'n6_parent_dies' }
+  ];
+
   var AFTER_RETIREMENT_NEXT = [
     { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
     { next: 'n7_scam_call' }
@@ -277,14 +287,31 @@
         { text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。' }
       ],
       options: [
-        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n6_parent_dies' },
-        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: 'n6_parent_dies' },
-        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: 'n6_parent_dies' }
+        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: FRIEND_OR_SKIP },
+        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: FRIEND_OR_SKIP },
+        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: FRIEND_OR_SKIP }
       ]
     },
 
     // 照顧那條線原本沒有收束：第5章父母生病、第6章長照，然後就沒有下文了。
     // 這個節點不加條件——父母會走，是這個年紀唯一真的每個人都會遇到的事。
+    // 友誼那條線在中年的結算：朋友不會像家人一樣自動留在你的生活裡，
+    // 到這個年紀還在的，都是有人主動維持過的
+    n6_old_friend: {
+      id: 'n6_old_friend', chapter: 6, title: '很久沒接到的那通電話', ageRange: '35–50歲',
+      text: [
+        { when: { flagsAll: ['死黨'] }, text: '那個什麼都跟他說過的人，這幾年你們各忙各的。這天他打來，開場白繞了很久才講到重點。' },
+        { when: { flagsAll: ['人面廣'] }, text: '一個很多年沒聯絡的名字跳出來。你想了三秒才想起他是誰，然後他開口借錢。' },
+        { text: '一個老朋友打來。寒暄了幾句之後，你聽出他其實是有事。' }
+      ],
+      options: [
+        { id: 'lent_money', label: '借了。那筆錢後來誰都沒有再提起', effects: { money: -2, bond: 1 }, flags: ['借錢給朋友'], next: 'n6_parent_dies' },
+        { id: 'said_no', label: '你說不方便。那之後你們就很少聯絡了', effects: { money: 1, bond: -2 }, flags: ['朋友走散'], next: 'n6_parent_dies' },
+        { id: 'showed_up', label: '你沒借錢，但你去了，陪他把事情一件一件處理完', effects: { bond: 2, self: 1, health: -1 }, flags: ['交情還在'], next: 'n6_parent_dies' },
+        { id: 'kept_it_light', label: '你聽完，說了些場面話，然後兩邊都當作沒事', effects: { self: -1, bond: -1 }, next: 'n6_parent_dies' }
+      ]
+    },
+
     n6_parent_dies: {
       id: 'n6_parent_dies', chapter: 6, title: '那通電話', ageRange: '35–50歲',
       text: [
@@ -364,7 +391,7 @@
         { id: 'comfortable_silence', requires: notAlone, label: '兩個人的安靜變成一種默契，不用講話也知道對方在哪一間', effects: { bond: 1, self: 1 }, next: 'n7_body_ledger' },
         { id: 'same_roof', requires: notAlone, label: '同一個屋簷下，你們各過各的，話一年比一年少', effects: { bond: -1, self: -1 }, next: 'n7_body_ledger' },
         { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: 'n7_body_ledger' },
-        { id: 'they_stayed', requires: { attr: { key: 'bond', op: '>=', value: 6 } }, label: '老朋友還在，而且這幾年變成固定每個月約一次', effects: { bond: 2, self: 1 }, next: 'n7_body_ledger' }
+        { id: 'they_stayed', requires: { flagsAny: ['死黨', '交情還在'] }, label: '老朋友還在，而且這幾年變成固定每個月約一次', effects: { bond: 2, self: 1 }, next: 'n7_body_ledger' }
       ]
     },
 

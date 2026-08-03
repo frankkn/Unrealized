@@ -1,5 +1,5 @@
 """
-產生 49 張節點場景圖。
+產生 51 張節點場景圖。
 
 用法：
     1. 到 https://aistudio.google.com/apikey 產一把 key
@@ -50,6 +50,7 @@ NODES = {
     "n1_single": "late night, exterior of an old apartment block, only one window lit warm yellow among many dark ones, scooters parked below, overhead power lines, lonely quiet street",
     "n1_teacher": "empty classroom after school in Taiwan, late golden light through louvred windows, a teacher's desk with stacked exercise books and a red pen, one student seen from behind standing in the doorway, chalk dust in the light, ceiling fan",
     "n2_first_failure": "night, a school corridor noticeboard with a posted results list, one teenager seen from behind standing very still in front of it, single fluorescent tube overhead, the rest of the corridor dark, bicycle shed visible through the window",
+    "n3_the_friends": "night, a Taiwanese roadside eatery with plastic stools and a strip light, four or five young people seen from behind crowded around one small table, scooters parked at the kerb, steam, easy noise",
     "n3_first_money": "night, a small Taiwanese convenience store or eatery just after closing, warm light, one young person seen from behind counting bills at the counter, scooter parked outside, first wage",
     "n2_high_school": "early morning, Taiwanese high school gate with concrete wall and bicycle shed, uniformed student seen from behind walking in, soft dawn light, banyan tree, quiet before the bell",
     "n3_route": "night, a fork in the road, one path leading toward a lit railway station in the distance, the other into a dim residential lane, street lamp at the junction, young person seen from behind with a bag, stars overhead",
@@ -86,6 +87,7 @@ NODES = {
     "n6_health_reckoning": "clinic consultation room, x-ray films glowing on a light box, doctor silhouette, one patient seen from behind, cold clinical light, the moment before the verdict",
     "n6_return_home": "dusk, the entrance of an old family house in a small town, metal gate and potted plants, one adult seen from behind about to enter, swallows' nest under the eave, homecoming",
     "n6_readjust": "early morning balcony, laundry poles and distant mountains, one person seen from behind holding a cup, city waking below, calm reassessment",
+    "n6_old_friend": "night, a balcony of an apartment block, one adult in their forties seen from behind holding a phone to their ear, city lights below, laundry drying beside them, the call going on longer than expected",
     "n6_parent_dies": "4am hospital corridor in Taiwan, one adult seen from behind standing still, a lit phone screen in their hand, a half-open door further down the corridor, fluorescent tubes reflecting on the polished floor, nobody else awake",
     "n7_retirement_prep": "bank counter interior at midday, one older person seen from behind at the window, passbook on the counter, institutional quiet, soft daylight",
     "n7_children_settlement": "late afternoon living room, an old landline telephone on a side table, one older person seen from behind sitting in an armchair, framed photos on the wall, waiting",
@@ -210,7 +212,7 @@ def main():
                         "\n生圖配額為 0 —— 這把 key 的專案還沒開帳單。\n"
                         "Gemini API 的免費層不含圖像生成（文字模型可以用，圖像 limit: 0）。\n"
                         "到 https://aistudio.google.com/ 把這把 key 所屬的專案升級成付費，再重跑。\n"
-                        "49 張大約 US$2–7，看用到哪個模型。"
+                        "51 張大約 US$2–7，看用到哪個模型。"
                     )
                 if "NOT_FOUND" in text or "not found" in text.lower():
                     continue          # 這個模型不能用，換下一個
