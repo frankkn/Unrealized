@@ -1,6 +1,6 @@
 # 場景圖生成指南
 
-52 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
+53 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
 
 ---
 
@@ -10,7 +10,7 @@
 |---|---|
 | 檔名 | `art/<節點ID>.webp`（例：`art/n0_family.webp`）ID 就是下面每一節的標題 |
 | 比例 | **3:4 直式**（832×1088 或 768×1024） |
-| 格式 | WebP，品質 80。52 張控制在 15MB 內，repo 才不會腫 |
+| 格式 | WebP，品質 80。53 張控制在 15MB 內，repo 才不會腫 |
 | 內容 | **畫面裡不要有任何文字**——字會蓋在圖上，圖裡再有字會打架 |
 | 構圖 | 重要的東西放在**上半部**。下緣會被文字與選項壓住，底部三分之一會被漸層蓋掉 |
 
@@ -18,7 +18,7 @@
 
 ## 風格錨（每一則 prompt 都要接上這段）
 
-一致性全靠這段。**不要每張改寫它**，否則 52 張會像 52 個不同的遊戲。
+一致性全靠這段。**不要每張改寫它**，否則 53 張會像 53 個不同的遊戲。
 
 ```
 pixel art illustration, 16-bit JRPG background art style, detailed dithering,
@@ -32,9 +32,9 @@ no text, no watermark, no UI elements
 
 **負面提示**：`text, letters, watermark, signature, UI, HUD, face, close-up portrait, modern western city, cluttered composition`
 
-### 怎麼讓 52 張看起來像同一個人畫的
+### 怎麼讓 53 張看起來像同一個人畫的
 
-52 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
+53 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
 
 | 工具 | 作法 |
 |---|---|
@@ -61,6 +61,10 @@ no text, no watermark, no UI elements
 ### n0_family — 家庭起點（0–10歲）
 > 黃昏，台灣老式街屋前，鐵窗與水塔，屋內透出暖黃燈光，一個小孩背影站在門口。三代同堂的氣氛。
 `dusk, old Taiwanese townhouse with window security grilles and rooftop water tanks, warm yellow light spilling from the doorway, small child seen from behind standing at the entrance, laundry hanging, quiet residential alley`
+
+### n0_siblings — 家裡幾個小孩
+> 傍晚的老式客廳，矮桌上擺著好幾副碗筷，門口幾雙鞋。
+`late afternoon in an old Taiwanese living room, a low table with rice bowls set out for several children, three small pairs of shoes by the door, one child seen from behind in the doorway, television glow, family of many`
 
 ### n1_bookish — 國中 · 書香家庭
 > 夜晚書桌，檯燈打在攤開的課本上，窗外是公寓夜色，一個國中生背影。

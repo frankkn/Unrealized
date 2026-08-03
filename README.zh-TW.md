@@ -90,7 +90,7 @@ js/state.js             存檔／圖鑑（localStorage）
 js/ui.js                DOM 操作、動畫、章節轉場
 data/config.js          世代設定、詞彙字典、屬性定義、章節基線
 art/                    生成的場景圖，一個節點一張
-art/PROMPTS.md          52 個 prompt，一個節點一則
+art/PROMPTS.md          53 個 prompt，一個節點一則
 data/nodes-ch0-3.js     第 0–3 章
 data/nodes-ch4-5.js     第 4–5 章
 data/nodes-ch6-7.js     第 6–7 章

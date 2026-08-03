@@ -170,7 +170,8 @@
       ],
       options: [
         { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: AFTER_CARE_NEXT },
-        { id: 'share_siblings', label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧'], next: AFTER_CARE_NEXT },
+        { id: 'share_siblings', requires: { flagsAll: ['有手足'] }, label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧', '手足有分擔'], next: AFTER_CARE_NEXT },
+        { id: 'siblings_vanished', requires: { flagsAll: ['有手足'] }, label: '兄弟姐妹一個一個有事，到最後還是只有你在', effects: { bond: -2, self: -1 }, flags: ['照顧', '手足沒出現'], next: AFTER_CARE_NEXT },
         { id: 'hire_full_time', label: '請了全天看護，把自己抽出來一部分', effects: { money: -2, self: 1 }, next: AFTER_CARE_NEXT }
       ]
     },
@@ -279,6 +280,8 @@
     n6_readjust: {
       id: 'n6_readjust', chapter: 6, title: '重新調整', ageRange: '35–50歲',
       text: [
+        { when: { flagsAll: ['老么'] }, text: '走到這裡你重新盤點了一次。你一直是家裡最晚被要求長大的那個，而那個緩衝，好像在某一年就沒有了。' },
+        { when: { flagsAll: ['排中間'] }, text: '走到這裡你重新盤點了一次。你這輩子很會不吵，會到後來連自己想要什麼都要想很久。' },
         { when: { flagsAll: ['休息過'] }, text: '走到這裡你重新盤點了一次。三十歲那年你停下來的那一整年，是這輩子唯一一次真的把時間留給自己。' },
         { when: { flagsAll: ['好運'] }, text: '走到這裡你重新盤點了一次。你很清楚有一段是運氣，也很清楚運氣不會再來第二次。' },
         { when: { flagsAll: ['被看見'] }, text: '走到這裡你重新盤點了一次。當年那個老師看見的東西，你這些年到底有沒有真的長出來。' },
@@ -317,6 +320,7 @@
     n6_parent_dies: {
       id: 'n6_parent_dies', chapter: 6, title: '那通電話', ageRange: '35–50歲',
       text: [
+        { when: { flagsAll: ['手足有分擔'] }, text: '這幾年你們輪班輪出了默契。清晨四點的電話，是排到今晚的那個人打來的。' },
         { when: { flagsAll: ['家庭政治撕裂'] }, text: '你們為了那件事吵到快兩年沒說話。清晨四點的電話打來的時候，你發現自己還記得他的號碼。' },
         { when: { flagsAll: ['照顧'] }, text: '照顧了那麼久，最後那通電話還是在清晨四點響起。你比自己以為的更早接起來。' },
         { when: { flagsAll: ['送機構'] }, text: '機構在清晨四點打來。你上一次去看，是三個星期前的事了。' },
@@ -327,7 +331,9 @@
         { id: 'was_there', label: '你在旁邊，最後那幾天沒有離開', effects: { bond: 1, self: 1, health: -1 }, flags: ['送走父母'], next: 'n7_retirement_prep' },
         { id: 'too_late', label: '你趕過去的時候，已經來不及了', effects: { self: -2, bond: -1, achieve: 1 }, flags: ['送走父母', '來不及'], next: 'n7_retirement_prep' },
         { id: 'relief_and_guilt', label: '你先感覺到的是鬆一口氣，然後為那個鬆一口氣自責很久', effects: { health: 1, self: -1, bond: -1 }, flags: ['送走父母'], next: 'n7_retirement_prep' },
-        { id: 'handled_it', label: '你把後事一件一件辦完，等到全部結束才敢坐下來', effects: { achieve: 1, bond: 1, health: -1, self: -1 }, flags: ['送走父母', '撐住了'], next: 'n7_retirement_prep' }
+        { id: 'handled_it', label: '你把後事一件一件辦完，等到全部結束才敢坐下來', effects: { achieve: 1, bond: 1, health: -1, self: -1 }, flags: ['送走父母', '撐住了'], next: 'n7_retirement_prep' },
+        { id: 'estate_fight', requires: { flagsAll: ['有手足'] }, label: '喪事還沒辦完，房子怎麼分就先吵了起來', effects: { money: 1, bond: -2, self: -1 }, flags: ['送走父母', '手足決裂'], next: 'n7_retirement_prep' },
+        { id: 'estate_ok', requires: { flagsAll: ['有手足'] }, label: '你們把該分的分完，該說的說開，兄弟姐妹沒有散', effects: { bond: 2, money: -1, self: 1 }, flags: ['送走父母', '手足還在'], next: 'n7_retirement_prep' }
       ]
     },
 

@@ -9,6 +9,13 @@
     { next: 'n3f_headstart' }
   ];
 
+  // 問完手足之後，回到出身決定的那條國中線
+  var FAMILY_GATE = [
+    { when: { flagsAll: ['書香'] }, next: 'n1_bookish' },
+    { when: { flagsAll: ['勞動'] }, next: 'n1_labor' },
+    { next: 'n1_single' }
+  ];
+
   Object.assign(UNREALIZED.nodes, {
 
     // ---------------- 第 0 章：家庭起點 ----------------
@@ -21,26 +28,43 @@
           label: '爸媽都是公教人員，家裡重視讀書，什麼事都要「說得出道理」',
           effects: { money: 1, achieve: 1, bond: -1 },
           flags: ['書香'],
-          next: 'n1_bookish'
+          next: 'n0_siblings'
         },
         {
           id: 'labor_family',
           label: '家裡做小生意或在工廠做工，你很小就自己上下學、自己弄晚餐',
           effects: { money: -1, health: 1, self: 1 },
           flags: ['勞動', '早熟'],
-          next: 'n1_labor'
+          next: 'n0_siblings'
         },
         {
           id: 'single_mom',
           label: '媽媽一個人把你跟弟妹拉拔大，錢永遠是那個沒說出口的緊張',
           effects: { money: -2, bond: 1, self: -1 },
           flags: ['單親', '責任'],
-          next: 'n1_single'
+          next: 'n0_siblings'
         }
       ]
     },
 
     // ---------------- 第 1 章：國中 ----------------
+    // 手足在台灣的人生裡是核心：長照怎麼分、遺產怎麼算、誰被期待回家。
+    // 原本只在長照節點的一個選項裡出現過一次，而且獨生子女也看得到那個選項。
+    n0_siblings: {
+      id: 'n0_siblings', chapter: 0, title: '家裡幾個小孩', ageRange: '0–10歲',
+      text: [
+        { when: { generation: 1975 }, text: '那個年代家裡通常不只一個小孩。排行決定了很多後來的事，包括誰先被送出去工作。' },
+        { when: { generation: 2005 }, text: '你這一代，很多人家裡就一個。你家是哪一種，會一路影響到很後面。' },
+        { text: '家裡有幾個小孩，你排第幾，這件事會跟著你一輩子。' }
+      ],
+      options: [
+        { id: 'eldest', label: '你是老大。很多事還沒輪到你想不想要，就已經是你的責任', effects: { achieve: 1, bond: 1, self: -2 }, flags: ['有手足', '長子女', '責任'], next: FAMILY_GATE },
+        { id: 'youngest', label: '你是老么。前面有人擋著，你被允許任性久一點', effects: { self: 2, money: 1, achieve: -1 }, flags: ['有手足', '老么'], next: FAMILY_GATE },
+        { id: 'middle', label: '你排中間。上面下面都有人，你很早就學會不要吵', effects: { bond: 1, health: 1, self: -1 }, flags: ['有手足', '排中間'], next: FAMILY_GATE },
+        { id: 'only_child', label: '家裡就你一個。所有的期待跟所有的資源，都在你身上', effects: { money: 1, achieve: 1, bond: -1, self: -1 }, flags: ['獨生'], next: FAMILY_GATE }
+      ]
+    },
+
     n1_bookish: {
       id: 'n1_bookish', chapter: 1, title: '國中', ageRange: '12–15歲',
       text: '書香家庭的期待很安靜，但一直都在。家裡的電腦？{家用電腦}。',

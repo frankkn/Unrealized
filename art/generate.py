@@ -1,5 +1,5 @@
 """
-產生 52 張節點場景圖。
+產生 53 張節點場景圖。
 
 用法：
     1. 到 https://aistudio.google.com/apikey 產一把 key
@@ -45,6 +45,7 @@ STYLE_ANCHOR = (
 
 NODES = {
     "n0_family": "dusk, old Taiwanese townhouse with window security grilles and rooftop water tanks, warm yellow light spilling from the doorway, small child seen from behind standing at the entrance, laundry hanging, quiet residential alley",
+    "n0_siblings": "late afternoon in an old Taiwanese living room, a low table with rice bowls set out for several children, three small pairs of shoes by the door, one child seen from behind in the doorway, television glow, family of many",
     "n1_bookish": "night, a child's study desk under a single warm desk lamp, open textbooks and stacked reference books, apartment window showing blue night outside, student seen from behind, cramped but tidy room",
     "n1_labor": "late afternoon, small family workshop with half-open roller shutter, tools and cardboard boxes, fluorescent tube light, child seen from behind helping out, worn concrete floor",
     "n1_single": "late night, exterior of an old apartment block, only one window lit warm yellow among many dark ones, scooters parked below, overhead power lines, lonely quiet street",
@@ -213,7 +214,7 @@ def main():
                         "\n生圖配額為 0 —— 這把 key 的專案還沒開帳單。\n"
                         "Gemini API 的免費層不含圖像生成（文字模型可以用，圖像 limit: 0）。\n"
                         "到 https://aistudio.google.com/ 把這把 key 所屬的專案升級成付費，再重跑。\n"
-                        "52 張大約 US$2–7，看用到哪個模型。"
+                        "53 張大約 US$2–7，看用到哪個模型。"
                     )
                 if "NOT_FOUND" in text or "not found" in text.lower():
                     continue          # 這個模型不能用，換下一個
