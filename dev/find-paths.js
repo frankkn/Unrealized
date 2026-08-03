@@ -76,6 +76,26 @@ var TARGETS = [
     }
   },
   {
+    // 成就低但自我高，同時關係要夠高才不會被世代 tier 的孤獨結局搶先蓋掉
+    id: 'END_沒被時代選中', constant: 'LUCKY_ERA_PATH',
+    combos: [[2005, 'F'], [2005, 'M'], [1990, 'F'], [1990, 'M'], [1975, 'F'], [1975, 'M']],
+    cost: function (s) {
+      var c = 0;
+      c += Math.max(0, s.attrs.achieve - 3) * 30;
+      c += Math.max(0, 7 - s.attrs.self) * 30;
+      c += Math.max(0, 4 - s.attrs.bond) * 12;      // 太低會被「一個人走的」攔走
+      c += Math.max(0, 3 - s.attrs.health) * 40;
+      // money 落在 3–6 且 bond<=3 會被「被騙走的晚年」攔走，所以推高一點
+      c += Math.max(0, 7 - s.attrs.money) * 6;
+      // 同性伴侶那條線在世代 tier 有兩個結局（登記那天／一輩子沒說出口）會先攔截
+      if (s.flags['同性伴侶']) c += 400;
+      if (s.flags['丁客']) c += 200;               // 2005 的「無子的晚年」
+      if (s.flags['照顧']) c += 100;               // 1990 的「三明治世代」
+      c += shadowCount(s) * 8;
+      return c;
+    }
+  },
+  {
     id: 'END_22K的逆襲', constant: 'LUCKY_22K_PATH',
     combos: [[1990, 'F'], [1990, 'M']],
     cost: function (s) {

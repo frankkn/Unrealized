@@ -227,17 +227,17 @@ function injuryPick(node, options, state) {
 var LUCKY_MIDBAND_PATH = {
   gen: 1975, gender: "M",
   path: [
-    'n0_family/single_mom', 'n1_single/bottle_up', 'n2_high_school/vocational',
-    'n3_route/liked_major', 'n3m_military/make_bonds', 'n3_first_love/solo',
-    'n4_job/family_biz', 'n4_westward/go_family', 'n4_mlm/refuse_breakup',
-    'n5_career_move/steady', 'n5_marriage/stay_unmarried', 'n5_children/undecided_m',
+    'n0_family/single_mom', 'n1_single/part_time', 'n2_high_school/elite',
+    'n3_route/general_uni', 'n3m_military/find_clarity', 'n3_first_love/solo',
+    'n4_job/family_biz', 'n4_westward/stay', 'n4_mlm/refuse_breakup',
+    'n5_career_move/steady', 'n5_marriage/breakup_common', 'n5_children/undecided_m',
     'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/money_m',
-    'n5_body_signal/check', 'n5_overwork/burn_bridge', 'n5_era_storm/dodge',
+    'n5_body_signal/delegate_worry', 'n5_overwork/pace_self', 'n5_era_storm/dodge',
     'n5_emigrate/emigrate_stay', 'n6_career_plateau/push_more', 'n6_midlife_unemployment/quick_reemploy',
-    'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/separate', 'n6_politics/silence',
-    'n6_financial_reckoning/clean_sheet', 'n6_health_reckoning/overwork_still', 'n6_return_home/bring_them',
-    'n6_readjust/let_go', 'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell',
-    'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful', 'n7_look_back/regret'
+    'n6_long_term_care/hire_full_time', 'n6_politics/silence', 'n6_health_reckoning/slow_down',
+    'n6_return_home/bring_them', 'n6_readjust/double_down', 'n7_retirement_prep/prepared',
+    'n7_scam_call/recognize_immediately', 'n7_solo_aging/thriving_alone', 'n7_body_ledger/indulge',
+    'n7_look_back/regret'
   ]
 };
 function playScriptedPath(generation, gender, path) {
@@ -258,37 +258,37 @@ function playScriptedPath(generation, gender, path) {
 // 尤其自己的路在 1990 世代還會被 achieve>=7 的「22K的逆襲」搶先卡走，必須把 achieve 精準停在 6，
 // 這種窄範圍一樣改成離線 beam search 找到的實際路徑，直接重播驗證
 var LUCKY_SELF_PATH = {
-  gen: 1975, gender: "M",
+  gen: 1975, gender: "F",
   path: [
-    'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/vocational',
-    'n3_route/liked_major', 'n3m_military/find_clarity', 'n3_first_love/solo',
-    'n4_job/big_corp', 'n4_where/stay_local', 'n4_westward/go',
-    'n4_mlm/refuse_breakup', 'n5_career_move/big_jump', 'n5_marriage/marry_common',
-    'n5_children/have_kids', 'n5_house/stay_family', 'n5_invest/avoid',
-    'n5_parents_ill/hire_caregiver', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
-    'n5_debt/grind_through', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
-    'n6_career_plateau/accept', 'n6_midlife_unemployment/start_over', 'n6_parenting/outsource',
-    'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/work_it_out', 'n6_politics/try_understand',
-    'n6_financial_reckoning/clean_sheet', 'n6_health_reckoning/slow_down', 'n6_return_home/commute',
-    'n6_readjust/let_go', 'n7_retirement_prep/keep_working', 'n7_children_settlement/repaired',
-    'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/indulge',
-    'n7_look_back/accept'
+    'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/elite',
+    'n3_route/liked_major', 'n3f_headstart/push_back', 'n3_first_love/solo',
+    'n4_job/freelance', 'n4_where/stay_local', 'n4f_interview/strategic_lie',
+    'n4_westward/go', 'n4_mlm/refuse_breakup', 'n5_career_move/big_jump',
+    'n5_marriage/marry_common', 'n5_children/undecided_f', 'n5_house/stay_family',
+    'n5_invest/avoid', 'n5_parents_ill/hire_caregiver', 'n5_body_signal/ignore',
+    'n5_overwork/pace_self', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
+    'n6_career_plateau/accept', 'n6_midlife_unemployment/start_over', 'n6_long_term_care/hire_full_time',
+    'n6_marriage_crisis/work_it_out', 'n6_politics/try_understand', 'n6_financial_reckoning/manage_through',
+    'n6_health_reckoning/slow_down', 'n6_return_home/commute', 'n6_readjust/let_go',
+    'n7_retirement_prep/keep_working', 'n7_scam_call/almost_fell', 'n7_solo_aging/community',
+    'n7_body_ledger/indulge', 'n7_look_back/accept'
   ]
 };
 var LUCKY_QUIET_PATH = {
   gen: 1975, gender: "M",
   path: [
     'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/normal',
-    'n3_route/top_hot', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
+    'n3_route/vocational_college', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
     'n4_job/public_job', 'n4_where/stay_local', 'n4_westward/go_family',
     'n4_mlm/refuse_breakup', 'n5_career_move/steady', 'n5_marriage/marry_common',
     'n5_children/undecided_m', 'n5_house/rent_forever', 'n5_invest/etf',
-    'n5_parents_ill/money_m', 'n5_body_signal/delegate_worry', 'n5_overwork/pace_self',
+    'n5_parents_ill/money_m', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
     'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/headhunted',
-    'n6_midlife_unemployment/long_gap', 'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/work_it_out',
-    'n6_politics/silence', 'n6_health_reckoning/slow_down', 'n6_return_home/bring_them',
-    'n6_readjust/let_go', 'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell',
-    'n7_solo_aging/community', 'n7_body_ledger/careful', 'n7_look_back/regret'
+    'n6_midlife_unemployment/quick_reemploy', 'n6_long_term_care/hire_full_time', 'n6_marriage_crisis/stay_for_kids',
+    'n6_politics/silence', 'n6_financial_reckoning/clean_sheet', 'n6_health_reckoning/overwork_still',
+    'n6_return_home/bring_them', 'n6_readjust/let_go', 'n7_retirement_prep/underprepared',
+    'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/decline',
+    'n7_look_back/regret'
   ]
 };
 
@@ -313,6 +313,25 @@ var LUCKY_22K_PATH = {
   ]
 };
 
+var LUCKY_ERA_PATH = {
+  gen: 2005, gender: "F",
+  path: [
+    'n0_family/gov_family', 'n1_bookish/skip', 'n2_high_school/no_school',
+    'n3_route/general_uni', 'n3f_headstart/deflect', 'n3_first_love/straight_stable',
+    'n4_job/public_job', 'n4_where/stay_local', 'n4f_interview/honest',
+    'n4_replaced/pivot', 'n4_mlm/refuse_breakup', 'n5_career_move/steady',
+    'n5_marriage/stay_unmarried', 'n5_children/have_kids', 'n5_house/rent_forever',
+    'n5_invest/etf', 'n5_parents_ill/institution', 'n5_body_signal/ignore',
+    'n5_overwork/pace_self', 'n5_debt/grind_through', 'n5_era_storm/dodge',
+    'n5_emigrate/emigrate_stay', 'n6_career_plateau/change_lane', 'n6_midlife_unemployment/quick_reemploy',
+    'n6_parenting/break_pattern', 'n6_long_term_care/hire_full_time', 'n6_politics/silence',
+    'n6_financial_reckoning/manage_through', 'n6_health_reckoning/overwork_still', 'n6_return_home/move_back',
+    'n6_readjust/double_down', 'n7_retirement_prep/prepared', 'n7_children_settlement/distant',
+    'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/careful',
+    'n7_look_back/proud'
+  ]
+};
+
 var midbandProof = playScriptedPath(LUCKY_MIDBAND_PATH.gen, LUCKY_MIDBAND_PATH.gender, LUCKY_MIDBAND_PATH.path);
 assert(engine.evaluateEnding(midbandProof).id === 'END_剛好的人生',
   '照著記錄下來的路徑重播，應該要拿到「剛好的人生」，實際拿到 ' + engine.evaluateEnding(midbandProof).id);
@@ -323,13 +342,15 @@ var quietPathProof = playScriptedPath(LUCKY_QUIET_PATH.gen, LUCKY_QUIET_PATH.gen
 assert(engine.evaluateEnding(quietPathProof).id === 'END_靜靜的如果',
   '照著記錄下來的路徑重播，應該要拿到「靜靜的如果」，實際拿到 ' + engine.evaluateEnding(quietPathProof).id);
 var comeback22kProof = playScriptedPath(LUCKY_22K_PATH.gen, LUCKY_22K_PATH.gender, LUCKY_22K_PATH.path);
+var eraProof = playScriptedPath(LUCKY_ERA_PATH.gen, LUCKY_ERA_PATH.gender, LUCKY_ERA_PATH.path);
+assert(engine.evaluateEnding(eraProof).id === 'END_沒被時代選中',
+  '照著記錄下來的路徑重播，應該要拿到「沒被時代選中」，實際拿到 ' + engine.evaluateEnding(eraProof).id);
 assert(engine.evaluateEnding(comeback22kProof).id === 'END_22K的逆襲',
   '照著記錄下來的路徑重播，應該要拿到「22K的逆襲」，實際拿到 ' + engine.evaluateEnding(comeback22kProof).id);
 
 var targetedProofs = [
   { id: 'END_登記那天', combos: [[1990, 'F'], [1990, 'M']], tries: 600,
     pick: steeringPick({ bond: 0.4, health: 2 }, withBaseline({ n3_first_love: 'same_sex', n3_love_comingout: '90_registered', n5_marriage: 'register_lgbt' })) },
-  { id: 'END_沒被時代選中', combos: ALL_COMBOS, tries: 800, pick: steeringPick({ achieve: -1, self: 1.2, health: 2 }, SAFE_BASELINE) },
   { id: 'END_差一年', combos: [[2005, 'F']], tries: 400, pick: steeringPick({ health: 0.5 }, SAFE_BASELINE) },
   { id: 'END_職災', combos: [[1975, 'M'], [1990, 'M'], [1975, 'F'], [1990, 'F']], tries: 2000, pick: injuryPick },
   { id: 'END_循環的重量', combos: ALL_COMBOS, tries: 600,
@@ -418,7 +439,7 @@ UNREALIZED.config.generations.forEach(function (g) {
 
 // 8. 完整結局應至少有 28 個
 var fullEndingCount = UNREALIZED.endings.full.length;
-assert(fullEndingCount >= 30, '完整結局應至少 30 個，目前 ' + fullEndingCount);
+assert(fullEndingCount >= 36, '完整結局應至少 36 個，目前 ' + fullEndingCount);
 
 // 9. 個人化段落：至少一個旗標組合能讓結局文字被加上額外段落
 var stateWithFlags = engine.createRunState(1990, 'F');

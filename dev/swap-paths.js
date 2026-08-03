@@ -25,7 +25,7 @@ function block(src, name) {
   return src.slice(start, end + 3);
 }
 
-['LUCKY_MIDBAND_PATH', 'LUCKY_SELF_PATH', 'LUCKY_QUIET_PATH', 'LUCKY_22K_PATH'].forEach(function (name) {
+['LUCKY_MIDBAND_PATH', 'LUCKY_SELF_PATH', 'LUCKY_QUIET_PATH', 'LUCKY_22K_PATH', 'LUCKY_ERA_PATH'].forEach(function (name) {
   var fresh = block(gen, name);
   var stale = block(test, name);
   if (!fresh) { console.log('產生檔裡沒有 ' + name); return; }
