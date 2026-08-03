@@ -68,10 +68,14 @@
   // 遊戲原本只有壞運氣（車禍、風暴、詐騙），一個好運都沒有——那不是人生，是刑期。
   // 但好運不該是天上掉下來的：它落在「手上剛好有東西可以被幸運到」的人身上。
   // 這跟 SPEC §3.3.1 是同一條原則：有回報的東西要先投入過才看得到。
+  // 第一版把五個旗標 OR 起來，86% 的局都會遇到——那不叫好運，叫日常。
+  // 改成每個世代對應它自己那一版敘述的前提：阿公的地要家裡真的有做那行，
+  // 忘了管的股票要真的買過，被演算法推出去的東西要真的做過。
   function luckHasSomethingToLandOn(state) {
-    if (state.flags['早知道存'] || state.flags['勞動'] || state.flags['投機']) return true;
-    if (state.flags['接案'] || state.flags['喜歡的科系']) return true;
-    return state.attrs.money >= 7;
+    if (state.attrs.money >= 9) return true;          // 錢多到什麼都可能碰上
+    if (state.generation === 1975) return !!state.flags['勞動'];
+    if (state.generation === 1990) return !!(state.flags['投機'] || state.flags['早知道存']);
+    return !!(state.flags['接案'] || state.flags['喜歡的科系']);
   }
   var WINDFALL_OR_SKIP = [
     { when: luckHasSomethingToLandOn, next: 'n5_windfall' },
