@@ -24,9 +24,16 @@
   // 這個節點無條件跑，而且三個選項有兩個會蓋上「借貸」，
   // 等於走過第5章就被貼上財務陰影，第6章必定被抓去清算。
   // 真的有缺口的人才會遇到：手頭已經緊，或身上有大筆固定支出。
+  //
+  // 第二版：三個旗標原本單獨就能放行，於是事業穩定、薪水很夠的人只因為
+  // 生了小孩，也會被告知「有一筆錢，你怎麼算都算不過來」，還拿到
+  // 「辦了現金卡，先撐過去」——29% 的觸發發生在 money>=6 的局。
+  // 小孩、長照、房貸是**固定支出**，不是缺口；缺口是「支出撞上薄的餘裕」。
+  // 所以改成看餘裕：底下一定緊，上面一定撐得住，中間那一段才由負擔決定。
   function hasCashShortfall(state) {
-    return state.attrs.money <= 4 ||
-      !!state.flags['高槓桿'] || !!state.flags['有小孩'] || !!state.flags['照顧'];
+    if (state.attrs.money <= 4) return true;
+    if (state.attrs.money >= 8) return false;
+    return !!(state.flags['高槓桿'] || state.flags['有小孩'] || state.flags['照顧']);
   }
   var AFTER_ACCIDENT_NEXT = [
     { when: hasCashShortfall, next: 'n5_debt' },

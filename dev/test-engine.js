@@ -460,6 +460,7 @@ if (vers.length) {
     n4_mlm: ['n4_westward', 'n4_22k', 'n4_replaced'],
     n5_emigrate: ['n5_era_storm'],
     n6_midlife_unemployment: ['n6_career_plateau'],
+    n5_debt: ['n5_overwork'],
     // 這兩個節點有好幾條上游（教養、失業、以及各自被跳過時的直通路線），
     // 分母用「進到第6章的人數」才對——n6_career_plateau 是全員必經的第一個節點
     n6_long_term_care: ['n6_career_plateau'],
