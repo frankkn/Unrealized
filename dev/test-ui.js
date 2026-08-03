@@ -24,19 +24,29 @@ var errors = [];
 //
 // 改成先從磁碟把每一支 script 讀進來內嵌，整份文件零外部載入。
 // 順帶連 <script src> 的路徑有沒有打錯也一起測到了（讀不到就直接爆）。
+var SCRIPT_TAG = /<script\s+src="([^"]+)"\s*><\/script>/g;
 function inlineScripts(html) {
-  return html.replace(/<script\s+src="([^"]+)"\s*><\/script>/g, function (_, src) {
+  // 「有沒有漏掉」要數原始檔裡的標籤數，不能在內嵌完的文字裡再搜一次 —— 內嵌進來的
+  // JS 內容裡可能有註解或字串剛好長得像 <script src=...>，那不是標籤、瀏覽器不會去載，
+  // 但字串比對會誤判成漏網之魚（ui.js 的一行註解就踩到過）。
+  var expected = (html.match(SCRIPT_TAG) || []).length;
+  var inlined = 0;
+  var out = html.replace(SCRIPT_TAG, function (_, src) {
     // src 會帶 ?v= 的快取版本號，要先去掉才對得到檔案
     var file = path.join(ROOT, src.split('?')[0]);
     if (!fs.existsSync(file)) {
       throw new Error('index.html 指向一支不存在的 script: ' + src);
     }
+    inlined++;
     return '<script>\n' + fs.readFileSync(file, 'utf8') + '\n</script>';
   });
+  if (!expected) throw new Error('index.html 裡找不到任何 <script src>，格式可能變了');
+  if (inlined !== expected) {
+    throw new Error('有 ' + (expected - inlined) + ' 支 script 沒被內嵌，測試可能會去打網路');
+  }
+  return out;
 }
 var HTML = inlineScripts(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'));
-var remaining = HTML.match(/<script\s+src=/g);
-if (remaining) throw new Error('還有 ' + remaining.length + ' 支 script 沒被內嵌，測試可能會去打網路');
 function fail(m) { console.log('  x ' + m); errors.push(m); }
 function ok(m) { console.log('  v ' + m); }
 
@@ -249,11 +259,24 @@ tests.push(function (done) {
     var codexBtn = doc.getElementById('codex-btn-2');
     if (!codexBtn) { fail('結局畫面沒有圖鑑按鈕'); return done(); }
     click(win, codexBtn);
-    var total = win.UNREALIZED.endings.full.length + win.UNREALIZED.endings.mid.length;
+    // 圖鑑依世代分頁，所以預期值要照「目前這一頁看得到哪些」算，不是全部結局
+    var U2 = win.UNREALIZED;
+    var activeTab = app.querySelector('.codex-tab.active');
+    var gen = Number(activeTab && activeTab.dataset.codexGen);
+    var visible = U2.endings.full.concat(U2.endings.mid).filter(function (e) {
+      return !e.limitedTo || e.limitedTo.indexOf(gen) !== -1;
+    });
+    var codexNow = JSON.parse(win.localStorage.getItem('unrealized:codex') || '{}');
+    var unlockedHere = visible.filter(function (e) {
+      return codexNow[e.id] && (codexNow[e.id].generations || []).indexOf(gen) !== -1;
+    }).length;
     var items = app.querySelectorAll('.codex-item');
     var locked = app.querySelectorAll('.codex-item.locked');
-    items.length === total ? ok(total + ' 個結局條目') : fail('條目數 ' + items.length + '，應為 ' + total);
-    locked.length === total - 1 ? ok((total - 1) + ' 個未解鎖以剪影顯示') : fail('未解鎖數 ' + locked.length + '，應為 ' + (total - 1));
+    items.length === visible.length
+      ? ok(gen + ' 分頁有 ' + visible.length + ' 個條目') : fail('條目數 ' + items.length + '，應為 ' + visible.length);
+    locked.length === visible.length - unlockedHere
+      ? ok((visible.length - unlockedHere) + ' 個未解鎖以剪影顯示')
+      : fail('未解鎖數 ' + locked.length + '，應為 ' + (visible.length - unlockedHere));
     app.querySelector('.codex-progress') ? ok('有解鎖進度') : fail('沒有解鎖進度');
 
     // 只確認按鈕存在是不夠的 —— 這顆按鈕曾經因為 renderNode() 拋例外而完全沒反應，
@@ -273,6 +296,75 @@ tests.push(function (done) {
     click(win, clear);
     !win.localStorage.getItem('unrealized:codex') ? ok('清除紀錄有效') : fail('清除後圖鑑還在');
     doc.getElementById('back-btn') ? ok('清除之後返回按鈕還在') : fail('清除之後返回按鈕不見了');
+    done();
+  });
+});
+
+tests.push(function (done) {
+  console.log('\n=== 6d. 圖鑑的世代分頁 ===');
+  boot(function (win, doc, app) {
+    var U = win.UNREALIZED;
+    startRun(win, app, 1990, 'M');
+    playOut(win, app);
+    if (!win.localStorage.getItem('unrealized:codex')) { fail('沒有解鎖任何結局'); return done(); }
+    click(win, doc.getElementById('codex-btn-2'));
+
+    var tabs = app.querySelectorAll('[data-codex-gen]');
+    tabs.length === U.config.generations.length
+      ? ok(tabs.length + ' 個世代分頁') : fail('分頁數 ' + tabs.length);
+    app.querySelector('.codex-tab.active') ? ok('有一個分頁是選中的') : fail('沒有選中的分頁');
+
+    function tabFor(g) {
+      return Array.prototype.filter.call(app.querySelectorAll('[data-codex-gen]'),
+        function (b) { return Number(b.dataset.codexGen) === g; })[0];
+    }
+    function unlockedTitles() {
+      return Array.prototype.filter.call(app.querySelectorAll('.codex-item'), function (i2) {
+        return !i2.classList.contains('locked');
+      }).map(function (i2) { return i2.querySelector('.codex-title').textContent; });
+    }
+
+    click(win, tabFor(1990));
+    var got1990 = unlockedTitles();
+    got1990.length > 0 ? ok('1990 分頁有解鎖項目: ' + got1990.join(',')) : fail('1990 分頁沒有任何解鎖');
+
+    // 關鍵：用 1990 解的結局，不該讓 1975 那頁也亮起來
+    click(win, tabFor(1975));
+    var got1975 = unlockedTitles();
+    got1975.length === 0 ? ok('1975 分頁沒有被 1990 的紀錄點亮') :
+      fail('1975 分頁誤亮了: ' + got1975.join(','));
+    // 「已在其他世代解鎖」只有在該結局本來就會出現在這一頁時才該顯示。
+    // 判斷依據是「它在 1975 分頁看得到嗎」，不是「它有沒有世代限定」——
+    // 例如雙卡人生限定 [1975,1990]，用 1990 解到之後，1975 分頁確實該標。
+    var codexNow = JSON.parse(win.localStorage.getItem('unrealized:codex') || '{}');
+    var all = U.endings.full.concat(U.endings.mid);
+    var expectMark = Object.keys(codexNow).some(function (id) {
+      var e = all.filter(function (x) { return x.id === id; })[0];
+      if (!e) return false;
+      var visibleIn1975 = !e.limitedTo || e.limitedTo.indexOf(1975) !== -1;
+      return visibleIn1975 && (codexNow[id].generations || []).indexOf(1975) === -1;
+    });
+    var marked = !!app.querySelector('.codex-elsewhere');
+    marked === expectMark
+      ? ok(expectMark ? '正確標示「已在其他世代解鎖」' : '沒有可標示的項目，也正確地沒標')
+      : fail(expectMark ? '該標「已在其他世代解鎖」卻沒標' : '不該標卻標了');
+
+    // 直接指名檢查，不要比數量 —— 1975 與 1990 各自少掉 5 個別人的限定結局，
+    // 總數剛好相同，比數量會平手而看不出過濾有沒有生效
+    function shows(id) { return !!app.querySelector('[data-ending="' + id + '"]'); }
+    U.endings.full.filter(function (e) { return e.limitedTo; }).forEach(function (e) {
+      var wrong = U.config.generations.filter(function (g) { return e.limitedTo.indexOf(g) === -1; });
+      var own = e.limitedTo[0];
+      click(win, tabFor(own));
+      if (!shows(e.id)) fail(e.title + ' 沒出現在自己的 ' + own + ' 分頁');
+      wrong.forEach(function (g) {
+        click(win, tabFor(g));
+        if (shows(e.id)) fail(e.title + '（' + e.limitedTo.join('/') + ' 限定）卻出現在 ' + g + ' 分頁');
+      });
+    });
+    ok('12 個世代限定結局都只出現在自己的分頁');
+
+    doc.getElementById('back-btn') ? ok('切過分頁之後返回按鈕還在') : fail('切分頁弄丟了返回按鈕');
     done();
   });
 });

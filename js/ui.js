@@ -167,59 +167,92 @@
     });
   }
 
-  function codexItemHtml(e, codex) {
+  // 圖鑑依世代分頁。同一個結局在不同世代是不同的成就：
+  // 世代限定的只出現在自己的頁；共通的三頁都有，但解鎖狀態是分開算的
+  // ——你用 1990 解過「家裡還很熱鬧」，不代表 1975 那頁就亮了。
+  function isUnlockedFor(entry, generation) {
+    return !!entry && (entry.generations || []).indexOf(generation) !== -1;
+  }
+  function availableIn(ending, generation) {
+    return !ending.limitedTo || ending.limitedTo.indexOf(generation) !== -1;
+  }
+
+  function codexItemHtml(e, codex, generation) {
     var entry = codex[e.id];
-    var unlocked = !!entry;
-    var html = '<div class="codex-item' + (unlocked ? '' : ' locked') + '">';
+    var unlocked = isUnlockedFor(entry, generation);
+    // 在別的世代解過但這一代還沒 —— 這正是「有些結局你的時代沒給你」的具體樣子
+    var elsewhere = (!unlocked && entry ? (entry.generations || []) : []);
+    var html = '<div class="codex-item' + (unlocked ? '' : ' locked') + '" data-ending="' + e.id + '">';
     html += '<span class="codex-silhouette">' + (unlocked ? '●' : '■') + '</span>';
     html += '<span class="codex-main">';
-    html += '<span class="codex-title">' + (unlocked ? e.title : '？？？') + '</span>';
+    html += '<span class="codex-title">' + (unlocked || elsewhere.length ? e.title : '？？？') + '</span>';
     var tags = '<span class="codex-tags">';
     tags += '<span class="codex-tag rarity-' + (e.rarity || '') + '">' + (e.rarity || '') + '</span>';
-    if (e.limitedTo) {
-      tags += '<span class="codex-tag">' + e.limitedTo.join('/') + ' 限定</span>';
-    }
-    tags += '</span>';
-    html += tags;
-    html += '</span>';
+    if (e.limitedTo) tags += '<span class="codex-tag">' + e.limitedTo.join('/') + ' 限定</span>';
+    tags += '</span></span>';
     if (unlocked) {
       var genders = (entry.genders || []).map(function (g) { return cfg.genderLabels[g] || g; }).join('/');
-      html += '<span class="codex-count">解鎖 ' + entry.count + ' 次 · ' + entry.generations.join('/') +
-        (genders ? ' · ' + genders : '') + '</span>';
+      html += '<span class="codex-count">解鎖 ' + entry.count + ' 次' + (genders ? ' · ' + genders : '') + '</span>';
+    } else if (elsewhere.length) {
+      html += '<span class="codex-count codex-elsewhere">已在 ' + elsewhere.join('/') + ' 解鎖</span>';
     }
     html += '</div>';
     return html;
   }
 
-  // returnTo 是「返回」要回去的畫面。原本這裡用 runState 是否存在來猜，
-  // 但一局結束後 runState 仍在、nodeId 卻已經是 null，renderNode() 會直接拋例外，
-  // 按鈕看起來就像沒反應。來源只有呼叫的人知道，所以由呼叫的人交代。
-  function renderCodex(returnTo) {
+  var codexGen = null;   // 記住上次看的分頁，切回來時不會跳掉
+
+  function renderCodex(returnTo, generation) {
     setSceneMode(false);
+    var lastRun = store.getLastRun();
+    codexGen = generation || codexGen || (lastRun && lastRun.generation) || cfg.generations[0];
+    var gen = codexGen;
     var codex = store.getCodex();
-    var fullEndings = UNREALIZED.endings.full;
-    var midEndings = UNREALIZED.endings.mid;
-    var unlockedFull = fullEndings.filter(function (e) { return codex[e.id]; }).length;
-    var unlockedMid = midEndings.filter(function (e) { return codex[e.id]; }).length;
+
+    var full = UNREALIZED.endings.full.filter(function (e) { return availableIn(e, gen); });
+    var mid = UNREALIZED.endings.mid.filter(function (e) { return availableIn(e, gen); });
+    var got = function (list) {
+      return list.filter(function (e) { return isUnlockedFor(codex[e.id], gen); }).length;
+    };
+
     var html = '<header class="run-header"><h2>結局圖鑑</h2></header>';
-    html += '<p class="codex-progress">完整結局：' + unlockedFull + ' / ' + fullEndings.length + ' · 中途收尾：' + unlockedMid + ' / ' + midEndings.length + '</p>';
+    html += '<div class="codex-tabs" role="tablist">';
+    cfg.generations.forEach(function (g) {
+      var n = UNREALIZED.endings.full.filter(function (e) { return availableIn(e, g); })
+        .filter(function (e) { return isUnlockedFor(codex[e.id], g); }).length;
+      var total = UNREALIZED.endings.full.filter(function (e) { return availableIn(e, g); }).length;
+      html += '<button class="codex-tab' + (g === gen ? ' active' : '') + '" data-codex-gen="' + g + '"' +
+        ' role="tab" aria-selected="' + (g === gen) + '">' + g +
+        '<span class="codex-tab-count">' + n + '/' + total + '</span></button>';
+    });
+    html += '</div>';
+
+    html += '<p class="codex-progress">' + cfg.generationLabels[gen] +
+      '：完整結局 ' + got(full) + ' / ' + full.length +
+      ' · 中途收尾 ' + got(mid) + ' / ' + mid.length + '</p>';
     html += '<h3 class="codex-section">完整結局</h3><div class="codex-list">';
-    fullEndings.forEach(function (e) { html += codexItemHtml(e, codex); });
+    full.forEach(function (e) { html += codexItemHtml(e, codex, gen); });
     html += '</div>';
     html += '<h3 class="codex-section">中途收尾</h3><div class="codex-list">';
-    midEndings.forEach(function (e) { html += codexItemHtml(e, codex); });
+    mid.forEach(function (e) { html += codexItemHtml(e, codex, gen); });
     html += '</div>';
     html += '<div class="options">';
     html += '<button class="link-btn" id="back-btn">返回</button>';
     html += '<button class="link-btn" id="clear-btn">清除紀錄</button>';
     html += '</div>';
     app.innerHTML = html;
+
+    // 用 data-codex-gen 而不是 data-gen：開始畫面的世代選擇也是 data-gen，
+    // 混用的話「有沒有回到開始畫面」這種判斷會被圖鑑分頁誤觸
+    app.querySelectorAll('[data-codex-gen]').forEach(function (btn) {
+      btn.addEventListener('click', function () { renderCodex(returnTo, Number(btn.dataset.codexGen)); });
+    });
     document.getElementById('back-btn').addEventListener('click', returnTo || renderStart);
     document.getElementById('clear-btn').addEventListener('click', function () {
       store.clearAll();
       settings = store.getSettings();
       applyMotionPref();
-      renderCodex(returnTo);
+      renderCodex(returnTo, gen);
     });
   }
 

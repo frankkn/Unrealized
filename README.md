@@ -20,7 +20,7 @@ It also runs straight from disk — download the repo and double-click `index.ht
 2. Walk chapters 0 through 7, from the family you were born into to the years after fifty
 3. Five stats — money, achievement, bonds, health, and **self** (how close your choices ran to what you actually wanted) — move the whole way through, **hidden until the very end**
 4. From chapter 2 onward you may stop early: *"close the book here and see what I've got."* Stopping has five endings of its own
-5. Endings you reach are recorded in the codex; the ones you haven't are silhouettes
+5. The codex has a tab per cohort. An ending you unlocked as 1990 does not light up on the 1975 tab — it reads *unlocked in 1990* instead, and a cohort-locked ending never appears on a tab it was never available on
 
 **36 full endings and 5 early ones.** Some are cohort-locked.
 
