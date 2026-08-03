@@ -95,9 +95,17 @@
     return node.options.filter(function (o) { return when(o.requires, state); });
   }
 
+  // 變體陣列可以嵌套：一段路由條件可以整段被另一段引用（第6章的長照/婚變就這樣組合）。
+  // 少了這個迴圈，嵌套時會把整個陣列當成 nodeId 塞進 state，而症狀是「跳到一個
+  // 叫做 [object Object] 的節點」——很難聯想到是路由組合出來的。
   function resolveNext(option, state) {
-    if (Array.isArray(option.next)) return pickVariant(option.next, state, 'next');
-    return option.next;
+    var next = option.next;
+    var guard = 0;
+    while (Array.isArray(next)) {
+      if (++guard > 10) throw new Error('next 的變體陣列嵌套太深，可能繞成環了');
+      next = pickVariant(next, state, 'next');
+    }
+    return next;
   }
 
   function resolveEndingId(option, state) {

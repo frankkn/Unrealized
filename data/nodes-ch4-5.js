@@ -188,9 +188,10 @@
       options: [
         { id: 'care_f', requires: { gender: 'F' }, label: '大家看向你，好像照顧本來就該是你的事', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: 'n5_body_signal' },
         { id: 'money_m', requires: { gender: 'M' }, label: '你被期待的角色是出錢，不是出時間', effects: { money: -2, bond: 1 }, next: 'n5_body_signal' },
-        { id: 'hire_caregiver', label: '花錢請了看護，減輕一些負擔', effects: { money: -2, self: 1 }, next: 'n5_body_signal' },
+        // 花錢解掉日常負擔的人，第6章那個「生活繞著這件事打轉」的長照節點就不該照樣套上去
+        { id: 'hire_caregiver', label: '花錢請了看護，減輕一些負擔', effects: { money: -2, self: 1 }, flags: ['請看護'], next: 'n5_body_signal' },
         // 前面兩個是性別限定，少了這個的話不論男女都只看得到兩個選項
-        { id: 'institution', label: '送去機構，親戚開始在群組裡說你不孝', effects: { self: 1, health: 1, money: -1, bond: -1 }, next: 'n5_body_signal' }
+        { id: 'institution', label: '送去機構，親戚開始在群組裡說你不孝', effects: { self: 1, health: 1, money: -1, bond: -1 }, flags: ['送機構'], next: 'n5_body_signal' }
       ]
     },
 

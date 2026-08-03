@@ -3,10 +3,21 @@
   var UNREALIZED = global.UNREALIZED = global.UNREALIZED || {};
   UNREALIZED.nodes = UNREALIZED.nodes || {};
 
-  // 只有真的有小孩，才會遇到教養／親子關係結算節點；沒有就直接跳過
+  // 第5章就把日常負擔解掉的人（送機構），第6章那個「生活開始繞著這件事打轉」
+  // 的長照節點對他不成立 —— 整個跳過。這個節點也是「照顧」旗標的唯一來源，
+  // 無條件對每個人跑會讓那個旗標近乎人人有，下游讀它的判定就跟著失效。
+  function longTermCareStillOnYou(state) {
+    return !state.flags['送機構'];
+  }
+  var CARE_OR_SKIP = [
+    { when: longTermCareStillOnYou, next: 'n6_long_term_care' },
+    { when: relationshipUnderStrain, next: 'n6_marriage_crisis' },
+    { next: 'n6_politics' }
+  ];
+  // 只有真的有小孩，才會遇到教養節點；沒有就直接進長照那一段的判斷
   var AFTER_UNEMPLOYMENT_NEXT = [
     { when: { flagsAll: ['有小孩'] }, next: 'n6_parenting' },
-    { next: 'n6_long_term_care' }
+    { next: CARE_OR_SKIP }
   ];
   // 婚變的前提是「有一段關係」，而且那段關係真的在承受壓力。
   // 少了這個門檻，選過分手、或一路單身的人也會被告知「你的關係走到了分岔點」——
@@ -76,15 +87,18 @@
       id: 'n6_parenting', chapter: 6, title: '教養', ageRange: '35–50歲',
       text: '孩子漸漸大了，你開始看見自己教養方式裡，那些從自己父母身上學來的痕跡。',
       options: [
-        { id: 'repeat_pattern', label: '發現自己正在重複當年父母對你做的事，一時改不過來', effects: { bond: -1, self: -1 }, flags: ['複製教養'], next: 'n6_long_term_care' },
-        { id: 'break_pattern', label: '努力練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: 'n6_long_term_care' },
-        { id: 'outsource', label: '把大部分教養的事都交給補習班或安親班，自己專心賺錢', effects: { achieve: 1, money: -1, bond: -1 }, next: 'n6_long_term_care' }
+        { id: 'repeat_pattern', label: '發現自己正在重複當年父母對你做的事，一時改不過來', effects: { bond: -1, self: -1 }, flags: ['複製教養'], next: CARE_OR_SKIP },
+        { id: 'break_pattern', label: '努力練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: CARE_OR_SKIP },
+        { id: 'outsource', label: '把大部分教養的事都交給補習班或安親班，自己專心賺錢', effects: { achieve: 1, money: -1, bond: -1 }, next: CARE_OR_SKIP }
       ]
     },
 
     n6_long_term_care: {
       id: 'n6_long_term_care', chapter: 6, title: '長照黑洞', ageRange: '35–50歲',
-      text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。',
+      text: [
+        { when: { flagsAll: ['請看護'] }, text: '看護請了好幾年，長輩的狀況一直沒有真正好轉。錢每個月照付，你也一直在旁邊，只是那件事從來沒有結束的一天。' },
+        { text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。' }
+      ],
       options: [
         { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: AFTER_CARE_NEXT },
         { id: 'share_siblings', label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧'], next: AFTER_CARE_NEXT },
