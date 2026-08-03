@@ -214,7 +214,7 @@
       options: [
         { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: AFTER_POLITICS_NEXT },
         { id: 'silence', label: '選擇閉嘴吃飯，把話都吞回去', effects: { self: -1, bond: 1 }, next: AFTER_POLITICS_NEXT },
-        { id: 'try_understand', label: '試著理解對方為什麼會這樣想，雖然還是很難', effects: { self: 1, health: -1 }, next: AFTER_POLITICS_NEXT }
+        { id: 'try_understand', label: '試著理解對方為什麼會這樣想，雖然還是很難', effects: { bond: 2, self: -1 }, next: AFTER_POLITICS_NEXT }
       ]
     },
 
@@ -247,6 +247,7 @@
       text: [
         { when: { flagsAll: ['自責'], attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你在辦公室站起來的時候，眼前黑了三秒。第一個念頭是自己怎麼把身體搞成這樣——你一直都是這樣想事情的。' },
         { when: { attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你在辦公室站起來的時候，眼前黑了三秒。醫生說再這樣下去，就不是警告了。' },
+        { when: { flagsAll: ['有在動'] }, text: '健檢報告出來，幾個數字在邊緣。醫生說幸好你這些年一直有在動，不然現在講的會是別的事。' },
         { text: '身體這幾年欠的債，也開始要還了。' }
       ],
       options: [
@@ -255,7 +256,7 @@
         {
           id: 'collapse',
           requires: { attr: { key: 'health', op: '<=', value: 2 } },
-          label: '沒有停，手上的事還沒交代完',
+          label: '沒有停。手上的事還沒交代完，而你的身體已經不打算再等你交代完了',
           effects: {},
           exemptRule: true,
           endingId: [
@@ -267,8 +268,8 @@
           id: 'full_stop',
           requires: { attr: { key: 'health', op: '<=', value: 2 } },
           label: '請了長假，把手上的位置交出去，先把身體救回來',
-          effects: { health: 3, self: 1, achieve: -1 },
-          next: 'n6_return_home'
+          effects: { health: 4, self: 1, achieve: -1, money: -1 },
+          next: RETURN_OR_SKIP
         },
         { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: RETURN_OR_SKIP },
         { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: RETURN_OR_SKIP },
@@ -352,7 +353,7 @@
       options: [
         { id: 'lent_money', label: '借了。那筆錢後來誰都沒有再提起', effects: { money: -2, bond: 1 }, flags: ['借錢給朋友'], next: 'n6_parent_dies' },
         { id: 'said_no', label: '你說不方便。那之後你們就很少聯絡了', effects: { money: 1, bond: -2 }, flags: ['朋友走散'], next: 'n6_parent_dies' },
-        { id: 'showed_up', label: '你沒借錢，但你去了，陪他把事情一件一件處理完', effects: { bond: 2, self: 1, health: -1 }, flags: ['交情還在'], next: 'n6_parent_dies' },
+        { id: 'showed_up', label: '你沒借錢，但你去了，陪他把事情一件一件處理完', effects: { bond: 2, self: 1, money: -1, achieve: -1 }, flags: ['交情還在'], next: 'n6_parent_dies' },
         { id: 'kept_it_light', label: '你聽完，說了些場面話，然後兩邊都當作沒事', effects: { self: -1, bond: -1 }, next: 'n6_parent_dies' }
       ]
     },
@@ -414,7 +415,7 @@
       ],
       options: [
         { id: 'fall_for_it', label: '把一部分積蓄轉了出去，後來才知道是詐騙', effects: { money: -2, self: -1 }, next: 'n7_solo_aging' },
-        { id: 'almost_fell', label: '差一點就信了，後來冷靜下來查證，及時退出', effects: { self: 1, health: -1 }, next: 'n7_solo_aging' },
+        { id: 'almost_fell', label: '差一點就信了，後來冷靜下來查證，及時退出', effects: { self: 1, money: -1 }, next: 'n7_solo_aging' },
         { id: 'recognize_immediately', label: '一聽就知道是詐騙，直接掛掉', effects: { self: 1, bond: -1 }, next: 'n7_solo_aging' }
       ]
     },
@@ -453,7 +454,7 @@
         { id: 'careful', label: '很小心地維持著現有的狀態，盡量不讓它變得更差', effects: { health: 1, self: -1 }, next: 'n7_look_back' },
         { id: 'indulge', label: '決定不要那麼小心，想吃想做的都做，反正日子有限', effects: { self: 1, health: -1 }, next: 'n7_look_back' },
         { id: 'decline', label: '這幾年，身體明顯走下坡，很多事已經做不到了', effects: { health: -2, bond: 1 }, next: 'n7_look_back' },
-        { id: 'paying_off', requires: { attr: { key: 'health', op: '>=', value: 6 } }, label: '這些年走路、游泳、按時回診，到這個年紀開始領回來', effects: { health: 1, self: 1, bond: 1 }, next: 'n7_look_back' }
+        { id: 'paying_off', requires: { flagsAny: ['有在動'], attr: { key: 'health', op: '>=', value: 5 } }, label: '這些年走路、游泳、按時回診，到這個年紀開始領回來', effects: { health: 2, self: 1, bond: 1, money: -1 }, next: 'n7_look_back' }
       ]
     },
 

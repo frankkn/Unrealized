@@ -177,6 +177,13 @@
   // 'whole' 排在單軸與世代限定之前：描述「整個人生的形狀」的結局，
   // 比「某一軸很突出」更難達成也更準確，不該被單軸的搶先蓋掉。
   // （但仍然排在 hard 之後——身體歸零就是身體歸零，其他再好都不改變那件事。）
+  // tier 分布一度很偏（generation 40% / flagCombo 24% / attribute 5%），試過把
+  // flagCombo 提到 generation 前面 —— 結果更糟：flagCombo 有 15 個結局，提前之後
+  // 它自己吃掉 62%，而且把「登記那天」「竹科的股票」整個蓋掉。
+  //
+  // 真正的原因不是順序，是**個別條件太鬆**：END_22K的逆襲 只要 achieve>=6，
+  // 而成就中位數是 8~9，等於「你是 1990」就會拿到它，一個結局吃掉整個世代。
+  // 收緊那兩個之後，同樣的順序就變成 23/0/34/35/7/1，均勻得多。
   var TIER_ORDER = ['hard', 'whole', 'generation', 'flagCombo', 'attribute', 'fallback'];
 
   function findMatch(list, state) {

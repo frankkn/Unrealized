@@ -71,7 +71,8 @@
       options: [
         { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, bond: -1 }, next: 'n1_teacher' },
         { id: 'hobby', label: '偷偷把零用錢存起來，去學一個爸媽不知道的興趣', effects: { self: 1, achieve: -1, money: -1 }, next: 'n1_teacher' },
-        { id: 'skip', label: '有一天早上站在校門口，就是怎麼都不想走進去', effects: { self: 1, bond: -1, achieve: -1 }, next: 'n1_teacher' }
+        { id: 'skip', label: '有一天早上站在校門口，就是怎麼都不想走進去', effects: { self: 1, bond: -1, achieve: -1 }, next: 'n1_teacher' },
+        { id: 'team', label: '進了校隊，每天練到天黑才回家，成績掉了一點但你不在乎', effects: { health: 2, bond: 1, achieve: -1 }, flags: ['有在動'], next: 'n1_teacher' }
       ]
     },
 
@@ -80,7 +81,7 @@
       text: '沒有人特別盯著你的功課，日子要自己想辦法過。放學後的世界比課本大得多——{娛樂}，{交通工具}。',
       options: [
         { id: 'self_taught', label: '沒人盯你，自己摸出一套讀書方法，不算頂尖但穩定', effects: { achieve: 1, self: 1, bond: -1 }, next: 'n1_teacher' },
-        { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, achieve: -1, self: -1 }, next: 'n1_teacher' },
+        { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, health: 1, achieve: -1, self: -1 }, flags: ['有在動'], next: 'n1_teacher' },
         { id: 'skill', label: '幫忙家裡生意時，發現自己對做東西有一種說不出的手感', effects: { achieve: 1, self: 1, money: -1 }, next: 'n1_teacher' },
         {
           id: 'factory',
@@ -98,7 +99,8 @@
       options: [
         { id: 'scholarship', label: '把所有心力都放在考獎學金上，一分都不能浪費', effects: { achieve: 2, bond: -1 }, next: 'n1_teacher' },
         { id: 'part_time', label: '放學後開始打工，把薪水拿回家貼補', effects: { money: 1, health: -1, self: -1 }, next: 'n1_teacher' },
-        { id: 'bottle_up', label: '學會把心事都收起來，在媽媽面前永遠說「我很好」', effects: { self: -1, bond: 1, health: -1 }, next: 'n1_teacher' }
+        { id: 'bottle_up', label: '學會把心事都收起來，在媽媽面前永遠說「我很好」', effects: { self: -1, bond: 1, health: -1 }, next: 'n1_teacher' },
+        { id: 'the_court', label: '放學後在球場待到天黑。那是一天裡唯一不用想事情的時間', effects: { health: 2, self: 1, achieve: -1 }, flags: ['有在動'], next: 'n1_teacher' }
       ]
     },
 
@@ -176,7 +178,7 @@
         { text: '有一件事你很努力，最後沒有成。那是你第一次知道，努力跟成不成是兩回事。' }
       ],
       options: [
-        { id: 'tried_again', label: '隔年再試一次，這次成了', effects: { achieve: 2, self: 1, health: -1 }, flags: ['再試一次'], next: 'n3_route' },
+        { id: 'tried_again', label: '隔年再試一次，這次成了', effects: { achieve: 2, self: 1, money: -1 }, flags: ['再試一次'], next: 'n3_route' },
         { id: 'gave_up', label: '就此收手。之後你很少再讓自己那樣投入一件事', effects: { health: 1, self: -1, achieve: -1 }, flags: ['收手'], next: 'n3_route' },
         { id: 'blamed_self', label: '你把原因全歸到自己身上，那個習慣留了很久', effects: { achieve: 1, self: -2 }, flags: ['自責'], next: 'n3_route' },
         { id: 'shrugged', label: '你聳聳肩就過了，那時候還有的是時間', effects: { self: 1, health: 1, achieve: -1 }, next: 'n3_route' }
@@ -188,7 +190,7 @@
       text: '離開高中之後，路開始明顯分岔。',
       options: [
         { id: 'top_hot', label: '考上頂大的熱門科系，大家都說你以後不用愁', effects: { achieve: 2, self: -1, bond: -1 }, flags: ['頂大'], next: 'n3_the_friends' },
-        { id: 'general_uni', label: '上了一間普通大學的普通科系，日子照著課表走', effects: { bond: 1, achieve: -1 }, next: 'n3_the_friends' },
+        { id: 'general_uni', label: '上了一間普通大學的普通科系，日子照著課表走，社團跟球場佔掉大半時間', effects: { bond: 1, health: 1, achieve: -1 }, next: 'n3_the_friends' },
         { id: 'liked_major', label: '選了自己真的喜歡的科系，雖然大家都問你以後要幹嘛', effects: { self: 2, money: -1, achieve: -1 }, flags: ['喜歡的科系'], next: 'n3_the_friends' },
         { id: 'vocational_college', label: '念了專科，提早一步進職場學東西', effects: { money: 1, achieve: -1, self: -1 }, next: 'n3_the_friends' },
         { id: 'direct_work', label: '沒有繼續念，直接進去工作，比同齡人早幾年開始存錢', effects: { money: 1, bond: -1, self: -1 }, next: 'n3_the_friends' }
@@ -217,7 +219,7 @@
       text: '接下來的{兵役長度}，你的世界從自己身上移開，移到一支部隊裡。',
       options: [
         { id: 'grit_through', label: '把情緒都收起來，只求平安退伍', effects: { achieve: -1, self: -1 }, flags: ['壓抑'], next: 'n3_first_love' },
-        { id: 'make_bonds', label: '退伍時多了幾個能講真心話的朋友', effects: { achieve: -1, money: -1, bond: 1 }, next: 'n3_first_love' },
+        { id: 'make_bonds', label: '退伍時多了幾個能講真心話的朋友，體能也是這輩子最好的一次', effects: { achieve: -1, money: -1, bond: 1, health: 1 }, flags: ['有在動'], next: 'n3_first_love' },
         { id: 'find_clarity', label: '在被抽走自由的時間裡，意外想清楚了自己到底要什麼', effects: { achieve: -1, money: -1, self: 1 }, next: 'n3_first_love' }
       ]
     },
@@ -228,7 +230,8 @@
       options: [
         { id: 'lean_in', label: '順著家裡的期待，先把心力都放在工作上', effects: { achieve: 1, money: 1, self: -1 }, next: 'n3_first_love' },
         { id: 'push_back', label: '直接回嗆「我還沒想結婚」，氣氛僵了一陣子', effects: { achieve: 1, money: 1, bond: -1 }, next: 'n3_first_love' },
-        { id: 'deflect', label: '用加班把「什麼時候穩定下來」這個話題撐過去', effects: { achieve: 1, money: 1, health: -1 }, next: 'n3_first_love' }
+        { id: 'deflect', label: '用加班把「什麼時候穩定下來」這個話題撐過去', effects: { achieve: 1, money: 1, health: -1 }, next: 'n3_first_love' },
+        { id: 'own_time', label: '下班後的時間你誰都不給，拿去做一件跟工作無關的事', effects: { health: 2, self: 2, achieve: -1, money: -1 }, flags: ['有在動'], next: 'n3_first_love' }
       ]
     },
 

@@ -149,7 +149,7 @@
       text: '公司要派你去東莞，一去可能就是三年。',
       options: [
         { id: 'go', label: '你決定去，三年後回來，故鄉有些東西已經不認得你', effects: { money: 2, bond: -2 }, flags: ['西進'], next: MLM_OR_SKIP },
-        { id: 'stay', label: '你選擇留下，升遷的機會給了那個去的人', effects: { bond: 1, achieve: -2 }, next: MLM_OR_SKIP },
+        { id: 'stay', label: '你選擇留下，升遷的機會給了那個去的人。那幾年你養成了每天走路回家的習慣', effects: { bond: 1, health: 1, achieve: -2 }, next: MLM_OR_SKIP },
         { id: 'go_family', label: '你帶著家人一起去，孩子在那邊長大，講話都有腔調了', effects: { money: 1, bond: -1, self: -1 }, flags: ['西進'], next: MLM_OR_SKIP }
       ]
     },
@@ -160,7 +160,8 @@
       options: [
         { id: 'endure', label: '先忍著，騎驢找馬', effects: { achieve: 1, money: -1, self: -1 }, next: MLM_OR_SKIP },
         { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, self: -1 }, next: MLM_OR_SKIP },
-        { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: MLM_OR_SKIP }
+        { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: MLM_OR_SKIP },
+        { id: 'cheap_and_fit', label: '錢不夠就不出門，改成自己煮、騎車上下班，反而是這幾年最健康的時候', effects: { health: 2, money: 1, bond: -1, achieve: -1 }, flags: ['有在動'], next: MLM_OR_SKIP }
       ]
     },
 
@@ -170,7 +171,8 @@
       options: [
         { id: 'pivot', label: '轉去一個模型還碰不到的領域，從頭學', effects: { achieve: -1, money: -1, self: 1 }, flags: ['被取代'], next: MLM_OR_SKIP },
         { id: 'push_up', label: '拼命把自己往上擠，做那些模型還做不到的事', effects: { achieve: 1, self: -1 }, flags: ['被取代'], next: MLM_OR_SKIP },
-        { id: 'freeze', label: '花了很長一段時間，才決定下一步是什麼', effects: { self: -1, money: -1 }, flags: ['被取代'], next: MLM_OR_SKIP }
+        { id: 'freeze', label: '花了很長一段時間，才決定下一步是什麼', effects: { self: -1, money: -1 }, flags: ['被取代'], next: MLM_OR_SKIP },
+        { id: 'off_screen', label: '既然機器搶走的是螢幕前的工作，你去做需要用到身體的那一種', effects: { health: 2, self: 1, achieve: -1 }, flags: ['被取代', '有在動'], next: MLM_OR_SKIP }
       ]
     },
 
@@ -202,7 +204,8 @@
         { id: 'big_jump', label: '跳槽到一個更有挑戰的位置，薪資漲了不少', effects: { achieve: 2, money: 1, bond: -1 }, next: 'n5_marriage' },
         { id: 'steady', label: '留在原本的位置，穩，年資一年一年疊上去', effects: { bond: 1, health: 1, achieve: 1 }, next: 'n5_marriage' },
         { id: 'setback', label: '一次組織調整，你被降了職', effects: { achieve: -2, self: -1 }, next: 'n5_marriage' },
-        { id: 'it_worked', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '你手上那個做了很久的東西，這一年終於做起來了', effects: { achieve: 2, money: 1 }, next: 'n5_marriage' }
+        { id: 'it_worked', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '你手上那個做了很久的東西，這一年終於做起來了', effects: { achieve: 2, money: 1 }, next: 'n5_marriage' },
+        { id: 'slept_on_it', label: '你開始固定運動、按時睡覺。睡飽之後才發現，白天的效率是另一回事', effects: { health: 2, achieve: 1, bond: -1, money: -1 }, flags: ['有在動'], next: 'n5_marriage' }
       ]
     },
 
@@ -288,7 +291,7 @@
       ],
       options: [
         { id: 'took_a_year', label: '你停下來休息了一整年。那一年後來被你記得很久', effects: { health: 2, self: 2, achieve: -1 }, flags: ['好運', '休息過'], next: 'n5_parents_ill' },
-        { id: 'reinvest', label: '全部投回去，想把運氣變成實力', effects: { achieve: 2, money: 1, health: -1 }, flags: ['好運'], next: 'n5_parents_ill' },
+        { id: 'reinvest', label: '全部投回去，想把運氣變成實力', effects: { achieve: 2, money: 1, self: -1 }, flags: ['好運'], next: 'n5_parents_ill' },
         { id: 'gave_family', label: '分給家裡的人。他們到現在都還會提起這件事', effects: { bond: 3, money: -1 }, flags: ['好運'], next: 'n5_parents_ill' },
         { id: 'kept_quiet', label: '你沒告訴任何人，就那樣放著', effects: { money: 2, self: 1, bond: -1 }, flags: ['好運'], next: 'n5_parents_ill' }
       ]
@@ -316,8 +319,8 @@
       id: 'n5_body_signal', chapter: 5, title: '身體的訊號', ageRange: '28–35歲',
       text: '你已經好幾年沒有好好做過健檢了。身體有些訊號，你處理的方式是{醫療資訊來源}。',
       options: [
-        { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -2, achieve: 1 }, next: OVERWORK_OR_SKIP },
-        { id: 'check', label: '抽空去檢查了一次，報告上有幾個字讓你多想了一下', effects: { health: 1, self: -1 }, next: OVERWORK_OR_SKIP },
+        { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -1, achieve: 1, self: -1 }, next: OVERWORK_OR_SKIP },
+        { id: 'check', label: '抽空去檢查了一次。報告上有幾個字讓你多想了一下，但你把它處理掉了', effects: { health: 2, money: -1, self: -1 }, next: OVERWORK_OR_SKIP },
         { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: OVERWORK_OR_SKIP },
         // 有錢沒時間的人真的會走這條：拿錢換回一點身體，不必拿成就去換
         { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: OVERWORK_OR_SKIP }
