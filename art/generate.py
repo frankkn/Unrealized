@@ -1,5 +1,5 @@
 """
-產生 45 張節點場景圖。
+產生 46 張節點場景圖。
 
 用法：
     1. 到 https://aistudio.google.com/apikey 產一把 key
@@ -83,6 +83,7 @@ NODES = {
     "n6_health_reckoning": "clinic consultation room, x-ray films glowing on a light box, doctor silhouette, one patient seen from behind, cold clinical light, the moment before the verdict",
     "n6_return_home": "dusk, the entrance of an old family house in a small town, metal gate and potted plants, one adult seen from behind about to enter, swallows' nest under the eave, homecoming",
     "n6_readjust": "early morning balcony, laundry poles and distant mountains, one person seen from behind holding a cup, city waking below, calm reassessment",
+    "n6_parent_dies": "4am hospital corridor in Taiwan, one adult seen from behind standing still, a lit phone screen in their hand, a half-open door further down the corridor, fluorescent tubes reflecting on the polished floor, nobody else awake",
     "n7_retirement_prep": "bank counter interior at midday, one older person seen from behind at the window, passbook on the counter, institutional quiet, soft daylight",
     "n7_children_settlement": "late afternoon living room, an old landline telephone on a side table, one older person seen from behind sitting in an armchair, framed photos on the wall, waiting",
     "n7_scam_call": "night living room, an older person seen from behind holding a telephone receiver to their ear, only the television glow lighting the room, unease",
@@ -206,7 +207,7 @@ def main():
                         "\n生圖配額為 0 —— 這把 key 的專案還沒開帳單。\n"
                         "Gemini API 的免費層不含圖像生成（文字模型可以用，圖像 limit: 0）。\n"
                         "到 https://aistudio.google.com/ 把這把 key 所屬的專案升級成付費，再重跑。\n"
-                        "45 張大約 US$2–7，看用到哪個模型。"
+                        "46 張大約 US$2–7，看用到哪個模型。"
                     )
                 if "NOT_FOUND" in text or "not found" in text.lower():
                     continue          # 這個模型不能用，換下一個

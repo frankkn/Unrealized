@@ -53,6 +53,21 @@
     { next: 'n6_health_reckoning' }
   ];
 
+  // 「你的位置被劃掉了」不是每個人都會遇到。被裁的是位置不穩的人：
+  // 成就沒真的累積起來，或已經被時代／技術打過一次。
+  // 「被取代」對 2005 世代是 100%（第4章那個節點三個選項都會蓋），單看旗標
+  // 等於整個世代必定失業。所以先看成就：真的做起來的人這關過得去，
+  // 位置本來就不穩的人躲不掉，中間那一段才由旗標決定。
+  function layoffReachesYou(state) {
+    if (state.attrs.achieve <= 5) return true;
+    if (state.attrs.achieve >= 8) return false;
+    return !!(state.flags['被取代'] || state.flags['遇到風暴']);
+  }
+  var UNEMPLOYMENT_OR_SKIP = [
+    { when: layoffReachesYou, next: 'n6_midlife_unemployment' },
+    { next: AFTER_UNEMPLOYMENT_NEXT }
+  ];
+
   var AFTER_RETIREMENT_NEXT = [
     { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
     { next: 'n7_scam_call' }
@@ -63,19 +78,27 @@
     // ---------------- 第 6 章：三十五到五十 · 清算開始 ----------------
     n6_career_plateau: {
       id: 'n6_career_plateau', chapter: 6, title: '事業高原', ageRange: '35–50歲',
-      text: '你的職業生涯到了一個高原期，再往上，好像沒有位置留給你了。',
+      text: [
+        { when: { generation: 1975 }, text: '你在公司已經算資深，但上面那幾個位置，人都還沒有要退的意思。' },
+        { when: { generation: 2005 }, text: '你的職位在幾次自動化之後被重新定義了兩遍，現在你很難跟家人解釋自己到底在做什麼。' },
+        { text: '你的職業生涯到了一個高原期，再往上，好像沒有位置留給你了。' }
+      ],
       options: [
-        { id: 'accept', label: '接受這裡就是頂點，把心力挪去別的地方', effects: { self: 1, bond: 1 }, next: 'n6_midlife_unemployment' },
-        { id: 'push_more', label: '還是拼著想往上擠，結果換來更多失望', effects: { health: -1, self: -1 }, next: 'n6_midlife_unemployment' },
-        { id: 'change_lane', label: '轉去一個新的領域重新開始，等於從頭來一次', effects: { achieve: -2, self: 1 }, next: 'n6_midlife_unemployment' },
+        { id: 'accept', label: '接受這裡就是頂點，把心力挪去別的地方', effects: { self: 1, bond: 1 }, next: UNEMPLOYMENT_OR_SKIP },
+        { id: 'push_more', label: '還是拼著想往上擠，結果換來更多失望', effects: { health: -1, self: -1 }, next: UNEMPLOYMENT_OR_SKIP },
+        { id: 'change_lane', label: '轉去一個新的領域重新開始，等於從頭來一次', effects: { achieve: -2, self: 1 }, next: UNEMPLOYMENT_OR_SKIP },
         // 有回報的選項刻意設成「要先投入過才看得到」——不是白送，是兌現
-        { id: 'headhunted', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '以前的同事來找你，那邊剛好缺一個你這種資歷的人', effects: { achieve: 2, money: 1 }, next: 'n6_midlife_unemployment' }
+        { id: 'headhunted', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '以前的同事來找你，那邊剛好缺一個你這種資歷的人', effects: { achieve: 2, money: 1 }, next: UNEMPLOYMENT_OR_SKIP }
       ]
     },
 
     n6_midlife_unemployment: {
       id: 'n6_midlife_unemployment', chapter: 6, title: '中年失業', ageRange: '35–50歲',
-      text: '一次組織精簡，你的位置被劃掉了。',
+      text: [
+        { when: { generation: 1975 }, text: '公司說要精簡人事。你四十幾歲，履歷上只有這一家。' },
+        { when: { generation: 2005 }, text: '這次不是精簡——是整個職能被一套系統接手了。公司很客氣，還幫你報名了轉職課程。' },
+        { text: '一次組織精簡，你的位置被劃掉了。' }
+      ],
       options: [
         { id: 'quick_reemploy', label: '很快找到下一份工作，但薪水打了折', effects: { bond: 1, money: -1, achieve: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
         { id: 'long_gap', label: '花了很長時間才找到下一份，存款一路在掉', effects: { money: -2, self: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
@@ -85,7 +108,10 @@
 
     n6_parenting: {
       id: 'n6_parenting', chapter: 6, title: '教養', ageRange: '35–50歲',
-      text: '孩子漸漸大了，你開始看見自己教養方式裡，那些從自己父母身上學來的痕跡。',
+      text: [
+        { when: { generation: 2005 }, text: '孩子的成長紀錄從出生就存在雲端，每一天你都翻得到。翻到某一年你忽然發現，自己講的話跟當年父母講的一模一樣。' },
+        { text: '孩子漸漸大了，你開始看見自己教養方式裡，那些從自己父母身上學來的痕跡。' }
+      ],
       options: [
         { id: 'repeat_pattern', label: '發現自己正在重複當年父母對你做的事，一時改不過來', effects: { bond: -1, self: -1 }, flags: ['複製教養'], next: CARE_OR_SKIP },
         { id: 'break_pattern', label: '努力練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: CARE_OR_SKIP },
@@ -97,6 +123,7 @@
       id: 'n6_long_term_care', chapter: 6, title: '長照黑洞', ageRange: '35–50歲',
       text: [
         { when: { flagsAll: ['請看護'] }, text: '看護請了好幾年，長輩的狀況一直沒有真正好轉。錢每個月照付，你也一直在旁邊，只是那件事從來沒有結束的一天。' },
+        { when: { generation: 2005 }, text: '照顧機器人翻身翻得比人穩，該吃的藥一次都沒漏。但長輩要的不是那個——他還是在等你來。' },
         { text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。' }
       ],
       options: [
@@ -119,9 +146,9 @@
     n6_politics: {
       id: 'n6_politics', chapter: 6, title: '餐桌上的戰場', ageRange: '35–50歲',
       text: [
-        { when: { generation: 1975 }, text: '選舉、公投，或某場社會運動，把餐桌變成戰場，你跟長輩站在不同邊。' },
+        { when: { generation: 1975 }, text: '選舉、公投，或某場社會運動，把餐桌變成戰場，你跟長輩站在不同邊。那個年代表達意見的方式是{抗議方式}。' },
         { when: { generation: 1990 }, text: '你卡在中間，上一代跟下一代的立場都不太一樣，你哪邊都不太想選。' },
-        { text: '你跟長輩在餐桌上，對同一件事有著完全不同的看法。' }
+        { text: '你跟長輩在餐桌上，對同一件事有著完全不同的看法。你們的消息來自不同地方——你這邊是{資訊來源}；而{長輩溝通方式}，也一直沒有對過頻。' }
       ],
       options: [
         { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: AFTER_POLITICS_NEXT },
@@ -189,7 +216,11 @@
 
     n6_return_home: {
       id: 'n6_return_home', chapter: 6, title: '返鄉', ageRange: '35–50歲',
-      text: '離鄉多年之後，父母老了，老家空了下來。',
+      text: [
+        { when: { generation: 1975 }, text: '離鄉多年之後，父母老了。那條街上的店一間一間換成你不認識的招牌，只有你家那扇門還是原來的。' },
+        { when: { generation: 2005 }, text: '老家那一帶這幾年淹過兩次，留下來的人不多了。父母還是不肯搬。' },
+        { text: '離鄉多年之後，父母老了，老家空了下來。' }
+      ],
       options: [
         { id: 'move_back', label: '決定搬回去，日子的步調整個慢了下來', effects: { bond: 1, health: 1, money: -1, achieve: -1 }, flags: ['返鄉'], next: 'n6_readjust' },
         { id: 'bring_them', label: '把父母接到你現在住的地方', effects: { bond: 1, self: -1 }, next: 'n6_readjust' },
@@ -201,9 +232,27 @@
       id: 'n6_readjust', chapter: 6, title: '重新調整', ageRange: '35–50歲',
       text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。',
       options: [
-        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n7_retirement_prep' },
-        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: 'n7_retirement_prep' },
-        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: 'n7_retirement_prep' }
+        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n6_parent_dies' },
+        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: 'n6_parent_dies' },
+        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: 'n6_parent_dies' }
+      ]
+    },
+
+    // 照顧那條線原本沒有收束：第5章父母生病、第6章長照，然後就沒有下文了。
+    // 這個節點不加條件——父母會走，是這個年紀唯一真的每個人都會遇到的事。
+    n6_parent_dies: {
+      id: 'n6_parent_dies', chapter: 6, title: '那通電話', ageRange: '35–50歲',
+      text: [
+        { when: { flagsAll: ['照顧'] }, text: '照顧了那麼久，最後那通電話還是在清晨四點響起。你比自己以為的更早接起來。' },
+        { when: { flagsAll: ['送機構'] }, text: '機構在清晨四點打來。你上一次去看，是三個星期前的事了。' },
+        { when: { flagsAll: ['返鄉'] }, text: '你就睡在隔壁房間。清晨四點，你聽見的不是聲音，是突然安靜下來。' },
+        { text: '清晨四點的電話。你聽完第一句就知道，接下來這幾天要怎麼過了。' }
+      ],
+      options: [
+        { id: 'was_there', label: '你在旁邊，最後那幾天沒有離開', effects: { bond: 1, self: 1, health: -1 }, flags: ['送走父母'], next: 'n7_retirement_prep' },
+        { id: 'too_late', label: '你趕過去的時候，已經來不及了', effects: { self: -2, bond: -1, achieve: 1 }, flags: ['送走父母', '來不及'], next: 'n7_retirement_prep' },
+        { id: 'relief_and_guilt', label: '你先感覺到的是鬆一口氣，然後為那個鬆一口氣自責很久', effects: { health: 1, self: -1, bond: -1 }, flags: ['送走父母'], next: 'n7_retirement_prep' },
+        { id: 'handled_it', label: '你把後事一件一件辦完，等到全部結束才敢坐下來', effects: { achieve: 1, bond: 1, health: -1, self: -1 }, flags: ['送走父母', '撐住了'], next: 'n7_retirement_prep' }
       ]
     },
 
@@ -212,7 +261,7 @@
       id: 'n7_retirement_prep', chapter: 7, title: '退休準備', ageRange: '50歲以後',
       text: [
         { when: { generation: 2005 }, text: '超高齡社會，勞保這件事，大家心裡都有個問號，但問題不是新的——只是這次輪到你。' },
-        { text: '退休金、勞保、存款，你開始認真算一次，接下來這幾十年夠不夠用。' }
+        { text: '退休金、勞保、存款，你開始認真算一次，接下來這幾十年夠不夠用。在你這一代，退休保障是{退休保障}。' }
       ],
       options: [
         { id: 'prepared', label: '這些年陸續準備了退休金，現在看起來還算夠用', effects: { money: 1, health: 1, self: -1 }, next: AFTER_RETIREMENT_NEXT },
@@ -223,7 +272,10 @@
 
     n7_children_settlement: {
       id: 'n7_children_settlement', chapter: 7, title: '與孩子的關係結算', ageRange: '50歲以後',
-      text: '孩子長大以後，你們的關係變成現在這個樣子，已經是某種定局。',
+      text: [
+        { when: { generation: 2005 }, text: '孩子在另一個時區工作。你們每週固定通話，畫面很清楚，話題很少。' },
+        { text: '孩子長大以後，你們的關係變成現在這個樣子，已經是某種定局。' }
+      ],
       options: [
         { id: 'close', label: '現在還是常聯絡，偶爾一起吃飯', effects: { bond: 2, self: -1 }, next: 'n7_scam_call' },
         { id: 'distant', label: '長大後很少回來，你不太確定具體是哪裡出了問題', effects: { bond: -2, self: -1 }, next: 'n7_scam_call' },
@@ -246,7 +298,11 @@
 
     n7_solo_aging: {
       id: 'n7_solo_aging', chapter: 7, title: '老後獨居', ageRange: '50歲以後',
-      text: '你現在一個人住，大部分時間都是自己一個人。',
+      text: [
+        { when: { generation: 1975 }, text: '同一條巷子裡，剩下的老鄰居也都一個人住了。你們偶爾在門口點個頭。' },
+        { when: { generation: 2005 }, text: '這棟樓一半的門後面都是一個人。管理室每天早上確認一次，有沒有人到中午還沒開門。' },
+        { text: '你現在一個人住，大部分時間都是自己一個人。' }
+      ],
       options: [
         { id: 'thriving_alone', label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: 'n7_body_ledger' },
         { id: 'lonely', label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: 'n7_body_ledger' },
@@ -257,7 +313,10 @@
 
     n7_body_ledger: {
       id: 'n7_body_ledger', chapter: 7, title: '身體的餘額', ageRange: '50歲以後',
-      text: '身體這本帳，到了這個年紀，已經不太可能再存回去，只能想辦法花得慢一點。',
+      text: [
+        { when: { generation: 2005 }, text: '現在能延長的年份比你父母那一代多得多。只是沒有人跟你保證，延長的是哪一段。' },
+        { text: '身體這本帳，到了這個年紀，已經不太可能再存回去，只能想辦法花得慢一點。' }
+      ],
       options: [
         { id: 'careful', label: '很小心地維持著現有的狀態，盡量不讓它變得更差', effects: { health: 1, self: -1 }, next: 'n7_look_back' },
         { id: 'indulge', label: '決定不要那麼小心，想吃想做的都做，反正日子有限', effects: { self: 1, health: -1 }, next: 'n7_look_back' },
@@ -268,7 +327,10 @@
 
     n7_look_back: {
       id: 'n7_look_back', chapter: 7, title: '回望', ageRange: '50歲以後',
-      text: '存摺走到最後一頁，你把它整本翻回第一頁，重新看了一次。',
+      text: [
+        { when: { generation: 2005 }, text: '存摺這種東西你這輩子沒真的用過幾次，但這個比喻你懂。翻回第一頁，重新看了一次。' },
+        { text: '存摺走到最後一頁，你把它整本翻回第一頁，重新看了一次。' }
+      ],
       options: [
         { id: 'accept', label: '大致接受了這一路走來的樣子', effects: { self: 2, bond: 1 }, next: 'GAME_END' },
         { id: 'regret', label: '有些地方你還是會想，如果當初不一樣就好了', effects: { self: -1, bond: 1 }, next: 'GAME_END' },

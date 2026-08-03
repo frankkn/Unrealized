@@ -43,7 +43,7 @@
     // ---------------- 第 1 章：國中 ----------------
     n1_bookish: {
       id: 'n1_bookish', chapter: 1, title: '國中', ageRange: '12–15歲',
-      text: '書香家庭的期待很安靜，但一直都在。',
+      text: '書香家庭的期待很安靜，但一直都在。家裡的電腦？{家用電腦}。',
       options: [
         { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, bond: -1 }, next: 'n2_high_school' },
         { id: 'hobby', label: '偷偷把零用錢存起來，去學一個爸媽不知道的興趣', effects: { self: 1, achieve: -1, money: -1 }, next: 'n2_high_school' },
@@ -53,7 +53,7 @@
 
     n1_labor: {
       id: 'n1_labor', chapter: 1, title: '國中', ageRange: '12–15歲',
-      text: '沒有人特別盯著你的功課，日子要自己想辦法過。',
+      text: '沒有人特別盯著你的功課，日子要自己想辦法過。放學後的世界比課本大得多——{娛樂}，{交通工具}。',
       options: [
         { id: 'self_taught', label: '沒人盯你，自己摸出一套讀書方法，不算頂尖但穩定', effects: { achieve: 1, self: 1, bond: -1 }, next: 'n2_high_school' },
         { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, achieve: -1, self: -1 }, next: 'n2_high_school' },
@@ -70,7 +70,7 @@
 
     n1_single: {
       id: 'n1_single', chapter: 1, title: '國中', ageRange: '12–15歲',
-      text: '媽媽從沒說過辛苦，但你看得出來。',
+      text: '媽媽從沒說過辛苦，但你看得出來。這個年紀能找到的{打工機會}不多，但你有在看。',
       options: [
         { id: 'scholarship', label: '把所有心力都放在考獎學金上，一分都不能浪費', effects: { achieve: 2, bond: -1 }, next: 'n2_high_school' },
         { id: 'part_time', label: '放學後開始打工，把薪水拿回家貼補', effects: { money: 1, health: -1, self: -1 }, next: 'n2_high_school' },
@@ -81,7 +81,7 @@
     // ---------------- 第 2 章：十五到十八 ----------------
     n2_high_school: {
       id: 'n2_high_school', chapter: 2, title: '十五到十八', ageRange: '15–18歲',
-      text: '{升學考試}的結果，把你分到了一條路上。',
+      text: '{升學考試}的結果，把你分到了一條路上。{升學率}——你那一屆就是這樣，而{補習方式}是你們共同的記憶。',
       options: [
         {
           id: 'elite',
@@ -160,11 +160,13 @@
 
     n3_first_love: {
       id: 'n3_first_love', chapter: 3, title: '第一次認真的關係', ageRange: '18–22歲',
-      text: '這個階段，總會有一段關係，讓你第一次認真想到「我到底要跟誰過日子」。',
+      text: '這個階段，總會有一段關係，讓你第一次認真想到「我到底要跟誰過日子」。那個年代的距離感，是{通訊}。',
       options: [
-        { id: 'straight_stable', label: '跟一個普通、穩定的人談了戀愛，很快就要決定要不要走下去', effects: { bond: 1, self: -1 }, next: 'n4_job' },
+        { id: 'straight_stable', label: '透過{戀愛認識方式}認識了一個普通、穩定的人，很快就要決定要不要走下去', effects: { bond: 1, self: -1 }, next: 'n4_job' },
         { id: 'same_sex', label: '發現自己真正喜歡的是同性', effects: { self: 1, bond: -1 }, flags: ['同性伴侶'], next: 'n3_love_comingout' },
-        { id: 'solo', label: '沒特別談戀愛，把時間都留給自己', effects: { self: 1, bond: -2 }, next: 'n4_job' }
+        // 「單身」是一個要往下傳的狀態：第5章的婚姻與小孩節點原本假設每個人都有伴侶，
+        // 選了這個的人會被問「決定不婚，繼續在一起」——根本沒有那段關係
+        { id: 'solo', label: '沒特別談戀愛，把時間都留給自己，{娛樂}比約會有趣', effects: { self: 1, bond: -2 }, flags: ['單身'], next: 'n4_job' }
       ]
     },
 

@@ -130,6 +130,9 @@
       state.attrs[key] = clamp(state.attrs[key] + option.effects[key]);
     });
     (option.flags || []).forEach(function (f) { addFlag(state, f); });
+    // 有些狀態會變回去：單身的人在三十幾歲遇到了對象，「單身」就不再成立。
+    // 少了這個，旗標只能加不能減，下游只好去猜「有 A 但也有 B 所以其實是 C」。
+    (option.unflags || []).forEach(function (f) { delete state.flags[f]; });
     state.history.push({ nodeId: node.id, optionId: option.id, chapter: node.chapter });
     if (node.chapter > state.chapter) {
       applyChapterDrift(state, state.chapter, node.chapter);
@@ -145,11 +148,15 @@
     }
 
     var next = resolveNext(option, state);
-    if (!next || next === 'GAME_END') {
+    // 結束只能是「明講的」。falsy 的 next 曾經也被當成正常結束，於是一張寫壞的
+    // 路由表（變體陣列自我參照 → undefined）會安靜地把整局收掉，跑六千局都不出聲，
+    // 而症狀只是「那個節點怎麼都不出現」。這種錯要當場炸，不要偽裝成結局。
+    if (next === 'GAME_END') {
       state.ended = true;
       state.nodeId = null;
       return { ended: true, direct: false };
     }
+    if (!next) throw new Error(node.id + '/' + option.id + ' 的 next 解不出節點（要結束請寫 GAME_END）');
     state.nodeId = next;
     return { ended: false };
   }

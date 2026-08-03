@@ -33,6 +33,31 @@
     { next: 'n5_era_storm' }
   ];
 
+  // 「一個家人或大學同學興沖沖跟你介紹一個能改變人生的機會」——
+  // 這是被找上門，不是每個人都會被找上。真的聽下去的是手頭很緊的人，
+  // 或身邊真有那麼近的人開得了這個口。原本 100% 觸發，「宗教金錢」旗標也就近乎人人有。
+  function pitchLandsOnYou(state) {
+    return state.attrs.money <= 4 || state.attrs.bond >= 7;
+  }
+  var MLM_OR_SKIP = [
+    { when: pitchLandsOnYou, next: 'n4_mlm' },
+    { next: 'n5_career_move' }
+  ];
+
+  // 移民要同時有推力跟能力：有小孩（教育）、已經在外面待過、或錢真的夠。
+  // 沒有任何一項的人不會在三十歲「認真討論起移民」。
+  function emigrationIsOnTheTable(state) {
+    // 已經在外面待過的人，這件事本來就在他的選項清單裡
+    if (state.flags['出國'] || state.flags['西進']) return true;
+    // 為了孩子的教育是最常見的理由，但還是得付得起
+    if (state.flags['有小孩'] && state.attrs.money >= 5) return true;
+    return state.attrs.money >= 7;
+  }
+  var EMIGRATE_OR_SKIP = [
+    { when: emigrationIsOnTheTable, next: 'n5_emigrate' },
+    { next: 'n6_career_plateau' }
+  ];
+
   var OVERWORK_NEXT = [
     { when: accidentForeshadowed, next: 'n5_accident' },
     { when: hasCashShortfall, next: 'n5_debt' },
@@ -46,7 +71,7 @@
     // 而且會漏掉「北漂進大公司」這種最常見的組合。拆成兩步之後每步都只有 3–5 個。
     n4_job: {
       id: 'n4_job', chapter: 4, title: '第一份工作', ageRange: '22–28歲',
-      text: '離開學校之後，第一個真正要面對的問題是：靠什麼過日子。',
+      text: '離開學校之後，第一個真正要面對的問題是：靠什麼過日子。你找工作靠的是{求職方式}，帶你的人要你叫他{職場稱呼}。',
       options: [
         { id: 'big_corp', label: '進了一間大公司或外商，制度好，但也很卷', effects: { achieve: 2, money: 1, bond: -1 }, next: 'n4_where' },
         { id: 'public_job', label: '考上了公職，穩定，但升遷排隊排很長', effects: { money: 1, health: 1, achieve: -1, self: -1 }, flags: ['公職'], next: 'n4_where' },
@@ -84,19 +109,19 @@
       id: 'n4_westward', chapter: 4, title: '西進', ageRange: '22–28歲',
       text: '公司要派你去東莞，一去可能就是三年。',
       options: [
-        { id: 'go', label: '你決定去，三年後回來，故鄉有些東西已經不認得你', effects: { money: 2, bond: -2 }, flags: ['西進'], next: 'n4_mlm' },
-        { id: 'stay', label: '你選擇留下，升遷的機會給了那個去的人', effects: { bond: 1, achieve: -2 }, next: 'n4_mlm' },
-        { id: 'go_family', label: '你帶著家人一起去，孩子在那邊長大，講話都有腔調了', effects: { money: 1, bond: -1, self: -1 }, flags: ['西進'], next: 'n4_mlm' }
+        { id: 'go', label: '你決定去，三年後回來，故鄉有些東西已經不認得你', effects: { money: 2, bond: -2 }, flags: ['西進'], next: MLM_OR_SKIP },
+        { id: 'stay', label: '你選擇留下，升遷的機會給了那個去的人', effects: { bond: 1, achieve: -2 }, next: MLM_OR_SKIP },
+        { id: 'go_family', label: '你帶著家人一起去，孩子在那邊長大，講話都有腔調了', effects: { money: 1, bond: -1, self: -1 }, flags: ['西進'], next: MLM_OR_SKIP }
       ]
     },
 
     n4_22k: {
       id: 'n4_22k', chapter: 4, title: '{起薪}', ageRange: '22–28歲',
-      text: '起薪{起薪}，你算了一下，連房租都吃緊。',
+      text: '起薪{起薪}，你算了一下，連房租都吃緊。同期進來的人已經有兩個走了，走的方式是{離職方式}。',
       options: [
-        { id: 'endure', label: '先忍著，騎驢找馬', effects: { achieve: 1, money: -1, self: -1 }, next: 'n4_mlm' },
-        { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, self: -1 }, next: 'n4_mlm' },
-        { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: 'n4_mlm' }
+        { id: 'endure', label: '先忍著，騎驢找馬', effects: { achieve: 1, money: -1, self: -1 }, next: MLM_OR_SKIP },
+        { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, self: -1 }, next: MLM_OR_SKIP },
+        { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: MLM_OR_SKIP }
       ]
     },
 
@@ -104,15 +129,15 @@
       id: 'n4_replaced', chapter: 4, title: '被取代', ageRange: '22–28歲',
       text: '你剛學會、還不算熟練的入門工作，被一個模型接手了。',
       options: [
-        { id: 'pivot', label: '轉去一個模型還碰不到的領域，從頭學', effects: { achieve: -1, money: -1, self: 1 }, flags: ['被取代'], next: 'n4_mlm' },
-        { id: 'push_up', label: '拼命把自己往上擠，做那些模型還做不到的事', effects: { achieve: 1, self: -1 }, flags: ['被取代'], next: 'n4_mlm' },
-        { id: 'freeze', label: '花了很長一段時間，才決定下一步是什麼', effects: { self: -1, money: -1 }, flags: ['被取代'], next: 'n4_mlm' }
+        { id: 'pivot', label: '轉去一個模型還碰不到的領域，從頭學', effects: { achieve: -1, money: -1, self: 1 }, flags: ['被取代'], next: MLM_OR_SKIP },
+        { id: 'push_up', label: '拼命把自己往上擠，做那些模型還做不到的事', effects: { achieve: 1, self: -1 }, flags: ['被取代'], next: MLM_OR_SKIP },
+        { id: 'freeze', label: '花了很長一段時間，才決定下一步是什麼', effects: { self: -1, money: -1 }, flags: ['被取代'], next: MLM_OR_SKIP }
       ]
     },
 
     n4_mlm: {
       id: 'n4_mlm', chapter: 4, title: '改變人生的機會', ageRange: '22–28歲',
-      text: '一個家人或大學同學興沖沖跟你介紹一個「能改變人生的機會」——可能是直銷，也可能是一個很懂你的團體。',
+      text: '一個家人或大學同學興沖沖跟你介紹一個「能改變人生的機會」——可能是直銷，也可能是一個很懂你的團體。你回去查了一下，說法兩極——你的消息來源是{資訊來源}。',
       options: [
         { id: 'join', label: '投入了，前期還真的賺到一點錢', effects: { money: 1, bond: -1 }, flags: ['宗教金錢'], next: 'n5_career_move' },
         { id: 'refuse_breakup', label: '直接拒絕，對方覺得你不夠支持，關係漸漸疏遠', effects: { bond: -2, self: 1 }, next: 'n5_career_move' },
@@ -137,12 +162,19 @@
       text: [
         { when: { flagsAll: ['同性伴侶'], generation: 1975 }, text: '你們在一起很久了，但在你這一代，連登記這件事都不存在選項裡。' },
         { when: { flagsAll: ['同性伴侶'] }, text: '你們討論著要不要去登記，把這段關係正式化。' },
+        // 單身的人問的不是「要不要結」，是「要不要開始」
+        { when: { flagsAll: ['單身'] }, text: '身邊的人一個一個結婚，喜帖收到有點麻了。你自己這邊，一直沒有那個對象。' },
         { text: '你要不要正式進入一段婚姻，變成一個躲不掉的問題。' }
       ],
       options: [
-        { id: 'marry_common', requires: { flagsNone: ['同性伴侶'] }, label: '決定結婚，辦了一場{婚禮排場}', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
-        { id: 'stay_unmarried', requires: { flagsNone: ['同性伴侶'] }, label: '決定不婚，繼續在一起，但不進入法律關係', effects: { self: 1, bond: -1 }, flags: ['未婚'], next: 'n5_children' },
-        { id: 'breakup_common', requires: { flagsNone: ['同性伴侶'] }, label: '這段關係，最後還是走到了分開', effects: { bond: -2, self: 1 }, next: 'n5_children' },
+        { id: 'marry_common', requires: { flagsNone: ['同性伴侶', '單身'] }, label: '決定結婚，辦了一場{婚禮排場}', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
+        { id: 'stay_unmarried', requires: { flagsNone: ['同性伴侶', '單身'] }, label: '決定不婚，繼續在一起，但不進入法律關係', effects: { self: 1, bond: -1 }, flags: ['未婚'], next: 'n5_children' },
+        { id: 'breakup_common', requires: { flagsNone: ['同性伴侶', '單身'] }, label: '這段關係，最後還是走到了分開', effects: { bond: -2, self: 1 }, next: 'n5_children' },
+
+        // 單身專屬：遇到人就把「單身」這個狀態拿掉，不然下游會一直以為你還是一個人
+        { id: 'met_someone', requires: { flagsAll: ['單身'] }, label: '三十幾歲那年真的遇到一個人，這次你沒有再往後退', effects: { bond: 2, self: 1, money: -1 }, flags: ['成家'], unflags: ['單身'], next: 'n5_children' },
+        { id: 'arranged', requires: { flagsAll: ['單身'] }, label: '你的姻緣是{相親方式}來的，見了幾次，就這樣定下來了', effects: { bond: 1, money: -1, self: -1 }, flags: ['成家'], unflags: ['單身'], next: 'n5_children' },
+        { id: 'stay_single', requires: { flagsAll: ['單身'] }, label: '一個人也過得好，你沒有打算為了誰改變這件事', effects: { self: 2, bond: -1 }, next: 'n5_children' },
 
         { id: 'register_lgbt', requires: { flagsAll: ['同性伴侶'], generation: [1990, 2005] }, label: '一起去登記，正式成為法律上的家人', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
         { id: 'no_register_lgbt', requires: { flagsAll: ['同性伴侶'], generation: [1990, 2005] }, label: '決定不登記，反正感情才是真的', effects: { self: 1, bond: -1 }, next: 'n5_children' },
@@ -153,12 +185,18 @@
 
     n5_children: {
       id: 'n5_children', chapter: 5, title: '有沒有孩子', ageRange: '28–35歲',
-      text: '有沒有孩子，或什麼時候要決定，開始變成一個躲不掉的問題。',
+      text: [
+        // 一個人的話，親戚問的問題不一樣，選項也不該寫「留給彼此」
+        { when: { flagsAll: ['單身'] }, text: '身邊的人開始有小孩，家庭聚會的話題跟著變了。親戚問你的問題，從「什麼時候結婚」變成「一個人不寂寞嗎」。' },
+        { text: '有沒有孩子，或什麼時候要決定，開始變成一個躲不掉的問題。在你這一代，帶小孩這件事是{育兒資源}。' }
+      ],
       options: [
-        { id: 'have_kids', label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
-        { id: 'dink', label: '決定不生，把資源留給彼此', effects: { money: 1, self: 1, bond: -1 }, flags: ['丁客'], next: 'n5_house' },
-        { id: 'undecided_f', requires: { gender: 'F' }, label: '一直沒有決定，親戚每次見面都要問一次，你開始不太想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: 'n5_house' },
-        { id: 'undecided_m', requires: { gender: 'M' }, label: '一直沒有決定，反正好像也沒那麼急', effects: { self: -1, bond: -1 }, next: 'n5_house' }
+        { id: 'have_kids', requires: { flagsNone: ['單身'] }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
+        { id: 'dink', requires: { flagsNone: ['單身'] }, label: '決定不生，把資源留給彼此', effects: { money: 1, self: 1, bond: -1 }, flags: ['丁客'], next: 'n5_house' },
+        { id: 'nephews', requires: { flagsAll: ['單身'] }, label: '把姪子外甥當自己的孩子疼，紅包給得比誰都大', effects: { bond: 2, money: -1 }, next: 'n5_house' },
+        { id: 'considered_alone', requires: { flagsAll: ['單身'] }, label: '認真算過一個人生養小孩的可能，最後決定不要', effects: { self: 1, bond: -1 }, flags: ['丁客'], next: 'n5_house' },
+        { id: 'undecided_f', requires: { gender: 'F', flagsNone: ['單身'] }, label: '一直沒有決定，親戚每次見面都要問一次，你開始不太想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: 'n5_house' },
+        { id: 'undecided_m', requires: { gender: 'M', flagsNone: ['單身'] }, label: '一直沒有決定，反正好像也沒那麼急', effects: { self: -1, bond: -1 }, next: 'n5_house' }
       ]
     },
 
@@ -197,7 +235,7 @@
 
     n5_body_signal: {
       id: 'n5_body_signal', chapter: 5, title: '身體的訊號', ageRange: '28–35歲',
-      text: '你已經好幾年沒有好好做過健檢了。',
+      text: '你已經好幾年沒有好好做過健檢了。身體有些訊號，你處理的方式是{醫療資訊來源}。',
       options: [
         { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -2, achieve: 1 }, next: 'n5_overwork' },
         { id: 'check', label: '抽空去檢查了一次，報告上有幾個字讓你多想了一下', effects: { health: 1, self: -1 }, next: 'n5_overwork' },
@@ -219,7 +257,7 @@
 
     n5_accident: {
       id: 'n5_accident', chapter: 5, title: '那場車禍', ageRange: '28–35歲',
-      text: '那天你趕時間，或者只是太累，一個閃神，車禍發生了。',
+      text: '你的代步工具是{交通工具}。那天你趕時間，或者只是太累，一個閃神，車禍發生了。',
       options: [
         { id: 'own_injury', label: '傷的是自己，復原花了比你想的更久的時間', effects: { health: -2, money: -1 }, next: AFTER_ACCIDENT_NEXT },
         { id: 'hit_someone', label: '撞到了人，責任在你，賠償跟自責一起壓上來', effects: { money: -2, bond: -1, self: -1 }, flags: ['車禍責任'], next: AFTER_ACCIDENT_NEXT },
@@ -242,20 +280,23 @@
       text: [
         { when: { generation: 1975 }, text: '1997年，亞洲金融風暴，你的產業正好在浪頭上。' },
         { when: { generation: 1990 }, text: '一場突然來的疫情，把你原本的計畫全部打亂。' },
-        { text: '2035年那場推想中的變動，正好在你最沒有準備的時候發生。' }
+        { text: '2035年那場推想中的變動，正好在你最沒有準備的時候發生。整個世代都在說{錯過的機會}，而你那時候剛好在別的地方忙。' }
       ],
       options: [
-        { id: 'hit_hard', label: '這場風暴直接打在你身上，損失很實際', effects: { money: -2, self: -1 }, flags: ['遇到風暴'], next: 'n5_emigrate' },
-        { id: 'dodge', label: '算你運氣好，躲過了最壞的那一波，但身邊有人沒躲過', effects: { bond: -1, self: 1 }, next: 'n5_emigrate' },
-        { id: 'miss_opportunity', label: '風暴過後的復甦期，你因為太保守，沒跟上那波機會', effects: { achieve: -1, money: -1 }, flags: ['錯過紅利'], next: 'n5_emigrate' }
+        { id: 'hit_hard', label: '這場風暴直接打在你身上，損失很實際', effects: { money: -2, self: -1 }, flags: ['遇到風暴'], next: EMIGRATE_OR_SKIP },
+        { id: 'dodge', label: '算你運氣好，躲過了最壞的那一波，但身邊有人沒躲過', effects: { bond: -1, self: 1 }, next: EMIGRATE_OR_SKIP },
+        { id: 'miss_opportunity', label: '風暴過後的復甦期，你因為太保守，沒跟上那波機會', effects: { achieve: -1, money: -1 }, flags: ['錯過紅利'], next: EMIGRATE_OR_SKIP }
       ]
     },
 
     n5_emigrate: {
       id: 'n5_emigrate', chapter: 5, title: '要不要移民', ageRange: '28–35歲',
-      text: '為了孩子的教育、政治氛圍，或單純想換一個地方生活，你們認真討論起移民這件事。',
+      text: [
+        { when: { flagsNone: ['成家', '有小孩'] }, text: '你認真查了一次移民的門檻、成本、要放掉什麼。在你這一代，{移民管道}。' },
+        { text: '為了孩子的教育、政治氛圍，或單純想換一個地方生活，你們認真討論起移民這件事。在你這一代，{移民管道}。' }
+      ],
       options: [
-        { id: 'emigrate_go', label: '最後決定舉家搬走', effects: { bond: -1, money: -2 }, flags: ['移民'], next: 'n6_career_plateau' },
+        { id: 'emigrate_go', label: '最後決定搬走，把這裡的一切收掉', effects: { bond: -1, money: -2 }, flags: ['移民'], next: 'n6_career_plateau' },
         { id: 'emigrate_stay', label: '討論了很久，最後決定留下來', effects: { self: -1, bond: 1 }, next: 'n6_career_plateau' },
         { id: 'emigrate_half', label: '你一個人先過去卡位，家人晚一點再說', effects: { bond: -2, money: 1 }, flags: ['移民'], next: 'n6_career_plateau' }
       ]

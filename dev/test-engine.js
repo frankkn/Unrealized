@@ -227,16 +227,16 @@ function injuryPick(node, options, state) {
 var LUCKY_MIDBAND_PATH = {
   gen: 1975, gender: "M",
   path: [
-    'n0_family/gov_family', 'n1_bookish/hobby', 'n2_high_school/elite',
-    'n3_route/liked_major', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
-    'n4_job/family_biz', 'n4_westward/go_family', 'n4_mlm/refuse_breakup',
-    'n5_career_move/setback', 'n5_marriage/marry_common', 'n5_children/undecided_m',
-    'n5_house/stay_family', 'n5_invest/avoid', 'n5_parents_ill/institution',
-    'n5_body_signal/ignore', 'n5_overwork/burn_bridge', 'n5_era_storm/dodge',
-    'n5_emigrate/emigrate_stay', 'n6_career_plateau/push_more', 'n6_midlife_unemployment/quick_reemploy',
-    'n6_politics/try_understand', 'n6_health_reckoning/slow_down', 'n6_return_home/bring_them',
-    'n6_readjust/double_down', 'n7_retirement_prep/prepared', 'n7_scam_call/recognize_immediately',
-    'n7_solo_aging/community', 'n7_body_ledger/indulge', 'n7_look_back/regret'
+    'n0_family/single_mom', 'n1_single/scholarship', 'n2_high_school/normal',
+    'n3_route/top_hot', 'n3m_military/find_clarity', 'n3_first_love/solo',
+    'n4_job/family_biz', 'n4_westward/stay', 'n4_mlm/refuse_breakup',
+    'n5_career_move/setback', 'n5_marriage/stay_single', 'n5_children/nephews',
+    'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/institution',
+    'n5_body_signal/ignore', 'n5_overwork/pace_self', 'n5_era_storm/dodge',
+    'n6_career_plateau/push_more', 'n6_politics/silence', 'n6_health_reckoning/partial_care',
+    'n6_return_home/move_back', 'n6_readjust/double_down', 'n6_parent_dies/relief_and_guilt',
+    'n7_retirement_prep/keep_working', 'n7_scam_call/recognize_immediately', 'n7_solo_aging/community',
+    'n7_body_ledger/indulge', 'n7_look_back/regret'
   ]
 };
 function playScriptedPath(generation, gender, path) {
@@ -261,33 +261,31 @@ var LUCKY_SELF_PATH = {
   path: [
     'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/elite',
     'n3_route/liked_major', 'n3f_headstart/push_back', 'n3_first_love/solo',
-    'n4_job/freelance', 'n4_where/stay_local', 'n4f_interview/strategic_lie',
-    'n4_westward/go', 'n4_mlm/refuse_breakup', 'n5_career_move/big_jump',
-    'n5_marriage/marry_common', 'n5_children/undecided_f', 'n5_house/stay_family',
-    'n5_invest/avoid', 'n5_parents_ill/hire_caregiver', 'n5_body_signal/ignore',
-    'n5_overwork/pace_self', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
-    'n6_career_plateau/accept', 'n6_midlife_unemployment/start_over', 'n6_long_term_care/hire_full_time',
-    'n6_marriage_crisis/work_it_out', 'n6_politics/try_understand', 'n6_financial_reckoning/manage_through',
-    'n6_health_reckoning/slow_down', 'n6_return_home/commute', 'n6_readjust/let_go',
-    'n7_retirement_prep/keep_working', 'n7_scam_call/almost_fell', 'n7_solo_aging/community',
+    'n4_job/freelance', 'n4_where/stay_local', 'n4f_interview/honest',
+    'n4_westward/go', 'n5_career_move/steady', 'n5_marriage/stay_single',
+    'n5_children/nephews', 'n5_house/stay_family', 'n5_invest/avoid',
+    'n5_parents_ill/hire_caregiver', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
+    'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/accept',
+    'n6_long_term_care/hire_full_time', 'n6_politics/try_understand', 'n6_health_reckoning/overwork_still',
+    'n6_return_home/commute', 'n6_readjust/let_go', 'n6_parent_dies/was_there',
+    'n7_retirement_prep/keep_working', 'n7_scam_call/recognize_immediately', 'n7_solo_aging/community',
     'n7_body_ledger/indulge', 'n7_look_back/accept'
   ]
 };
 var LUCKY_QUIET_PATH = {
-  gen: 1975, gender: "M",
+  gen: 2005, gender: "M",
   path: [
-    'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/normal',
+    'n0_family/gov_family', 'n1_bookish/push', 'n2_high_school/elite',
     'n3_route/vocational_college', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
-    'n4_job/public_job', 'n4_where/stay_local', 'n4_westward/go_family',
-    'n4_mlm/refuse_breakup', 'n5_career_move/steady', 'n5_marriage/marry_common',
-    'n5_children/have_kids', 'n5_house/stay_family', 'n5_invest/etf',
-    'n5_parents_ill/institution', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
-    'n5_debt/grind_through', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
-    'n6_career_plateau/headhunted', 'n6_midlife_unemployment/long_gap', 'n6_parenting/outsource',
-    'n6_politics/silence', 'n6_financial_reckoning/manage_through', 'n6_health_reckoning/slow_down',
-    'n6_return_home/bring_them', 'n6_readjust/let_go', 'n7_retirement_prep/underprepared',
-    'n7_children_settlement/repaired', 'n7_scam_call/almost_fell', 'n7_solo_aging/community',
-    'n7_body_ledger/decline', 'n7_look_back/regret'
+    'n4_job/public_job', 'n4_where/stay_local', 'n4_replaced/push_up',
+    'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/undecided_m',
+    'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/institution',
+    'n5_body_signal/ignore', 'n5_overwork/pace_self', 'n5_era_storm/dodge',
+    'n5_emigrate/emigrate_stay', 'n6_career_plateau/headhunted', 'n6_politics/silence',
+    'n6_financial_reckoning/manage_through', 'n6_health_reckoning/slow_down', 'n6_return_home/bring_them',
+    'n6_readjust/let_go', 'n6_parent_dies/handled_it', 'n7_retirement_prep/prepared',
+    'n7_scam_call/almost_fell', 'n7_solo_aging/lonely', 'n7_body_ledger/decline',
+    'n7_look_back/regret'
   ]
 };
 
@@ -303,12 +301,11 @@ var LUCKY_22K_PATH = {
     'n5_marriage/marry_common', 'n5_children/have_kids', 'n5_house/buy_leverage',
     'n5_invest/etf', 'n5_parents_ill/hire_caregiver', 'n5_body_signal/ignore',
     'n5_overwork/pace_self', 'n5_debt/credit_cash_card', 'n5_era_storm/dodge',
-    'n5_emigrate/emigrate_half', 'n6_career_plateau/headhunted', 'n6_midlife_unemployment/quick_reemploy',
-    'n6_parenting/repeat_pattern', 'n6_long_term_care/hire_full_time', 'n6_politics/fight',
-    'n6_financial_reckoning/manage_through', 'n6_health_reckoning/slow_down', 'n6_return_home/bring_them',
-    'n6_readjust/let_go', 'n7_retirement_prep/prepared', 'n7_children_settlement/close',
-    'n7_scam_call/fall_for_it', 'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful',
-    'n7_look_back/accept'
+    'n6_career_plateau/headhunted', 'n6_parenting/repeat_pattern', 'n6_long_term_care/hire_full_time',
+    'n6_politics/fight', 'n6_financial_reckoning/collections_call', 'n6_health_reckoning/overwork_still',
+    'n6_return_home/bring_them', 'n6_readjust/let_go', 'n6_parent_dies/was_there',
+    'n7_retirement_prep/prepared', 'n7_children_settlement/close', 'n7_scam_call/recognize_immediately',
+    'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful', 'n7_look_back/accept'
   ]
 };
 
@@ -318,14 +315,14 @@ var LUCKY_ERA_PATH = {
     'n0_family/gov_family', 'n1_bookish/hobby', 'n2_high_school/no_school',
     'n3_route/liked_major', 'n3f_headstart/deflect', 'n3_first_love/straight_stable',
     'n4_job/public_job', 'n4_where/stay_local', 'n4f_interview/honest',
-    'n4_replaced/pivot', 'n4_mlm/refuse_breakup', 'n5_career_move/steady',
-    'n5_marriage/marry_common', 'n5_children/undecided_f', 'n5_house/rent_forever',
-    'n5_invest/etf', 'n5_parents_ill/institution', 'n5_body_signal/ignore',
-    'n5_overwork/pace_self', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
-    'n6_career_plateau/change_lane', 'n6_midlife_unemployment/quick_reemploy', 'n6_politics/silence',
-    'n6_financial_reckoning/manage_through', 'n6_health_reckoning/overwork_still', 'n6_return_home/move_back',
-    'n6_readjust/double_down', 'n7_retirement_prep/prepared', 'n7_scam_call/fall_for_it',
-    'n7_solo_aging/thriving_alone', 'n7_body_ledger/indulge', 'n7_look_back/accept'
+    'n4_replaced/pivot', 'n5_career_move/steady', 'n5_marriage/marry_common',
+    'n5_children/undecided_f', 'n5_house/rent_forever', 'n5_invest/etf',
+    'n5_parents_ill/institution', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
+    'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/change_lane',
+    'n6_midlife_unemployment/quick_reemploy', 'n6_politics/silence', 'n6_financial_reckoning/manage_through',
+    'n6_health_reckoning/overwork_still', 'n6_return_home/move_back', 'n6_readjust/double_down',
+    'n6_parent_dies/was_there', 'n7_retirement_prep/prepared', 'n7_scam_call/fall_for_it',
+    'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful', 'n7_look_back/accept'
   ]
 };
 
@@ -425,9 +422,80 @@ if (vers.length) {
   assert(!!mid, '章節 ' + chapter + ' 應該能判定中途結局');
 });
 
-// 7. 詞彙字典：至少 25 組，替換後不留佔位符
+// 6b. 單身路線要真的跑得通。第5章的婚姻與小孩節點原本無條件假設有伴侶，
+//     一路單身的人會被問「決定不婚，繼續在一起」——那段關係根本不存在。
+//     這種錯靠玩很難發現：要剛好在第3章選單身，又剛好讀到那一行。
+(function soloPathHoldsUp() {
+  var PARTNER_ONLY = ['marry_common', 'stay_unmarried', 'breakup_common', 'have_kids', 'dink', 'undecided_f', 'undecided_m'];
+  var reached = 0;
+  UNREALIZED.config.generations.forEach(function (g) {
+    ['M', 'F'].forEach(function (sex) {
+      var s = engine.createRunState(g, sex), guard = 0;
+      while (!s.ended && guard++ < 80) {
+        var node = engine.getNode(s.nodeId);
+        var opts = engine.visibleOptions(node, s);
+        if (node.id === 'n5_marriage' || node.id === 'n5_children') {
+          if (s.flags['單身']) {
+            reached++;
+            var leak = opts.filter(function (o) { return PARTNER_ONLY.indexOf(o.id) !== -1; });
+            assert(leak.length === 0, node.id + ' 對單身玩家露出了預設有伴侶的選項: ' +
+              leak.map(function (o) { return o.id; }).join(', '));
+            assert(opts.length >= 2, node.id + ' 對單身玩家只剩 ' + opts.length + ' 個選項');
+          }
+        }
+        // 第3章一律選單身，之後隨便走
+        var pick = opts.filter(function (o) { return o.id === 'solo' || o.id === 'stay_single' || o.id === 'considered_alone'; })[0] || opts[0];
+        engine.applyOption(s, node, pick);
+      }
+    });
+  });
+  assert(reached >= 6, '單身路線沒有真的走到婚姻／小孩節點（只有 ' + reached + ' 次），這個檢查等於沒跑');
+})();
+
+// 6c. 加了門檻的節點，要真的落在「有時候會、有時候不會」之間。
+//     0% 表示門檻寫壞了（自我參照的變體陣列就是這樣，安靜地誰都到不了），
+//     100% 表示門檻等於沒有——這兩個都踩過。
+(function gatedNodesActuallyGate() {
+  var GATED = {
+    n4_mlm: ['n4_westward', 'n4_22k', 'n4_replaced'],
+    n5_emigrate: ['n5_era_storm'],
+    n6_midlife_unemployment: ['n6_career_plateau'],
+    // 這兩個節點有好幾條上游（教養、失業、以及各自被跳過時的直通路線），
+    // 分母用「進到第6章的人數」才對——n6_career_plateau 是全員必經的第一個節點
+    n6_long_term_care: ['n6_career_plateau'],
+    n6_marriage_crisis: ['n6_career_plateau'],
+    n6_financial_reckoning: ['n6_politics']
+  };
+  var seen = {}, rnd = 123456789;
+  function next() { rnd = (rnd * 1103515245 + 12345) & 0x7fffffff; return rnd / 0x7fffffff; }
+  for (var i = 0; i < 3000; i++) {
+    var s = engine.createRunState(UNREALIZED.config.generations[i % 3], i % 2 ? 'F' : 'M'), guard = 0;
+    while (!s.ended && guard++ < 80) {
+      var node = engine.getNode(s.nodeId);
+      var opts = engine.visibleOptions(node, s);
+      seen[node.id] = (seen[node.id] || 0) + 1;
+      engine.applyOption(s, node, opts[Math.floor(next() * opts.length)]);
+    }
+  }
+  Object.keys(GATED).forEach(function (id) {
+    var denom = GATED[id].reduce(function (a, u) { return a + (seen[u] || 0); }, 0);
+    assert(denom > 100, id + ' 的上游節點抽樣不足（' + denom + '），這個檢查不可信');
+    var rate = (seen[id] || 0) / denom;
+    assert(rate > 0.05, id + ' 只有 ' + (rate * 100).toFixed(0) + '% 會觸發，門檻可能寫壞了');
+    assert(rate < 0.95, id + ' 有 ' + (rate * 100).toFixed(0) + '% 會觸發，門檻等於沒有');
+  });
+})();
+
+// 7. 詞彙字典：至少 25 組，替換後不留佔位符，而且每一組都真的被用到。
+//    寫了 26 組卻只有 6 組出現在腳本裡過——字典查得到，但玩起來完全沒有時代感。
 var lexiconKeys = Object.keys(UNREALIZED.lexicon);
 assert(lexiconKeys.length >= 25, '詞彙字典應至少 25 組，目前 ' + lexiconKeys.length);
+(function everyLexiconEntryIsUsed() {
+  var script = ['data/nodes-ch0-3.js', 'data/nodes-ch4-5.js', 'data/nodes-ch6-7.js', 'data/endings.js']
+    .map(function (f) { return fs.readFileSync(path.join(__dirname, '..', f), 'utf8'); }).join('\n');
+  var unused = lexiconKeys.filter(function (k) { return script.indexOf(k) === -1; });
+  assert(unused.length === 0, '這些詞彙從來沒被腳本用到（等於白寫）: ' + unused.join(' '));
+})();
 UNREALIZED.config.generations.forEach(function (g) {
   var s = engine.createRunState(g, 'M');
   var text = engine.substituteLexicon('{升學考試}與{起薪}', s);
