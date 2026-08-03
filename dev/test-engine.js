@@ -282,10 +282,9 @@ var LUCKY_QUIET_PATH = {
     'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/institution',
     'n5_body_signal/ignore', 'n5_overwork/pace_self', 'n5_era_storm/dodge',
     'n5_emigrate/emigrate_stay', 'n6_career_plateau/headhunted', 'n6_politics/silence',
-    'n6_financial_reckoning/manage_through', 'n6_health_reckoning/slow_down', 'n6_return_home/bring_them',
-    'n6_readjust/let_go', 'n6_parent_dies/handled_it', 'n7_retirement_prep/prepared',
-    'n7_scam_call/almost_fell', 'n7_solo_aging/lonely', 'n7_body_ledger/decline',
-    'n7_look_back/regret'
+    'n6_health_reckoning/slow_down', 'n6_return_home/bring_them', 'n6_readjust/let_go',
+    'n6_parent_dies/handled_it', 'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell',
+    'n7_solo_aging/lonely', 'n7_body_ledger/decline', 'n7_look_back/regret'
   ]
 };
 
@@ -319,10 +318,10 @@ var LUCKY_ERA_PATH = {
     'n5_children/undecided_f', 'n5_house/rent_forever', 'n5_invest/etf',
     'n5_parents_ill/institution', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
     'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/change_lane',
-    'n6_midlife_unemployment/quick_reemploy', 'n6_politics/silence', 'n6_financial_reckoning/manage_through',
-    'n6_health_reckoning/overwork_still', 'n6_return_home/move_back', 'n6_readjust/double_down',
-    'n6_parent_dies/was_there', 'n7_retirement_prep/prepared', 'n7_scam_call/fall_for_it',
-    'n7_solo_aging/thriving_alone', 'n7_body_ledger/careful', 'n7_look_back/accept'
+    'n6_midlife_unemployment/quick_reemploy', 'n6_politics/silence', 'n6_health_reckoning/overwork_still',
+    'n6_return_home/move_back', 'n6_readjust/double_down', 'n6_parent_dies/was_there',
+    'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell', 'n7_solo_aging/thriving_alone',
+    'n7_body_ledger/careful', 'n7_look_back/accept'
   ]
 };
 

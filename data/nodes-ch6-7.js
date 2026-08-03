@@ -42,11 +42,20 @@
 
   // 財務盤點只在錢真的值得一提的時候才發生：欠過、或很緊、或寬裕到有人來借。
   // 不上不下的人不會在四十幾歲的某個晚上突然把帳全部攤開來算。
+  //
+  // 第二版：原本是「三個旗標 或 money<=3 或 money>=7」，只有 money 4–6 且乾乾淨淨的人
+  // 躲得掉 —— 89% 的局都會遇到，等於固定行程。兩個問題：
+  //   · `money>=7` 這一支是為了「寬裕到有人來借你錢」寫的，但**節點裡沒有那一版敘述**。
+  //     門檻放行了一種情況，文字卻沒有寫給它——那就不該放行。
+  //   · 欠過錢的旗標會一路留著。money 到 9 的人早就還完了，
+  //     「這幾年欠的、借的、賭的，開始一筆一筆找上門」對他不成立。
+  // 跟 n5_debt、中年失業同一個三段式。
   function moneyIsNotable(state) {
     // 「宗教金錢」不算在內：那個旗標講的是你把別人拉下水，是關係的帳，
     // 由「拉進去的人」那個結局承接，不是你自己的資產負債表
-    if (state.flags['借貸'] || state.flags['高槓桿'] || state.flags['投機']) return true;
-    return state.attrs.money <= 3 || state.attrs.money >= 7;
+    if (state.attrs.money <= 3) return true;
+    if (state.attrs.money >= 8) return false;
+    return !!(state.flags['借貸'] || state.flags['高槓桿'] || state.flags['投機']);
   }
   var AFTER_POLITICS_NEXT = [
     { when: moneyIsNotable, next: 'n6_financial_reckoning' },
