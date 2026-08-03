@@ -1,6 +1,6 @@
 # 場景圖生成指南
 
-51 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
+52 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
 
 ---
 
@@ -10,7 +10,7 @@
 |---|---|
 | 檔名 | `art/<節點ID>.webp`（例：`art/n0_family.webp`）ID 就是下面每一節的標題 |
 | 比例 | **3:4 直式**（832×1088 或 768×1024） |
-| 格式 | WebP，品質 80。51 張控制在 15MB 內，repo 才不會腫 |
+| 格式 | WebP，品質 80。52 張控制在 15MB 內，repo 才不會腫 |
 | 內容 | **畫面裡不要有任何文字**——字會蓋在圖上，圖裡再有字會打架 |
 | 構圖 | 重要的東西放在**上半部**。下緣會被文字與選項壓住，底部三分之一會被漸層蓋掉 |
 
@@ -18,7 +18,7 @@
 
 ## 風格錨（每一則 prompt 都要接上這段）
 
-一致性全靠這段。**不要每張改寫它**，否則 51 張會像 51 個不同的遊戲。
+一致性全靠這段。**不要每張改寫它**，否則 52 張會像 52 個不同的遊戲。
 
 ```
 pixel art illustration, 16-bit JRPG background art style, detailed dithering,
@@ -32,9 +32,9 @@ no text, no watermark, no UI elements
 
 **負面提示**：`text, letters, watermark, signature, UI, HUD, face, close-up portrait, modern western city, cluttered composition`
 
-### 怎麼讓 51 張看起來像同一個人畫的
+### 怎麼讓 52 張看起來像同一個人畫的
 
-51 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
+52 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
 
 | 工具 | 作法 |
 |---|---|
@@ -167,6 +167,10 @@ no text, no watermark, no UI elements
 ### n5_invest — 那筆存款
 > 夜晚，螢幕上的線圖照亮房間。
 `night, a dim room lit by a stock chart glowing on a screen, one person seen from behind, cigarette smoke or steam from a cup, tense quiet`
+
+### n5_windfall — 意料之外的一筆
+> 黃昏的空地，重劃的界樁，遠處一支吊車。
+`golden late afternoon, an empty plot of land on the edge of a Taiwanese town with new survey stakes and a distant crane, one adult seen from behind standing at the fence looking across it, betel palms, unexpected fortune`
 
 ### n5_parents_ill — 長輩病了
 > 醫院走廊，病房門半開，夜班的燈。

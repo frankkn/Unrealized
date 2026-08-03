@@ -65,11 +65,24 @@
     { next: 'n6_career_plateau' }
   ];
 
+  // 遊戲原本只有壞運氣（車禍、風暴、詐騙），一個好運都沒有——那不是人生，是刑期。
+  // 但好運不該是天上掉下來的：它落在「手上剛好有東西可以被幸運到」的人身上。
+  // 這跟 SPEC §3.3.1 是同一條原則：有回報的東西要先投入過才看得到。
+  function luckHasSomethingToLandOn(state) {
+    if (state.flags['早知道存'] || state.flags['勞動'] || state.flags['投機']) return true;
+    if (state.flags['接案'] || state.flags['喜歡的科系']) return true;
+    return state.attrs.money >= 7;
+  }
+  var WINDFALL_OR_SKIP = [
+    { when: luckHasSomethingToLandOn, next: 'n5_windfall' },
+    { next: 'n5_parents_ill' }
+  ];
+
   // 「你開始認真想，要怎麼處理手上這筆不上不下的存款」——手上要真的有那筆錢
   function hasSavingsToWorryAbout(state) { return state.attrs.money >= 4; }
   var INVEST_OR_SKIP = [
     { when: hasSavingsToWorryAbout, next: 'n5_invest' },
-    { next: 'n5_parents_ill' }
+    { next: WINDFALL_OR_SKIP }
   ];
   // 「為了那個位置，你開始了一段長時間透支的日子」——要先有那個位置在追
   function chasingAPosition(state) { return state.attrs.achieve >= 5; }
@@ -254,9 +267,26 @@
         { text: '你開始認真想，要怎麼處理手上這筆不上不下的存款。' }
       ],
       options: [
-        { id: 'etf', label: '選了{存款工具}那種穩穩來的方式', effects: { money: 1, self: -1 }, next: 'n5_parents_ill' },
-        { id: 'leverage_trade', label: '開始融資當沖，想加速累積的速度', effects: { money: 2, health: -1 }, flags: ['投機'], next: 'n5_parents_ill' },
-        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, health: 1, money: -1 }, next: 'n5_parents_ill' }
+        { id: 'etf', label: '選了{存款工具}那種穩穩來的方式', effects: { money: 1, self: -1 }, next: WINDFALL_OR_SKIP },
+        { id: 'leverage_trade', label: '開始融資當沖，想加速累積的速度', effects: { money: 2, health: -1 }, flags: ['投機'], next: WINDFALL_OR_SKIP },
+        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, health: 1, money: -1 }, next: WINDFALL_OR_SKIP }
+      ]
+    },
+
+    // 好運。落點依世代給不同的畫面，但問的是同一件事：拿到之後你怎麼處理。
+    // 選項刻意都不錯——這是這個遊戲少數幾個「你怎麼選都不會虧」的節點。
+    n5_windfall: {
+      id: 'n5_windfall', chapter: 5, title: '意料之外的一筆', ageRange: '28–35歲',
+      text: [
+        { when: { generation: 1975 }, text: '阿公留下來的那塊地，重劃之後突然值了錢。你從來沒把它算進自己的人生規劃裡。' },
+        { when: { generation: 1990 }, text: '你買來就放著沒管的那支，這一年翻了好幾倍。你很清楚這不是因為你眼光好。' },
+        { text: '你隨手做的一個東西，被演算法推了出去。一個月的數字比你一年的薪水還多。' }
+      ],
+      options: [
+        { id: 'took_a_year', label: '你停下來休息了一整年。那一年後來被你記得很久', effects: { health: 2, self: 2, achieve: -1 }, flags: ['好運', '休息過'], next: 'n5_parents_ill' },
+        { id: 'reinvest', label: '全部投回去，想把運氣變成實力', effects: { achieve: 2, money: 1, health: -1 }, flags: ['好運'], next: 'n5_parents_ill' },
+        { id: 'gave_family', label: '分給家裡的人。他們到現在都還會提起這件事', effects: { bond: 3, money: -1 }, flags: ['好運'], next: 'n5_parents_ill' },
+        { id: 'kept_quiet', label: '你沒告訴任何人，就那樣放著', effects: { money: 2, self: 1, bond: -1 }, flags: ['好運'], next: 'n5_parents_ill' }
       ]
     },
 

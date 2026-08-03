@@ -227,17 +227,18 @@ function injuryPick(node, options, state) {
 var LUCKY_MIDBAND_PATH = {
   gen: 1975, gender: "M",
   path: [
-    'n0_family/single_mom', 'n1_single/part_time', 'n1_teacher/saw_me',
-    'n2_high_school/vocational', 'n2_first_failure/gave_up', 'n3_route/direct_work',
-    'n3_the_friends/drifted', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
-    'n3_first_money/spent_it', 'n4_job/family_biz', 'n4_westward/stay',
-    'n4_mlm/refuse_breakup', 'n5_career_move/steady', 'n5_marriage/stay_unmarried',
-    'n5_children/undecided_m', 'n5_house/rent_forever', 'n5_invest/etf',
-    'n5_parents_ill/money_m', 'n5_body_signal/delegate_worry', 'n5_overwork/pace_self',
-    'n5_era_storm/dodge', 'n6_career_plateau/push_more', 'n6_long_term_care/hire_full_time',
-    'n6_politics/silence', 'n6_health_reckoning/partial_care', 'n6_readjust/let_go',
-    'n6_parent_dies/relief_and_guilt', 'n7_retirement_prep/keep_working', 'n7_scam_call/almost_fell',
-    'n7_solo_aging/community', 'n7_body_ledger/indulge', 'n7_look_back/regret'
+    'n0_family/labor_family', 'n1_labor/hang_out', 'n1_teacher/wrote_me_off',
+    'n2_high_school/normal', 'n2_first_failure/tried_again', 'n3_route/direct_work',
+    'n3_the_friends/drifted', 'n3m_military/make_bonds', 'n3_first_love/solo',
+    'n3_first_money/gave_home', 'n4_job/sme', 'n4_where/beipiao',
+    'n4_westward/stay', 'n5_career_move/setback', 'n5_marriage/arranged',
+    'n5_children/undecided_m', 'n5_house/rent_forever', 'n5_invest/avoid',
+    'n5_windfall/reinvest', 'n5_parents_ill/institution', 'n5_body_signal/ignore',
+    'n5_overwork/pace_self', 'n5_era_storm/dodge', 'n6_career_plateau/push_more',
+    'n6_politics/silence', 'n6_health_reckoning/partial_care', 'n6_return_home/move_back',
+    'n6_readjust/double_down', 'n6_parent_dies/was_there', 'n7_retirement_prep/prepared',
+    'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/indulge',
+    'n7_look_back/regret'
   ]
 };
 function playScriptedPath(generation, gender, path) {
@@ -266,29 +267,30 @@ var LUCKY_SELF_PATH = {
     'n3_first_money/gave_home', 'n4_job/big_corp', 'n4_where/stay_local',
     'n4_westward/go', 'n5_career_move/big_jump', 'n5_marriage/stay_single',
     'n5_children/nephews', 'n5_house/stay_family', 'n5_invest/avoid',
-    'n5_parents_ill/money_m', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
-    'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/accept',
-    'n6_long_term_care/hire_full_time', 'n6_politics/try_understand', 'n6_health_reckoning/slow_down',
-    'n6_return_home/commute', 'n6_readjust/double_down', 'n6_old_friend/lent_money',
-    'n6_parent_dies/was_there', 'n7_retirement_prep/keep_working', 'n7_scam_call/recognize_immediately',
-    'n7_solo_aging/community', 'n7_body_ledger/indulge', 'n7_look_back/proud'
+    'n5_windfall/reinvest', 'n5_parents_ill/money_m', 'n5_body_signal/ignore',
+    'n5_overwork/pace_self', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
+    'n6_career_plateau/accept', 'n6_long_term_care/hire_full_time', 'n6_politics/try_understand',
+    'n6_health_reckoning/slow_down', 'n6_return_home/commute', 'n6_readjust/let_go',
+    'n6_old_friend/said_no', 'n6_parent_dies/was_there', 'n7_retirement_prep/keep_working',
+    'n7_scam_call/recognize_immediately', 'n7_solo_aging/community', 'n7_body_ledger/indulge',
+    'n7_look_back/accept'
   ]
 };
 var LUCKY_QUIET_PATH = {
   gen: 2005, gender: "M",
   path: [
     'n0_family/gov_family', 'n1_bookish/push', 'n1_teacher/wrote_me_off',
-    'n2_high_school/elite', 'n2_first_failure/gave_up', 'n3_route/direct_work',
+    'n2_high_school/elite', 'n2_first_failure/gave_up', 'n3_route/vocational_college',
     'n3_the_friends/inner_circle', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
-    'n3_first_money/treated_friends', 'n4_job/public_job', 'n4_where/beipiao',
-    'n4_replaced/push_up', 'n5_career_move/steady', 'n5_marriage/breakup_common',
-    'n5_children/nephews', 'n5_house/rent_forever', 'n5_invest/etf',
-    'n5_parents_ill/institution', 'n5_body_signal/check', 'n5_overwork/push_through',
-    'n5_accident/own_injury', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
-    'n6_career_plateau/headhunted', 'n6_politics/silence', 'n6_health_reckoning/slow_down',
-    'n6_return_home/move_back', 'n6_readjust/let_go', 'n6_old_friend/kept_it_light',
-    'n6_parent_dies/handled_it', 'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell',
-    'n7_solo_aging/community', 'n7_body_ledger/careful', 'n7_look_back/look_back_bookish'
+    'n3_first_money/treated_friends', 'n4_job/public_job', 'n4_where/stay_local',
+    'n4_replaced/push_up', 'n4_mlm/refuse_breakup', 'n5_career_move/steady',
+    'n5_marriage/breakup_common', 'n5_children/nephews', 'n5_house/stay_family',
+    'n5_invest/etf', 'n5_windfall/reinvest', 'n5_parents_ill/institution',
+    'n5_body_signal/pay_for_it', 'n5_overwork/push_through', 'n5_accident/own_injury',
+    'n5_era_storm/dodge', 'n6_career_plateau/headhunted', 'n6_politics/silence',
+    'n6_health_reckoning/partial_care', 'n6_readjust/let_go', 'n6_old_friend/showed_up',
+    'n6_parent_dies/relief_and_guilt', 'n7_retirement_prep/prepared', 'n7_scam_call/recognize_immediately',
+    'n7_solo_aging/community', 'n7_body_ledger/paying_off', 'n7_look_back/regret'
   ]
 };
 
@@ -322,12 +324,13 @@ var LUCKY_ERA_PATH = {
     'n3_first_money/spent_it', 'n4_job/public_job', 'n4_where/stay_local',
     'n4f_interview/honest', 'n4_replaced/pivot', 'n4_mlm/refuse_breakup',
     'n5_career_move/steady', 'n5_marriage/marry_common', 'n5_children/undecided_f',
-    'n5_house/rent_forever', 'n5_invest/etf', 'n5_parents_ill/institution',
-    'n5_body_signal/ignore', 'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay',
-    'n6_career_plateau/change_lane', 'n6_midlife_unemployment/quick_reemploy', 'n6_politics/silence',
-    'n6_health_reckoning/overwork_still', 'n6_readjust/double_down', 'n6_old_friend/lent_money',
-    'n6_parent_dies/was_there', 'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell',
-    'n7_solo_aging/comfortable_silence', 'n7_body_ledger/careful', 'n7_look_back/accept'
+    'n5_house/rent_forever', 'n5_invest/etf', 'n5_windfall/took_a_year',
+    'n5_parents_ill/institution', 'n5_body_signal/ignore', 'n5_era_storm/dodge',
+    'n5_emigrate/emigrate_stay', 'n6_career_plateau/accept', 'n6_midlife_unemployment/quick_reemploy',
+    'n6_politics/silence', 'n6_health_reckoning/overwork_still', 'n6_readjust/let_go',
+    'n6_old_friend/lent_money', 'n6_parent_dies/was_there', 'n7_retirement_prep/prepared',
+    'n7_scam_call/almost_fell', 'n7_solo_aging/comfortable_silence', 'n7_body_ledger/indulge',
+    'n7_look_back/accept'
   ]
 };
 
