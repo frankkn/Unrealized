@@ -373,11 +373,6 @@ html.scene-mode, body.scene-mode {
   font-variant-numeric: tabular-nums;
   margin-top: 0.15rem;
 }
-/* 在別的世代解過、這一代還沒 —— 用金色標出來，那正是這個遊戲要講的事 */
-.codex-elsewhere {
-  color: var(--gold);
-}
-
 .codex-progress {
   font-size: 0.85rem;
   color: var(--ink-soft);

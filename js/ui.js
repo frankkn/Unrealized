@@ -177,15 +177,15 @@
     return !ending.limitedTo || ending.limitedTo.indexOf(generation) !== -1;
   }
 
+  // 每個分頁只認自己這一代的紀錄。用 1990 解到的就是 1990 的成就，
+  // 1975 那頁沒解就是沒解 —— 不在別人的頁面上留註腳，標題也一樣藏著。
   function codexItemHtml(e, codex, generation) {
     var entry = codex[e.id];
     var unlocked = isUnlockedFor(entry, generation);
-    // 在別的世代解過但這一代還沒 —— 這正是「有些結局你的時代沒給你」的具體樣子
-    var elsewhere = (!unlocked && entry ? (entry.generations || []) : []);
     var html = '<div class="codex-item' + (unlocked ? '' : ' locked') + '" data-ending="' + e.id + '">';
     html += '<span class="codex-silhouette">' + (unlocked ? '●' : '■') + '</span>';
     html += '<span class="codex-main">';
-    html += '<span class="codex-title">' + (unlocked || elsewhere.length ? e.title : '？？？') + '</span>';
+    html += '<span class="codex-title">' + (unlocked ? e.title : '？？？') + '</span>';
     var tags = '<span class="codex-tags">';
     tags += '<span class="codex-tag rarity-' + (e.rarity || '') + '">' + (e.rarity || '') + '</span>';
     if (e.limitedTo) tags += '<span class="codex-tag">' + e.limitedTo.join('/') + ' 限定</span>';
@@ -193,8 +193,6 @@
     if (unlocked) {
       var genders = (entry.genders || []).map(function (g) { return cfg.genderLabels[g] || g; }).join('/');
       html += '<span class="codex-count">解鎖 ' + entry.count + ' 次' + (genders ? ' · ' + genders : '') + '</span>';
-    } else if (elsewhere.length) {
-      html += '<span class="codex-count codex-elsewhere">已在 ' + elsewhere.join('/') + ' 解鎖</span>';
     }
     html += '</div>';
     return html;

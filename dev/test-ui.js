@@ -333,21 +333,19 @@ tests.push(function (done) {
     var got1975 = unlockedTitles();
     got1975.length === 0 ? ok('1975 分頁沒有被 1990 的紀錄點亮') :
       fail('1975 分頁誤亮了: ' + got1975.join(','));
-    // 「已在其他世代解鎖」只有在該結局本來就會出現在這一頁時才該顯示。
-    // 判斷依據是「它在 1975 分頁看得到嗎」，不是「它有沒有世代限定」——
-    // 例如雙卡人生限定 [1975,1990]，用 1990 解到之後，1975 分頁確實該標。
+    // 每個分頁只認自己這一代：別的世代的紀錄不該以任何形式洩漏到這一頁，
+    // 包含「已在某代解鎖」這種註腳，以及不小心把標題露出來
     var codexNow = JSON.parse(win.localStorage.getItem('unrealized:codex') || '{}');
-    var all = U.endings.full.concat(U.endings.mid);
-    var expectMark = Object.keys(codexNow).some(function (id) {
-      var e = all.filter(function (x) { return x.id === id; })[0];
-      if (!e) return false;
-      var visibleIn1975 = !e.limitedTo || e.limitedTo.indexOf(1975) !== -1;
-      return visibleIn1975 && (codexNow[id].generations || []).indexOf(1975) === -1;
+    var leaked = Object.keys(codexNow).filter(function (id) {
+      if ((codexNow[id].generations || []).indexOf(1975) !== -1) return false;
+      var row = app.querySelector('[data-ending="' + id + '"]');
+      if (!row) return false;                       // 這一頁看不到，本來就沒問題
+      var t = row.querySelector('.codex-title').textContent;
+      return !row.classList.contains('locked') || t !== '？？？';
     });
-    var marked = !!app.querySelector('.codex-elsewhere');
-    marked === expectMark
-      ? ok(expectMark ? '正確標示「已在其他世代解鎖」' : '沒有可標示的項目，也正確地沒標')
-      : fail(expectMark ? '該標「已在其他世代解鎖」卻沒標' : '不該標卻標了');
+    leaked.length === 0
+      ? ok('別的世代解過的結局，在 1975 分頁維持未解鎖且標題隱藏')
+      : fail('這些結局在 1975 分頁洩漏了別代的紀錄: ' + leaked.join(', '));
 
     // 直接指名檢查，不要比數量 —— 1975 與 1990 各自少掉 5 個別人的限定結局，
     // 總數剛好相同，比數量會平手而看不出過濾有沒有生效
