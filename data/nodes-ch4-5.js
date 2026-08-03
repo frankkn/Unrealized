@@ -20,9 +20,23 @@
   function accidentForeshadowed(state, h) {
     return h.hasFlag(state, '疲勞駕駛') || state.attrs.health <= 3;
   }
+  // 「有一筆錢，你怎麼算都算不過來」——這不是每個人都成立。
+  // 這個節點無條件跑，而且三個選項有兩個會蓋上「借貸」，
+  // 等於走過第5章就被貼上財務陰影，第6章必定被抓去清算。
+  // 真的有缺口的人才會遇到：手頭已經緊，或身上有大筆固定支出。
+  function hasCashShortfall(state) {
+    return state.attrs.money <= 4 ||
+      !!state.flags['高槓桿'] || !!state.flags['有小孩'] || !!state.flags['照顧'];
+  }
+  var AFTER_ACCIDENT_NEXT = [
+    { when: hasCashShortfall, next: 'n5_debt' },
+    { next: 'n5_era_storm' }
+  ];
+
   var OVERWORK_NEXT = [
     { when: accidentForeshadowed, next: 'n5_accident' },
-    { next: 'n5_debt' }
+    { when: hasCashShortfall, next: 'n5_debt' },
+    { next: 'n5_era_storm' }
   ];
 
   Object.assign(UNREALIZED.nodes, {
@@ -205,9 +219,9 @@
       id: 'n5_accident', chapter: 5, title: '那場車禍', ageRange: '28–35歲',
       text: '那天你趕時間，或者只是太累，一個閃神，車禍發生了。',
       options: [
-        { id: 'own_injury', label: '傷的是自己，復原花了比你想的更久的時間', effects: { health: -2, money: -1 }, next: 'n5_debt' },
-        { id: 'hit_someone', label: '撞到了人，責任在你，賠償跟自責一起壓上來', effects: { money: -2, bond: -1, self: -1 }, flags: ['車禍責任'], next: 'n5_debt' },
-        { id: 'long_lawsuit', label: '對方全責，但你被卷進一場拖了三年的官司', effects: { self: -2, achieve: -1 }, flags: ['車禍訴訟'], next: 'n5_debt' }
+        { id: 'own_injury', label: '傷的是自己，復原花了比你想的更久的時間', effects: { health: -2, money: -1 }, next: AFTER_ACCIDENT_NEXT },
+        { id: 'hit_someone', label: '撞到了人，責任在你，賠償跟自責一起壓上來', effects: { money: -2, bond: -1, self: -1 }, flags: ['車禍責任'], next: AFTER_ACCIDENT_NEXT },
+        { id: 'long_lawsuit', label: '對方全責，但你被卷進一場拖了三年的官司', effects: { self: -2, achieve: -1 }, flags: ['車禍訴訟'], next: AFTER_ACCIDENT_NEXT }
       ]
     },
 

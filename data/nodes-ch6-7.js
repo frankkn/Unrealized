@@ -8,6 +8,32 @@
     { when: { flagsAll: ['有小孩'] }, next: 'n6_parenting' },
     { next: 'n6_long_term_care' }
   ];
+  // 婚變的前提是「有一段關係」，而且那段關係真的在承受壓力。
+  // 少了這個門檻，選過分手、或一路單身的人也會被告知「你的關係走到了分岔點」——
+  // 那個節點的三個選項全都假設有伴侶，讀起來會完全不知所云。
+  function relationshipUnderStrain(state) {
+    if (!state.flags['成家'] && !state.flags['未婚']) return false;
+    // 關係還很好、又沒有把命拿去拼事業或照顧長輩的人，不該無緣無故遇到婚變
+    return state.attrs.bond <= 6 || state.attrs.achieve >= 7 || !!state.flags['照顧'];
+  }
+  var AFTER_CARE_NEXT = [
+    { when: relationshipUnderStrain, next: 'n6_marriage_crisis' },
+    { next: 'n6_politics' }
+  ];
+
+  // 財務盤點只在錢真的值得一提的時候才發生：欠過、或很緊、或寬裕到有人來借。
+  // 不上不下的人不會在四十幾歲的某個晚上突然把帳全部攤開來算。
+  function moneyIsNotable(state) {
+    // 「宗教金錢」不算在內：那個旗標講的是你把別人拉下水，是關係的帳，
+    // 由「拉進去的人」那個結局承接，不是你自己的資產負債表
+    if (state.flags['借貸'] || state.flags['高槓桿'] || state.flags['投機']) return true;
+    return state.attrs.money <= 3 || state.attrs.money >= 7;
+  }
+  var AFTER_POLITICS_NEXT = [
+    { when: moneyIsNotable, next: 'n6_financial_reckoning' },
+    { next: 'n6_health_reckoning' }
+  ];
+
   var AFTER_RETIREMENT_NEXT = [
     { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
     { next: 'n7_scam_call' }
@@ -50,9 +76,9 @@
       id: 'n6_long_term_care', chapter: 6, title: '長照黑洞', ageRange: '35–50歲',
       text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。',
       options: [
-        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
-        { id: 'share_siblings', label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧'], next: 'n6_marriage_crisis' },
-        { id: 'hire_full_time', label: '請了全天看護，把自己抽出來一部分', effects: { money: -2, self: 1 }, next: 'n6_marriage_crisis' }
+        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: AFTER_CARE_NEXT },
+        { id: 'share_siblings', label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧'], next: AFTER_CARE_NEXT },
+        { id: 'hire_full_time', label: '請了全天看護，把自己抽出來一部分', effects: { money: -2, self: 1 }, next: AFTER_CARE_NEXT }
       ]
     },
 
@@ -74,9 +100,9 @@
         { text: '你跟長輩在餐桌上，對同一件事有著完全不同的看法。' }
       ],
       options: [
-        { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: 'n6_financial_reckoning' },
-        { id: 'silence', label: '選擇閉嘴吃飯，把話都吞回去', effects: { self: -1, bond: 1 }, next: 'n6_financial_reckoning' },
-        { id: 'try_understand', label: '試著理解對方為什麼會這樣想，雖然還是很難', effects: { self: 1, health: -1 }, next: 'n6_financial_reckoning' }
+        { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: AFTER_POLITICS_NEXT },
+        { id: 'silence', label: '選擇閉嘴吃飯，把話都吞回去', effects: { self: -1, bond: 1 }, next: AFTER_POLITICS_NEXT },
+        { id: 'try_understand', label: '試著理解對方為什麼會這樣想，雖然還是很難', effects: { self: 1, health: -1 }, next: AFTER_POLITICS_NEXT }
       ]
     },
 
