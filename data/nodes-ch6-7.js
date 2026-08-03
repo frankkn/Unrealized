@@ -105,6 +105,24 @@
     { next: 'n6_parent_dies' }
   ];
 
+  // 五軸全是流水帳：第4章弄壞的關係，之後沒有任何節點能補回來。
+  // 但真實的人生有「那一年」——四十幾歲打了一通拖了十年的電話。
+  // 前提是真的有東西要補，所以看的是這一局留下的疤。
+  function somethingToRepair(state) {
+    // 只列「一段具體的、有對象的關係壞掉了」。第一版還放了 被否定（十五歲老師的
+    // 一句話，不是一段要修的關係）、壓抑、宗教金錢，OR 起來 92% 的局都會遇到。
+    var scars = ['家庭政治撕裂', '未出櫃', '複製教養', '朋友走散',
+      '手足決裂', '手足沒出現', '分開'];
+    for (var i = 0; i < scars.length; i++) {
+      if (state.flags[scars[i]]) return true;
+    }
+    return state.attrs.bond <= 3;
+  }
+  var REPAIR_OR_SKIP = [
+    { when: somethingToRepair, next: 'n6_repair' },
+    { next: FRIEND_OR_SKIP }
+  ];
+
   var AFTER_RETIREMENT_NEXT = [
     { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
     { next: 'n7_scam_call' }
@@ -292,9 +310,9 @@
         { text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。' }
       ],
       options: [
-        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: FRIEND_OR_SKIP },
-        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: FRIEND_OR_SKIP },
-        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: FRIEND_OR_SKIP }
+        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: REPAIR_OR_SKIP },
+        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: REPAIR_OR_SKIP },
+        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: REPAIR_OR_SKIP }
       ]
     },
 
@@ -302,6 +320,28 @@
     // 這個節點不加條件——父母會走，是這個年紀唯一真的每個人都會遇到的事。
     // 友誼那條線在中年的結算：朋友不會像家人一樣自動留在你的生活裡，
     // 到這個年紀還在的，都是有人主動維持過的
+    // 這是全遊戲少數幾個「可以真的把東西補回來」的節點。
+    // 沒有它的話，五軸就只是流水帳，而人生不是——四十幾歲那通拖了十年的電話，
+    // 是真的會發生的事，而且真的會改變後面三十年。
+    n6_repair: {
+      id: 'n6_repair', chapter: 6, title: '那通一直沒打的電話', ageRange: '35–50歲',
+      text: [
+        { when: { flagsAll: ['家庭政治撕裂'] }, text: '你們為了那件事，快兩年沒說話了。手機裡那個號碼你一直沒刪。' },
+        { when: { flagsAll: ['未出櫃'] }, text: '有一件關於你自己的事，你這輩子沒對他們說過。你偶爾會想，如果現在說了會怎樣。' },
+        { when: { flagsAll: ['手足決裂'] }, text: '那次之後，兄弟姐妹就散了。群組還在，沒有人講話。' },
+        { when: { flagsAll: ['朋友走散'] }, text: '有幾個人，你其實一直記得。只是每過一年，開口就更難一點。' },
+        { when: { flagsAll: ['複製教養'] }, text: '你知道自己對孩子講過幾句很重的話。那幾句你到現在都還記得，一個字都沒忘。' },
+        { when: { flagsAll: ['分開'] }, text: '分開之後你們沒有真的說完。有些話卡在那裡，卡了很多年。' },
+        { text: '有一段關係，這些年就這樣淡掉了。沒有誰做錯什麼，只是誰都沒有先開口。' }
+      ],
+      options: [
+        { id: 'made_the_call', label: '你打了那通拖了十年的電話。對方接了，第一句話很客氣', effects: { bond: 2, self: 2, health: -1 }, flags: ['修復過'], next: FRIEND_OR_SKIP },
+        { id: 'just_showed_up', label: '你什麼都沒解釋，只是開始固定出現', effects: { bond: 3, self: -1, money: -1 }, flags: ['修復過'], next: FRIEND_OR_SKIP },
+        { id: 'wrote_it_down', label: '你寫了一封信，寫完沒有寄。但寫的過程你自己好了一些', effects: { self: 2, health: 1, bond: -1 }, next: FRIEND_OR_SKIP },
+        { id: 'let_it_be', label: '你想過。但你也知道，有些事錯過了就是錯過了', effects: { achieve: 1, self: -1, bond: -1 }, flags: ['沒有回頭'], next: FRIEND_OR_SKIP }
+      ]
+    },
+
     n6_old_friend: {
       id: 'n6_old_friend', chapter: 6, title: '很久沒接到的那通電話', ageRange: '35–50歲',
       text: [

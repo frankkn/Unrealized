@@ -1,6 +1,6 @@
 # 場景圖生成指南
 
-53 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
+54 張節點場景圖的 prompt。用任何生圖工具產完，命名成 `art/<節點ID>.webp` 丟進這個資料夾即可——**引擎會自動抓，沒有的就退回像素雕版**，所以可以一次做一張，不用等全部做完。
 
 ---
 
@@ -10,7 +10,7 @@
 |---|---|
 | 檔名 | `art/<節點ID>.webp`（例：`art/n0_family.webp`）ID 就是下面每一節的標題 |
 | 比例 | **3:4 直式**（832×1088 或 768×1024） |
-| 格式 | WebP，品質 80。53 張控制在 15MB 內，repo 才不會腫 |
+| 格式 | WebP，品質 80。54 張控制在 15MB 內，repo 才不會腫 |
 | 內容 | **畫面裡不要有任何文字**——字會蓋在圖上，圖裡再有字會打架 |
 | 構圖 | 重要的東西放在**上半部**。下緣會被文字與選項壓住，底部三分之一會被漸層蓋掉 |
 
@@ -18,7 +18,7 @@
 
 ## 風格錨（每一則 prompt 都要接上這段）
 
-一致性全靠這段。**不要每張改寫它**，否則 53 張會像 53 個不同的遊戲。
+一致性全靠這段。**不要每張改寫它**，否則 54 張會像 54 個不同的遊戲。
 
 ```
 pixel art illustration, 16-bit JRPG background art style, detailed dithering,
@@ -32,9 +32,9 @@ no text, no watermark, no UI elements
 
 **負面提示**：`text, letters, watermark, signature, UI, HUD, face, close-up portrait, modern western city, cluttered composition`
 
-### 怎麼讓 53 張看起來像同一個人畫的
+### 怎麼讓 54 張看起來像同一個人畫的
 
-53 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
+54 張分開生，最大的風險是風格漂移。**先產一張你滿意的當基準，之後每一張都拿它當參考**：
 
 | 工具 | 作法 |
 |---|---|
@@ -245,6 +245,10 @@ no text, no watermark, no UI elements
 ### n6_readjust — 重新調整
 > 清晨的陽台，晾衣桿與遠山。
 `early morning balcony, laundry poles and distant mountains, one person seen from behind holding a cup, city waking below, calm reassessment`
+
+### n6_repair — 那通一直沒打的電話
+> 夜裡的餐桌，手機朝上放著，螢幕亮著一個號碼。
+`night, a kitchen table in a Taiwanese apartment, one adult in their forties seen from behind sitting with a phone face-up in front of them, untouched cup of tea, the number on screen, a decade of not calling`
 
 ### n6_old_friend — 很久沒接到的那通電話
 > 夜裡的公寓陽台，講電話的背影，樓下是城市的燈。
