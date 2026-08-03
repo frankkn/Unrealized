@@ -157,11 +157,13 @@
     html += paragraphs;
     html += '</article>';
     html += '<div class="options">';
-    html += '<button class="primary-btn" id="again-btn">再玩一次</button>';
+    html += '<button class="primary-btn" id="menu-btn">返回主選單</button>';
     html += '<button class="link-btn" id="codex-btn-2">看結局圖鑑</button>';
     html += '</div>';
     app.innerHTML = html;
-    document.getElementById('again-btn').addEventListener('click', function () { runState = null; renderStart(); });
+    // 這顆按鈕本來就是回開始畫面（清掉這一局、重選世代與性別），
+    // 只是原本寫成「再玩一次」，文字跟行為對不上
+    document.getElementById('menu-btn').addEventListener('click', function () { runState = null; renderStart(); });
     document.getElementById('codex-btn-2').addEventListener('click', function () {
       renderCodex(function () { renderEnding(ending, isMid); });
     });

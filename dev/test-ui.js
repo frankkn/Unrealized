@@ -400,8 +400,9 @@ tests.push(function (done) {
 
     startRun(win, app, 2005, 'F');
     playOut(win, app, function (opts) { return opts[0]; });
-    var again = doc.getElementById('again-btn');
-    if (!again) { fail('結局畫面沒有再玩一次按鈕'); return done(); }
+    var again = doc.getElementById('menu-btn');
+    if (!again) { fail('結局畫面沒有返回主選單按鈕'); return done(); }
+    again.textContent === '返回主選單' ? ok('按鈕文字是「返回主選單」') : fail('按鈕文字是: ' + again.textContent);
     click(win, again);
     var replay = doc.getElementById('replay-btn');
     if (!replay) { fail('沒有快速重玩按鈕'); return done(); }
