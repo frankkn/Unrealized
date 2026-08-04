@@ -279,39 +279,38 @@ function playScriptedPath(generation, gender, path) {
 var LUCKY_SELF_PATH = {
   gen: 1975, gender: "M",
   path: [
-    'n0_family/labor_family', 'n0_siblings/middle', 'n1_labor/skill',
-    'n1_teacher/saw_me', 'n2_high_school/no_school', 'n2_first_failure/tried_again',
-    'n3_route/liked_major', 'n3_the_friends/inner_circle', 'n3m_military/grit_through',
-    'n3_first_love/straight_stable', 'n3_first_money/gave_home', 'n4_job/sme',
-    'n4_where/abroad', 'n4_westward/go', 'n4_mlm/half_in_borrow',
-    'n5_career_move/it_worked', 'n5_marriage/stay_unmarried', 'n5_children/dink',
-    'n5_house/stay_family', 'n5_invest/etf', 'n5_windfall/reinvest',
-    'n5_parents_ill/money_m', 'n5_body_signal/ignore', 'n5_overwork/pace_self',
-    'n5_era_storm/miss_opportunity', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/change_lane',
-    'n6_long_term_care/siblings_vanished', 'n6_politics/silence', 'n6_financial_reckoning/manage_through',
-    'n6_health_reckoning/partial_care', 'n6_return_home/commute', 'n6_readjust/double_down',
-    'n6_repair/let_it_be', 'n6_old_friend/showed_up', 'n6_parent_dies/estate_fight',
-    'n7_retirement_prep/prepared', 'n7_scam_call/almost_fell', 'n7_solo_aging/they_stayed',
-    'n7_body_ledger/decline', 'n7_look_back/proud'
+    'n0_family/gov_family', 'n0_siblings/middle', 'n1_bookish/push',
+    'n1_teacher/saw_me', 'n2_high_school/elite', 'n2_first_failure/gave_up',
+    'n3_route/general_uni', 'n3_the_friends/drifted', 'n3m_military/find_clarity',
+    'n3_first_love/solo', 'n3_first_money/saved_it', 'n4_job/sme',
+    'n4_where/stay_local', 'n4_westward/go_family', 'n5_career_move/it_worked',
+    'n5_marriage/arranged', 'n5_children/dink', 'n5_house/buy_leverage',
+    'n5_invest/etf', 'n5_windfall/took_a_year', 'n5_parents_ill/money_m',
+    'n5_body_signal/pay_for_it', 'n5_overwork/pace_self', 'n5_debt/borrow_family',
+    'n5_era_storm/dodge', 'n5_emigrate/emigrate_stay', 'n6_career_plateau/change_lane',
+    'n6_long_term_care/siblings_vanished', 'n6_marriage_crisis/separate', 'n6_politics/silence',
+    'n6_health_reckoning/overwork_still', 'n6_return_home/move_back', 'n6_readjust/keep_going',
+    'n6_repair/just_showed_up', 'n6_parent_dies/estate_ok', 'n7_retirement_prep/keep_working',
+    'n7_scam_call/almost_fell', 'n7_solo_aging/lonely', 'n7_body_ledger/indulge',
+    'n7_look_back/proud'
   ]
 };
 var LUCKY_QUIET_PATH = {
-  gen: 1975, gender: "F",
+  gen: 1990, gender: "M",
   path: [
-    'n0_family/professional_family', 'n0_siblings/middle', 'n1_bookish/hobby',
-    'n1_teacher/wrote_me_off', 'n2_high_school/normal', 'n2_first_failure/blamed_self',
-    'n3_route/top_hot', 'n3_the_friends/carried_them', 'n3f_headstart/deflect',
-    'n3_first_love/solo', 'n3_first_money/saved_it', 'n4_job/sme',
-    'n4_where/stay_local', 'n4f_interview/deflect', 'n4_westward/stay',
-    'n4_mlm/half_in_borrow', 'n5_career_move/setback', 'n5_marriage/arranged',
-    'n5_children/have_kids_1975', 'n5_house/stay_family', 'n5_invest/leverage_trade',
-    'n5_windfall/reinvest', 'n5_parents_ill/institution', 'n5_body_signal/ignore',
-    'n5_overwork/burn_bridge', 'n5_era_storm/miss_opportunity', 'n5_emigrate/emigrate_stay',
-    'n6_career_plateau/accept', 'n6_parenting/outsource', 'n6_politics/fight',
-    'n6_health_reckoning/partial_care', 'n6_readjust/double_down', 'n6_repair/made_the_call',
-    'n6_old_friend/lent_money', 'n6_parent_dies/estate_ok', 'n7_retirement_prep/prepared',
-    'n7_children_settlement/distant', 'n7_scam_call/fall_for_it', 'n7_solo_aging/comfortable_silence',
-    'n7_body_ledger/decline', 'n7_look_back/regret'
+    'n0_family/professional_family', 'n0_siblings/eldest', 'n1_bookish/hobby',
+    'n1_teacher/no_one', 'n2_high_school/no_school', 'n2_first_failure/tried_again',
+    'n3_route/direct_work', 'n3_the_friends/carried_them', 'n3m_military/find_clarity',
+    'n3_first_love/straight_stable', 'n3_first_money/gave_home', 'n4_job/freelance',
+    'n4_where/beipiao', 'n4_22k/leave', 'n4_mlm/join',
+    'n5_career_move/slept_on_it', 'n5_marriage/marry_common', 'n5_children/undecided_m',
+    'n5_house/stay_family', 'n5_invest/etf', 'n5_parents_ill/institution',
+    'n5_body_signal/pay_for_it', 'n5_overwork/burn_bridge', 'n5_debt/credit_cash_card',
+    'n5_era_storm/dodge', 'n6_career_plateau/accept', 'n6_politics/fight',
+    'n6_financial_reckoning/clean_sheet', 'n6_health_reckoning/partial_care', 'n6_return_home/move_back',
+    'n6_readjust/let_go', 'n6_repair/let_it_be', 'n6_old_friend/said_no',
+    'n6_parent_dies/handled_it', 'n7_retirement_prep/keep_working', 'n7_scam_call/almost_fell',
+    'n7_solo_aging/community', 'n7_body_ledger/decline', 'n7_look_back/regret'
   ]
 };
 

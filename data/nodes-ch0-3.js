@@ -33,7 +33,7 @@
           id: 'wealthy_family',
           label: '家裡有錢。你從小沒為錢煩惱過，也一直不太確定，別人對你好是因為你，還是因為那個姓',
           effects: { money: 3, bond: -1, self: -1 },
-          flags: ['富裕', '家世'],
+          flags: ['富裕'],
           next: 'n0_siblings'
         },
         {
