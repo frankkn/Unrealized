@@ -7,18 +7,10 @@
   // 的長照節點對他不成立 —— 整個跳過。這個節點也是「照顧」旗標的唯一來源，
   // 無條件對每個人跑會讓那個旗標近乎人人有，下游讀它的判定就跟著失效。
   function longTermCareStillOnYou(state) {
+    // 第5章的「長輩病了」現在是抽的，可能根本沒演到——沒生過病的父母不會突然需要長照
+    if (!state.flags['長輩生病']) return false;
     return !state.flags['送機構'];
   }
-  var CARE_OR_SKIP = [
-    { when: longTermCareStillOnYou, next: 'n6_long_term_care' },
-    { when: relationshipUnderStrain, next: 'n6_marriage_crisis' },
-    { next: 'n6_politics' }
-  ];
-  // 只有真的有小孩，才會遇到教養節點；沒有就直接進長照那一段的判斷
-  var AFTER_UNEMPLOYMENT_NEXT = [
-    { when: { flagsAll: ['有小孩'] }, next: 'n6_parenting' },
-    { next: CARE_OR_SKIP }
-  ];
   // 婚變的前提是「有一段關係」，而且那段關係真的在承受壓力。
   // 少了這個門檻，選過分手、或一路單身的人也會被告知「你的關係走到了分岔點」——
   // 那個節點的三個選項全都假設有伴侶，讀起來會完全不知所云。
@@ -35,11 +27,6 @@
     // 真的疏忽了關係的 100%，兼顧的落在五成上下。
     return state.attrs.bond <= 3;
   }
-  var AFTER_CARE_NEXT = [
-    { when: relationshipUnderStrain, next: 'n6_marriage_crisis' },
-    { next: 'n6_politics' }
-  ];
-
   // 財務盤點只在錢真的值得一提的時候才發生：欠過、或很緊、或寬裕到有人來借。
   // 不上不下的人不會在四十幾歲的某個晚上突然把帳全部攤開來算。
   //
@@ -57,11 +44,6 @@
     if (state.attrs.money >= 8) return false;
     return !!(state.flags['借貸'] || state.flags['高槓桿'] || state.flags['投機']);
   }
-  var AFTER_POLITICS_NEXT = [
-    { when: moneyIsNotable, next: 'n6_financial_reckoning' },
-    { next: 'n6_health_reckoning' }
-  ];
-
   // 「你的位置被劃掉了」不是每個人都會遇到。被裁的是位置不穩的人：
   // 成就沒真的累積起來，或已經被時代／技術打過一次。
   // 「被取代」對 2005 世代是 100%（第4章那個節點三個選項都會蓋），單看旗標
@@ -72,11 +54,6 @@
     if (state.attrs.achieve >= 8) return false;
     return !!(state.flags['被取代'] || state.flags['遇到風暴']);
   }
-  var UNEMPLOYMENT_OR_SKIP = [
-    { when: layoffReachesYou, next: 'n6_midlife_unemployment' },
-    { next: AFTER_UNEMPLOYMENT_NEXT }
-  ];
-
   // 五十歲以後是不是一個人住：分開了、或本來就沒有過伴侶
   function livesAloneNow(state) {
     // 「單身」要排在前面：同性伴侶分手之後那個旗標仍然留著（好幾個結局讀它），
@@ -90,21 +67,11 @@
   function everLeftHome(state) {
     return !!(state.flags['北漂'] || state.flags['出國'] || state.flags['西進'] || state.flags['移民']);
   }
-  var RETURN_OR_SKIP = [
-    { when: everLeftHome, next: 'n6_return_home' },
-    { next: 'n6_readjust' }
-  ];
-
   // 「一個老朋友打來」——前提是還有人有你的號碼。
   // 十八歲就讓那群人一個一個散掉的人，這通電話不會響。
   function someoneStillHasYourNumber(state) {
     return !!(state.flags['死黨'] || state.flags['人面廣']);
   }
-  var FRIEND_OR_SKIP = [
-    { when: someoneStillHasYourNumber, next: 'n6_old_friend' },
-    { next: 'n6_parent_dies' }
-  ];
-
   // 五軸全是流水帳：第4章弄壞的關係，之後沒有任何節點能補回來。
   // 但真實的人生有「那一年」——四十幾歲打了一通拖了十年的電話。
   // 前提是真的有東西要補，所以看的是這一局留下的疤。
@@ -118,15 +85,39 @@
     }
     return state.attrs.bond <= 3;
   }
-  var REPAIR_OR_SKIP = [
-    { when: somethingToRepair, next: 'n6_repair' },
-    { next: FRIEND_OR_SKIP }
-  ];
 
-  var AFTER_RETIREMENT_NEXT = [
-    { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
-    { next: 'n7_scam_call' }
-  ];
+  // 第 6 章跟第 5 章同一個問題：13 個節點一局走 8.8 個。
+  // 前提函式全部保留（它們判的是「這件事對你成不成立」），只把鏈式改成池子——
+  // 成立只代表有資格被抽到，不代表這一局一定演。
+  //
+  // 骨幹留在池子外：事業高原是開場、健康清算是身體那條線唯一能被救回來的地方、
+  // 重新調整收束出身的回聲、那通電話（父母過世）是這個年紀真的每個人都會遇到的事。
+  var CH6_POOL = {
+    id: 'ch6', pick: 3, then: 'n6_health_reckoning',
+    of: [
+      { when: layoffReachesYou, next: 'n6_midlife_unemployment' },
+      { when: { flagsAll: ['有小孩'] }, next: 'n6_parenting' },
+      { when: longTermCareStillOnYou, next: 'n6_long_term_care' },
+      { when: relationshipUnderStrain, next: 'n6_marriage_crisis' },
+      { next: 'n6_politics' },
+      { when: moneyIsNotable, next: 'n6_financial_reckoning' },
+      { when: everLeftHome, next: 'n6_return_home' },
+      { when: somethingToRepair, next: 'n6_repair' },
+      { when: someoneStillHasYourNumber, next: 'n6_old_friend' }
+    ]
+  };
+
+  // 第 7 章同理：6 個節點一局走 5.1。骨幹只留「回望」——它是整局的收尾。
+  var CH7_POOL = {
+    id: 'ch7', pick: 3, then: 'n7_look_back',
+    of: [
+      { next: 'n7_retirement_prep' },
+      { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
+      { next: 'n7_scam_call' },
+      { next: 'n7_solo_aging' },
+      { next: 'n7_body_ledger' }
+    ]
+  };
 
   Object.assign(UNREALIZED.nodes, {
 
@@ -144,11 +135,11 @@
         { text: '你的職業生涯到了一個高原期，再往上，好像沒有位置留給你了。' }
       ],
       options: [
-        { id: 'accept', label: '接受這裡就是頂點，把心力挪去別的地方', effects: { self: 1, bond: 1 }, next: UNEMPLOYMENT_OR_SKIP },
-        { id: 'push_more', label: '還是拼著想往上擠，結果換來更多失望', effects: { health: -1, self: -1 }, next: UNEMPLOYMENT_OR_SKIP },
-        { id: 'change_lane', label: '轉去一個新的領域重新開始，等於從頭來一次', effects: { achieve: -2, self: 1 }, next: UNEMPLOYMENT_OR_SKIP },
+        { id: 'accept', label: '接受這裡就是頂點，把心力挪去別的地方', effects: { self: 1, bond: 1 }, next: CH6_POOL },
+        { id: 'push_more', label: '還是拼著想往上擠，結果換來更多失望', effects: { health: -1, self: -1 }, next: CH6_POOL },
+        { id: 'change_lane', label: '轉去一個新的領域重新開始，等於從頭來一次', effects: { achieve: -2, self: 1 }, next: CH6_POOL },
         // 有回報的選項刻意設成「要先投入過才看得到」——不是白送，是兌現
-        { id: 'headhunted', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '以前的同事來找你，那邊剛好缺一個你這種資歷的人', effects: { achieve: 2, money: 1 }, next: UNEMPLOYMENT_OR_SKIP }
+        { id: 'headhunted', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '以前的同事來找你，那邊剛好缺一個你這種資歷的人', effects: { achieve: 2, money: 1 }, next: CH6_POOL }
       ]
     },
 
@@ -160,9 +151,9 @@
         { text: '一次組織精簡，你的位置被劃掉了。' }
       ],
       options: [
-        { id: 'quick_reemploy', label: '很快找到下一份工作，但薪水打了折', effects: { bond: 1, money: -1, achieve: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
-        { id: 'long_gap', label: '花了很長時間才找到下一份，存款一路在掉', effects: { money: -2, self: -1 }, next: AFTER_UNEMPLOYMENT_NEXT },
-        { id: 'start_over', label: '利用這段空檔，做一件完全不一樣的事，後來真的做起來了', effects: { self: 2, achieve: 1, money: -1 }, next: AFTER_UNEMPLOYMENT_NEXT }
+        { id: 'quick_reemploy', label: '很快找到下一份工作，但薪水打了折', effects: { bond: 1, money: -1, achieve: -1 }, next: CH6_POOL },
+        { id: 'long_gap', label: '花了很長時間才找到下一份，存款一路在掉', effects: { money: -2, self: -1 }, next: CH6_POOL },
+        { id: 'start_over', label: '利用這段空檔，做一件完全不一樣的事，後來真的做起來了', effects: { self: 2, achieve: 1, money: -1 }, next: CH6_POOL }
       ]
     },
 
@@ -173,9 +164,9 @@
         { text: '孩子漸漸大了，你開始看見自己教養方式裡，那些從自己父母身上學來的痕跡。' }
       ],
       options: [
-        { id: 'repeat_pattern', label: '發現自己正在重複當年父母對你做的事，一時改不過來', effects: { bond: -1, self: -1 }, flags: ['複製教養'], next: CARE_OR_SKIP },
-        { id: 'break_pattern', label: '努力練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: CARE_OR_SKIP },
-        { id: 'outsource', label: '把大部分教養的事都交給補習班或安親班，自己專心賺錢', effects: { achieve: 1, money: -1, bond: -1 }, next: CARE_OR_SKIP }
+        { id: 'repeat_pattern', label: '發現自己正在重複當年父母對你做的事，一時改不過來', effects: { bond: -1, self: -1 }, flags: ['複製教養'], next: CH6_POOL },
+        { id: 'break_pattern', label: '努力練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: CH6_POOL },
+        { id: 'outsource', label: '把大部分教養的事都交給補習班或安親班，自己專心賺錢', effects: { achieve: 1, money: -1, bond: -1 }, next: CH6_POOL }
       ]
     },
 
@@ -187,10 +178,10 @@
         { text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。' }
       ],
       options: [
-        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: AFTER_CARE_NEXT },
-        { id: 'share_siblings', requires: { flagsAll: ['有手足'] }, label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧', '手足有分擔'], next: AFTER_CARE_NEXT },
-        { id: 'siblings_vanished', requires: { flagsAll: ['有手足'] }, label: '兄弟姐妹一個一個有事，到最後還是只有你在', effects: { bond: -2, self: -1 }, flags: ['照顧', '手足沒出現'], next: AFTER_CARE_NEXT },
-        { id: 'hire_full_time', label: '請了全天看護，把自己抽出來一部分', effects: { money: -2, self: 1 }, next: AFTER_CARE_NEXT }
+        { id: 'keep_caring', label: '繼續自己扛，幾乎沒有自己的時間', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: CH6_POOL },
+        { id: 'share_siblings', requires: { flagsAll: ['有手足'] }, label: '跟兄弟姐妹輪班分擔，但也因此吵了不少次', effects: { bond: -1, self: 1 }, flags: ['照顧', '手足有分擔'], next: CH6_POOL },
+        { id: 'siblings_vanished', requires: { flagsAll: ['有手足'] }, label: '兄弟姐妹一個一個有事，到最後還是只有你在', effects: { bond: -2, self: -1 }, flags: ['照顧', '手足沒出現'], next: CH6_POOL },
+        { id: 'hire_full_time', label: '請了全天看護，把自己抽出來一部分', effects: { money: -2, self: 1 }, next: CH6_POOL }
       ]
     },
 
@@ -198,9 +189,9 @@
       id: 'n6_marriage_crisis', chapter: 6, title: '婚變', ageRange: '35–50歲',
       text: '多年下來累積的疲乏，在某一次爆發之後，關係走到了一個分岔點。',
       options: [
-        { id: 'work_it_out', label: '決定去諮商，把話攤開來講', effects: { bond: 1, money: -1 }, next: 'n6_politics' },
-        { id: 'separate', label: '決定分開，各自過各自的生活', effects: { bond: -2, self: 1 }, flags: ['分開'], next: 'n6_politics' },
-        { id: 'stay_for_kids', label: '為了孩子先不分開，把感情放到最後順位', effects: { self: -2, bond: 1 }, next: 'n6_politics' }
+        { id: 'work_it_out', label: '決定去諮商，把話攤開來講', effects: { bond: 1, money: -1 }, next: CH6_POOL },
+        { id: 'separate', label: '決定分開，各自過各自的生活', effects: { bond: -2, self: 1 }, flags: ['分開'], next: CH6_POOL },
+        { id: 'stay_for_kids', label: '為了孩子先不分開，把感情放到最後順位', effects: { self: -2, bond: 1 }, next: CH6_POOL }
       ]
     },
 
@@ -212,9 +203,9 @@
         { text: '你跟長輩在餐桌上，對同一件事有著完全不同的看法。你們的消息來自不同地方——你這邊是{資訊來源}；而{長輩溝通方式}，也一直沒有對過頻。' }
       ],
       options: [
-        { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: AFTER_POLITICS_NEXT },
-        { id: 'silence', label: '選擇閉嘴吃飯，把話都吞回去', effects: { self: -1, bond: 1 }, next: AFTER_POLITICS_NEXT },
-        { id: 'try_understand', label: '試著理解對方為什麼會這樣想，雖然還是很難', effects: { bond: 2, self: -1 }, next: AFTER_POLITICS_NEXT }
+        { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: CH6_POOL },
+        { id: 'silence', label: '選擇閉嘴吃飯，把話都吞回去', effects: { self: -1, bond: 1 }, next: CH6_POOL },
+        { id: 'try_understand', label: '試著理解對方為什麼會這樣想，雖然還是很難', effects: { bond: 2, self: -1 }, next: CH6_POOL }
       ]
     },
 
@@ -240,12 +231,12 @@
           endingId: 'END_法拍'
         },
         // 催收電話只有真的欠過錢的人會遇到
-        { id: 'collections_call', requires: { flagsAny: ['借貸', '高槓桿', '投機'], attr: { key: 'money', op: '<=', value: 5 } }, label: '催收電話開始一天打好幾次', effects: { self: -1, bond: -1 }, next: 'n6_health_reckoning' },
-        { id: 'manage_through', label: '把手上的東西重新盤點一次，勉強打平', effects: { money: 1, health: -1 }, next: 'n6_health_reckoning' },
+        { id: 'collections_call', requires: { flagsAny: ['借貸', '高槓桿', '投機'], attr: { key: 'money', op: '<=', value: 5 } }, label: '催收電話開始一天打好幾次', effects: { self: -1, bond: -1 }, next: CH6_POOL },
+        { id: 'manage_through', label: '把手上的東西重新盤點一次，勉強打平', effects: { money: 1, health: -1 }, next: CH6_POOL },
         // 手頭很緊、但從來沒欠過人——這也是一種處境，原本它只剩一個按鈕可以按
-        { id: 'poor_but_clean', requires: { attr: { key: 'money', op: '<=', value: 4 } }, label: '沒有欠誰，只是也沒剩下什麼。你把日子再壓緊一點', effects: { self: 1, health: -1, bond: -1 }, next: 'n6_health_reckoning' },
-        { id: 'clean_sheet', requires: { attr: { key: 'money', op: '>=', value: 5 } }, label: '這幾年算是穩住了，該還的都還得上', effects: { self: 1, money: 1 }, next: 'n6_health_reckoning' },
-        { id: 'help_family', requires: { attr: { key: 'money', op: '>=', value: 6 } }, label: '手頭還算鬆，借了一筆給周轉不過來的家人', effects: { bond: 2, money: -2 }, next: 'n6_health_reckoning' }
+        { id: 'poor_but_clean', requires: { attr: { key: 'money', op: '<=', value: 4 } }, label: '沒有欠誰，只是也沒剩下什麼。你把日子再壓緊一點', effects: { self: 1, health: -1, bond: -1 }, next: CH6_POOL },
+        { id: 'clean_sheet', requires: { attr: { key: 'money', op: '>=', value: 5 } }, label: '這幾年算是穩住了，該還的都還得上', effects: { self: 1, money: 1 }, next: CH6_POOL },
+        { id: 'help_family', requires: { attr: { key: 'money', op: '>=', value: 6 } }, label: '手頭還算鬆，借了一筆給周轉不過來的家人', effects: { bond: 2, money: -2 }, next: CH6_POOL }
       ]
     },
 
@@ -276,11 +267,11 @@
           requires: { attr: { key: 'health', op: '<=', value: 2 } },
           label: '請了長假，把手上的位置交出去，先把身體救回來',
           effects: { health: 4, self: 1, achieve: -1, money: -1 },
-          next: RETURN_OR_SKIP
+          next: 'n6_readjust'
         },
-        { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: RETURN_OR_SKIP },
-        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: RETURN_OR_SKIP },
-        { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: RETURN_OR_SKIP }
+        { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: 'n6_readjust' },
+        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: 'n6_readjust' },
+        { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: 'n6_readjust' }
       ]
     },
 
@@ -318,9 +309,9 @@
         { text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。' }
       ],
       options: [
-        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: REPAIR_OR_SKIP },
-        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: REPAIR_OR_SKIP },
-        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: REPAIR_OR_SKIP }
+        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n6_parent_dies' },
+        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: 'n6_parent_dies' },
+        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: 'n6_parent_dies' }
       ]
     },
 
@@ -343,10 +334,10 @@
         { text: '有一段關係，這些年就這樣淡掉了。沒有誰做錯什麼，只是誰都沒有先開口。' }
       ],
       options: [
-        { id: 'made_the_call', label: '你打了那通拖了十年的電話。對方接了，第一句話很客氣', effects: { bond: 2, self: 2, health: -1 }, flags: ['修復過'], next: FRIEND_OR_SKIP },
-        { id: 'just_showed_up', label: '你什麼都沒解釋，只是開始固定出現', effects: { bond: 3, self: -1, money: -1 }, flags: ['修復過'], next: FRIEND_OR_SKIP },
-        { id: 'wrote_it_down', label: '你寫了一封信，寫完沒有寄。但寫的過程你自己好了一些', effects: { self: 2, health: 1, bond: -1 }, next: FRIEND_OR_SKIP },
-        { id: 'let_it_be', label: '你想過。但你也知道，有些事錯過了就是錯過了', effects: { achieve: 1, self: -1, bond: -1 }, flags: ['沒有回頭'], next: FRIEND_OR_SKIP }
+        { id: 'made_the_call', label: '你打了那通拖了十年的電話。對方接了，第一句話很客氣', effects: { bond: 2, self: 2, health: -1 }, flags: ['修復過'], next: CH6_POOL },
+        { id: 'just_showed_up', label: '你什麼都沒解釋，只是開始固定出現', effects: { bond: 3, self: -1, money: -1 }, flags: ['修復過'], next: CH6_POOL },
+        { id: 'wrote_it_down', label: '你寫了一封信，寫完沒有寄。但寫的過程你自己好了一些', effects: { self: 2, health: 1, bond: -1 }, next: CH6_POOL },
+        { id: 'let_it_be', label: '你想過。但你也知道，有些事錯過了就是錯過了', effects: { achieve: 1, self: -1, bond: -1 }, flags: ['沒有回頭'], next: CH6_POOL }
       ]
     },
 
@@ -358,10 +349,10 @@
         { text: '一個老朋友打來。寒暄了幾句之後，你聽出他其實是有事。' }
       ],
       options: [
-        { id: 'lent_money', label: '借了。那筆錢後來誰都沒有再提起', effects: { money: -2, bond: 1 }, flags: ['借錢給朋友'], next: 'n6_parent_dies' },
-        { id: 'said_no', label: '你說不方便。那之後你們就很少聯絡了', effects: { money: 1, bond: -2 }, flags: ['朋友走散'], next: 'n6_parent_dies' },
-        { id: 'showed_up', label: '你沒借錢，但你去了，陪他把事情一件一件處理完', effects: { bond: 2, self: 1, money: -1, achieve: -1 }, flags: ['交情還在'], next: 'n6_parent_dies' },
-        { id: 'kept_it_light', label: '你聽完，說了些場面話，然後兩邊都當作沒事', effects: { self: -1, bond: -1 }, next: 'n6_parent_dies' }
+        { id: 'lent_money', label: '借了。那筆錢後來誰都沒有再提起', effects: { money: -2, bond: 1 }, flags: ['借錢給朋友'], next: CH6_POOL },
+        { id: 'said_no', label: '你說不方便。那之後你們就很少聯絡了', effects: { money: 1, bond: -2 }, flags: ['朋友走散'], next: CH6_POOL },
+        { id: 'showed_up', label: '你沒借錢，但你去了，陪他把事情一件一件處理完', effects: { bond: 2, self: 1, money: -1, achieve: -1 }, flags: ['交情還在'], next: CH6_POOL },
+        { id: 'kept_it_light', label: '你聽完，說了些場面話，然後兩邊都當作沒事', effects: { self: -1, bond: -1 }, next: CH6_POOL }
       ]
     },
 
@@ -376,12 +367,12 @@
         { text: '清晨四點的電話。你聽完第一句就知道，接下來這幾天要怎麼過了。' }
       ],
       options: [
-        { id: 'was_there', label: '你在旁邊，最後那幾天沒有離開', effects: { bond: 1, self: 1, health: -1 }, flags: ['送走父母'], next: 'n7_retirement_prep' },
-        { id: 'too_late', label: '你趕過去的時候，已經來不及了', effects: { self: -2, bond: -1, achieve: 1 }, flags: ['送走父母', '來不及'], next: 'n7_retirement_prep' },
-        { id: 'relief_and_guilt', label: '你先感覺到的是鬆一口氣，然後為那個鬆一口氣自責很久', effects: { health: 1, self: -1, bond: -1 }, flags: ['送走父母'], next: 'n7_retirement_prep' },
-        { id: 'handled_it', label: '你把後事一件一件辦完，等到全部結束才敢坐下來', effects: { achieve: 1, bond: 1, health: -1, self: -1 }, flags: ['送走父母', '撐住了'], next: 'n7_retirement_prep' },
-        { id: 'estate_fight', requires: { flagsAll: ['有手足'] }, label: '喪事還沒辦完，房子怎麼分就先吵了起來', effects: { money: 1, bond: -2, self: -1 }, flags: ['送走父母', '手足決裂'], next: 'n7_retirement_prep' },
-        { id: 'estate_ok', requires: { flagsAll: ['有手足'] }, label: '你們把該分的分完，該說的說開，兄弟姐妹沒有散', effects: { bond: 2, money: -1, self: 1 }, flags: ['送走父母', '手足還在'], next: 'n7_retirement_prep' }
+        { id: 'was_there', label: '你在旁邊，最後那幾天沒有離開', effects: { bond: 1, self: 1, health: -1 }, flags: ['送走父母'], next: CH7_POOL },
+        { id: 'too_late', label: '你趕過去的時候，已經來不及了', effects: { self: -2, bond: -1, achieve: 1 }, flags: ['送走父母', '來不及'], next: CH7_POOL },
+        { id: 'relief_and_guilt', label: '你先感覺到的是鬆一口氣，然後為那個鬆一口氣自責很久', effects: { health: 1, self: -1, bond: -1 }, flags: ['送走父母'], next: CH7_POOL },
+        { id: 'handled_it', label: '你把後事一件一件辦完，等到全部結束才敢坐下來', effects: { achieve: 1, bond: 1, health: -1, self: -1 }, flags: ['送走父母', '撐住了'], next: CH7_POOL },
+        { id: 'estate_fight', requires: { flagsAll: ['有手足'] }, label: '喪事還沒辦完，房子怎麼分就先吵了起來', effects: { money: 1, bond: -2, self: -1 }, flags: ['送走父母', '手足決裂'], next: CH7_POOL },
+        { id: 'estate_ok', requires: { flagsAll: ['有手足'] }, label: '你們把該分的分完，該說的說開，兄弟姐妹沒有散', effects: { bond: 2, money: -1, self: 1 }, flags: ['送走父母', '手足還在'], next: CH7_POOL }
       ]
     },
 
@@ -395,9 +386,9 @@
         { text: '退休金、勞保、存款，你開始認真算一次，接下來這幾十年夠不夠用。在你這一代，退休保障是{退休保障}。' }
       ],
       options: [
-        { id: 'prepared', label: '這些年陸續準備了退休金，現在看起來還算夠用', effects: { money: 1, health: 1, self: -1 }, next: AFTER_RETIREMENT_NEXT },
-        { id: 'underprepared', label: '手上的錢，沒有你以為的那麼夠用', effects: { money: -2, self: -1 }, next: AFTER_RETIREMENT_NEXT },
-        { id: 'keep_working', label: '決定不真正退休，能做多久就做多久', effects: { money: 1, health: -1 }, next: AFTER_RETIREMENT_NEXT }
+        { id: 'prepared', label: '這些年陸續準備了退休金，現在看起來還算夠用', effects: { money: 1, health: 1, self: -1 }, next: CH7_POOL },
+        { id: 'underprepared', label: '手上的錢，沒有你以為的那麼夠用', effects: { money: -2, self: -1 }, next: CH7_POOL },
+        { id: 'keep_working', label: '決定不真正退休，能做多久就做多久', effects: { money: 1, health: -1 }, next: CH7_POOL }
       ]
     },
 
@@ -408,9 +399,9 @@
         { text: '孩子長大以後，你們的關係變成現在這個樣子，已經是某種定局。' }
       ],
       options: [
-        { id: 'close', label: '現在還是常聯絡，偶爾一起吃飯', effects: { bond: 2, self: -1 }, next: 'n7_scam_call' },
-        { id: 'distant', label: '長大後很少回來，你不太確定具體是哪裡出了問題', effects: { bond: -2, self: -1 }, next: 'n7_scam_call' },
-        { id: 'repaired', label: '曾經很僵，但這幾年慢慢又找回一些話可以說', effects: { bond: 1, health: -1 }, next: 'n7_scam_call' }
+        { id: 'close', label: '現在還是常聯絡，偶爾一起吃飯', effects: { bond: 2, self: -1 }, next: CH7_POOL },
+        { id: 'distant', label: '長大後很少回來，你不太確定具體是哪裡出了問題', effects: { bond: -2, self: -1 }, next: CH7_POOL },
+        { id: 'repaired', label: '曾經很僵，但這幾年慢慢又找回一些話可以說', effects: { bond: 1, health: -1 }, next: CH7_POOL }
       ]
     },
 
@@ -421,9 +412,9 @@
         { text: '一通電話，對方聽起來很緊急，也很懂你在怕什麼。' }
       ],
       options: [
-        { id: 'fall_for_it', label: '把一部分積蓄轉了出去，後來才知道是詐騙', effects: { money: -2, self: -1 }, next: 'n7_solo_aging' },
-        { id: 'almost_fell', label: '差一點就信了，後來冷靜下來查證，及時退出', effects: { self: 1, money: -1 }, next: 'n7_solo_aging' },
-        { id: 'recognize_immediately', label: '一聽就知道是詐騙，直接掛掉', effects: { self: 1, bond: -1 }, next: 'n7_solo_aging' }
+        { id: 'fall_for_it', label: '把一部分積蓄轉了出去，後來才知道是詐騙', effects: { money: -2, self: -1 }, next: CH7_POOL },
+        { id: 'almost_fell', label: '差一點就信了，後來冷靜下來查證，及時退出', effects: { self: 1, money: -1 }, next: CH7_POOL },
+        { id: 'recognize_immediately', label: '一聽就知道是詐騙，直接掛掉', effects: { self: 1, bond: -1 }, next: CH7_POOL }
       ]
     },
 
@@ -442,12 +433,12 @@
         { text: '工作退了，該忙的都忙完了，家裡剩下你們兩個，日子重新安靜下來。' }
       ],
       options: [
-        { id: 'thriving_alone', requires: livesAloneNow, label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: 'n7_body_ledger' },
-        { id: 'lonely', requires: livesAloneNow, label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: 'n7_body_ledger' },
-        { id: 'comfortable_silence', requires: notAlone, label: '兩個人的安靜變成一種默契，不用講話也知道對方在哪一間', effects: { bond: 1, self: 1 }, next: 'n7_body_ledger' },
-        { id: 'same_roof', requires: notAlone, label: '同一個屋簷下，你們各過各的，話一年比一年少', effects: { bond: -1, self: -1 }, next: 'n7_body_ledger' },
-        { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: 'n7_body_ledger' },
-        { id: 'they_stayed', requires: { flagsAny: ['死黨', '交情還在'] }, label: '老朋友還在，而且這幾年變成固定每個月約一次', effects: { bond: 2, self: 1 }, next: 'n7_body_ledger' }
+        { id: 'thriving_alone', requires: livesAloneNow, label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: CH7_POOL },
+        { id: 'lonely', requires: livesAloneNow, label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: CH7_POOL },
+        { id: 'comfortable_silence', requires: notAlone, label: '兩個人的安靜變成一種默契，不用講話也知道對方在哪一間', effects: { bond: 1, self: 1 }, next: CH7_POOL },
+        { id: 'same_roof', requires: notAlone, label: '同一個屋簷下，你們各過各的，話一年比一年少', effects: { bond: -1, self: -1 }, next: CH7_POOL },
+        { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: CH7_POOL },
+        { id: 'they_stayed', requires: { flagsAny: ['死黨', '交情還在'] }, label: '老朋友還在，而且這幾年變成固定每個月約一次', effects: { bond: 2, self: 1 }, next: CH7_POOL }
       ]
     },
 

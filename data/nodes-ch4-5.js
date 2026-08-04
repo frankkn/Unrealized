@@ -35,10 +35,6 @@
     if (state.attrs.money >= 8) return false;
     return !!(state.flags['高槓桿'] || state.flags['有小孩'] || state.flags['照顧']);
   }
-  var AFTER_ACCIDENT_NEXT = [
-    { when: hasCashShortfall, next: 'n5_debt' },
-    { next: 'n5_era_storm' }
-  ];
 
   // 「一個家人或大學同學興沖沖跟你介紹一個能改變人生的機會」——
   // 這是被找上門，不是每個人都會被找上。真的聽下去的是手頭很緊的人，
@@ -64,6 +60,7 @@
     { when: emigrationIsOnTheTable, next: 'n5_emigrate' },
     { next: 'n6_career_plateau' }
   ];
+  // 移民節點是第5章的出口，走完就進第6章
 
   // 遊戲原本只有壞運氣（車禍、風暴、詐騙），一個好運都沒有——那不是人生，是刑期。
   // 但好運不該是天上掉下來的：它落在「手上剛好有東西可以被幸運到」的人身上。
@@ -77,30 +74,33 @@
     if (state.generation === 1990) return !!(state.flags['投機'] || state.flags['早知道存']);
     return !!(state.flags['接案'] || state.flags['喜歡的科系']);
   }
-  var WINDFALL_OR_SKIP = [
-    { when: luckHasSomethingToLandOn, next: 'n5_windfall' },
-    { next: 'n5_parents_ill' }
-  ];
-
   // 「你開始認真想，要怎麼處理手上這筆不上不下的存款」——手上要真的有那筆錢
   function hasSavingsToWorryAbout(state) { return state.attrs.money >= 4; }
-  var INVEST_OR_SKIP = [
-    { when: hasSavingsToWorryAbout, next: 'n5_invest' },
-    { next: WINDFALL_OR_SKIP }
-  ];
   // 「為了那個位置，你開始了一段長時間透支的日子」——要先有那個位置在追
   function chasingAPosition(state) { return state.attrs.achieve >= 5; }
 
+  // 第 5 章：13 個節點原本一局要走 10.6 個——七年的人生給你十個畫面，
+  // 而且同世代連玩兩局有 90% 的節點重複，可是這個遊戲是設計來玩六輪的。
+  // 改成從池子裡抽：前提檢查照舊（不成立的根本抽不到），成立的也只挑四個演。
+  // 骨幹留在池子外——職涯波動、婚姻、小孩決定了下游所有結構性旗標，不能抽掉。
+  var CH5_POOL = {
+    id: 'ch5', pick: 3, then: EMIGRATE_OR_SKIP,
+    of: [
+      { next: 'n5_house' },
+      { when: hasSavingsToWorryAbout, next: 'n5_invest' },
+      { when: luckHasSomethingToLandOn, next: 'n5_windfall' },
+      { next: 'n5_parents_ill' },
+      { next: 'n5_body_signal' },
+      { when: chasingAPosition, next: 'n5_overwork' },
+      { when: hasCashShortfall, next: 'n5_debt' },
+      { next: 'n5_era_storm' }
+    ]
+  };
+
+  // 超支 → 車禍是刻意的伏筆，抽到超支就把車禍當成它的後半段，不另外進池子
   var OVERWORK_NEXT = [
     { when: accidentForeshadowed, next: 'n5_accident' },
-    { when: hasCashShortfall, next: 'n5_debt' },
-    { next: 'n5_era_storm' }
-  ];
-  // 這個要定義在 OVERWORK_NEXT 之後：var 會提升但值是 undefined，
-  // 寫在前面等於 next 指向 undefined —— 引擎現在會當場丟例外，但更早發現更好
-  var OVERWORK_OR_SKIP = [
-    { when: chasingAPosition, next: 'n5_overwork' },
-    { next: OVERWORK_NEXT }
+    { next: CH5_POOL }
   ];
 
   Object.assign(UNREALIZED.nodes, {
@@ -245,16 +245,16 @@
         { text: '有沒有孩子，或什麼時候要決定，開始變成一個躲不掉的問題。在你這一代，帶小孩這件事是{育兒資源}。' }
       ],
       options: [
-        { id: 'have_kids', requires: { flagsNone: ['單身'], generation: [1990, 2005] }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
+        { id: 'have_kids', requires: { flagsNone: ['單身'], generation: [1990, 2005] }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: CH5_POOL },
         // 1975 的異性戀伴侶走原本那條；同性伴侶在那個年代要有小孩，
         // 現實上只有一條路，而那條路的代價是把自己收起來
-        { id: 'have_kids_1975', requires: { flagsNone: ['單身', '同性伴侶'], generation: 1975 }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: 'n5_house' },
-        { id: 'married_out_1975', requires: { flagsAll: ['同性伴侶'], generation: 1975 }, label: '家裡壓了很多年，你走進一段對外的婚姻，也有了孩子', effects: { bond: 1, money: -1, self: -2 }, flags: ['有小孩', '未出櫃', '壓抑'], next: 'n5_house' },
-        { id: 'dink', requires: { flagsNone: ['單身'] }, label: '決定不生，把資源留給彼此', effects: { money: 1, self: 1, bond: -1 }, flags: ['丁客'], next: 'n5_house' },
-        { id: 'nephews', requires: { flagsAll: ['單身'] }, label: '把姪子外甥當自己的孩子疼，紅包給得比誰都大', effects: { bond: 2, money: -1 }, next: 'n5_house' },
-        { id: 'considered_alone', requires: { flagsAll: ['單身'] }, label: '認真算過一個人生養小孩的可能，最後決定不要', effects: { self: 1, bond: -1 }, flags: ['無子'], next: 'n5_house' },
-        { id: 'undecided_f', requires: { gender: 'F', flagsNone: ['單身'] }, label: '一直沒有決定，親戚每次見面都要問一次，你開始不太想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: 'n5_house' },
-        { id: 'undecided_m', requires: { gender: 'M', flagsNone: ['單身'] }, label: '一直沒有決定，反正好像也沒那麼急', effects: { self: -1, bond: -1 }, next: 'n5_house' }
+        { id: 'have_kids_1975', requires: { flagsNone: ['單身', '同性伴侶'], generation: 1975 }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: CH5_POOL },
+        { id: 'married_out_1975', requires: { flagsAll: ['同性伴侶'], generation: 1975 }, label: '家裡壓了很多年，你走進一段對外的婚姻，也有了孩子', effects: { bond: 1, money: -1, self: -2 }, flags: ['有小孩', '未出櫃', '壓抑'], next: CH5_POOL },
+        { id: 'dink', requires: { flagsNone: ['單身'] }, label: '決定不生，把資源留給彼此', effects: { money: 1, self: 1, bond: -1 }, flags: ['丁客'], next: CH5_POOL },
+        { id: 'nephews', requires: { flagsAll: ['單身'] }, label: '把姪子外甥當自己的孩子疼，紅包給得比誰都大', effects: { bond: 2, money: -1 }, next: CH5_POOL },
+        { id: 'considered_alone', requires: { flagsAll: ['單身'] }, label: '認真算過一個人生養小孩的可能，最後決定不要', effects: { self: 1, bond: -1 }, flags: ['無子'], next: CH5_POOL },
+        { id: 'undecided_f', requires: { gender: 'F', flagsNone: ['單身'] }, label: '一直沒有決定，親戚每次見面都要問一次，你開始不太想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: CH5_POOL },
+        { id: 'undecided_m', requires: { gender: 'M', flagsNone: ['單身'] }, label: '一直沒有決定，反正好像也沒那麼急', effects: { self: -1, bond: -1 }, next: CH5_POOL }
       ]
     },
 
@@ -262,11 +262,11 @@
       id: 'n5_house', chapter: 5, title: '房子', ageRange: '28–35歲',
       text: '買房這件事，對你來說，{買房難度}。',
       options: [
-        { id: 'buy_leverage', label: '砸下所有存款，外加一筆大額房貸，買了', effects: { money: -2, self: 1 }, flags: ['高槓桿'], next: INVEST_OR_SKIP },
-        { id: 'rent_forever', label: '放棄買房這件事，把錢花在別的地方', effects: { self: 1, money: 1, achieve: -1 }, next: INVEST_OR_SKIP },
-        { id: 'stay_family', label: '繼續跟家人住，省下這筆錢', effects: { money: 1, bond: -1, self: -1 }, next: INVEST_OR_SKIP },
+        { id: 'buy_leverage', label: '砸下所有存款，外加一筆大額房貸，買了', effects: { money: -2, self: 1 }, flags: ['高槓桿'], next: CH5_POOL },
+        { id: 'rent_forever', label: '放棄買房這件事，把錢花在別的地方', effects: { self: 1, money: 1, achieve: -1 }, next: CH5_POOL },
+        { id: 'stay_family', label: '繼續跟家人住，省下這筆錢', effects: { money: 1, bond: -1, self: -1 }, next: CH5_POOL },
         // 頭期款是台灣最真實的一道分水嶺：同樣的努力，有沒有這一筆，結果差二十年
-        { id: 'family_paid', requires: { flagsAny: ['富裕'] }, label: '頭期款家裡出。你簽名的時候才知道那個數字', effects: { money: 2, self: -2, bond: 1 }, flags: ['家裡出頭期'], next: INVEST_OR_SKIP }
+        { id: 'family_paid', requires: { flagsAny: ['富裕'] }, label: '頭期款家裡出。你簽名的時候才知道那個數字', effects: { money: 2, self: -2, bond: 1 }, flags: ['家裡出頭期'], next: CH5_POOL }
       ]
     },
 
@@ -278,9 +278,9 @@
         { text: '你開始認真想，要怎麼處理手上這筆不上不下的存款。' }
       ],
       options: [
-        { id: 'etf', label: '選了{存款工具}那種穩穩來的方式', effects: { money: 1, self: -1 }, next: WINDFALL_OR_SKIP },
-        { id: 'leverage_trade', label: '開始融資當沖，想加速累積的速度', effects: { money: 2, health: -1 }, flags: ['投機'], next: WINDFALL_OR_SKIP },
-        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, health: 1, money: -1 }, next: WINDFALL_OR_SKIP }
+        { id: 'etf', label: '選了{存款工具}那種穩穩來的方式', effects: { money: 1, self: -1 }, next: CH5_POOL },
+        { id: 'leverage_trade', label: '開始融資當沖，想加速累積的速度', effects: { money: 2, health: -1 }, flags: ['投機'], next: CH5_POOL },
+        { id: 'avoid', label: '決定完全不碰，只求別虧', effects: { self: 1, health: 1, money: -1 }, next: CH5_POOL }
       ]
     },
 
@@ -294,10 +294,10 @@
         { text: '你隨手做的一個東西，被演算法推了出去。一個月的數字比你一年的薪水還多。' }
       ],
       options: [
-        { id: 'took_a_year', label: '你停下來休息了一整年。那一年後來被你記得很久', effects: { health: 2, self: 2, achieve: -1 }, flags: ['好運', '休息過'], next: 'n5_parents_ill' },
-        { id: 'reinvest', label: '全部投回去，想把運氣變成實力', effects: { achieve: 2, money: 1, self: -1 }, flags: ['好運'], next: 'n5_parents_ill' },
-        { id: 'gave_family', label: '分給家裡的人。他們到現在都還會提起這件事', effects: { bond: 3, money: -1 }, flags: ['好運'], next: 'n5_parents_ill' },
-        { id: 'kept_quiet', label: '你沒告訴任何人，就那樣放著', effects: { money: 2, self: 1, bond: -1 }, flags: ['好運'], next: 'n5_parents_ill' }
+        { id: 'took_a_year', label: '你停下來休息了一整年。那一年後來被你記得很久', effects: { health: 2, self: 2, achieve: -1 }, flags: ['好運', '休息過'], next: CH5_POOL },
+        { id: 'reinvest', label: '全部投回去，想把運氣變成實力', effects: { achieve: 2, money: 1, self: -1 }, flags: ['好運'], next: CH5_POOL },
+        { id: 'gave_family', label: '分給家裡的人。他們到現在都還會提起這件事', effects: { bond: 3, money: -1 }, flags: ['好運'], next: CH5_POOL },
+        { id: 'kept_quiet', label: '你沒告訴任何人，就那樣放著', effects: { money: 2, self: 1, bond: -1 }, flags: ['好運'], next: CH5_POOL }
       ]
     },
 
@@ -310,12 +310,12 @@
         { text: '家裡長輩的健康出了狀況，誰來處理，變成一個很現實的問題。' }
       ],
       options: [
-        { id: 'care_f', requires: { gender: 'F' }, label: '大家看向你，好像照顧本來就該是你的事', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧'], next: 'n5_body_signal' },
-        { id: 'money_m', requires: { gender: 'M' }, label: '你被期待的角色是出錢，不是出時間', effects: { money: -2, bond: 1 }, next: 'n5_body_signal' },
+        { id: 'care_f', requires: { gender: 'F' }, label: '大家看向你，好像照顧本來就該是你的事', effects: { bond: 1, self: -2, achieve: -1 }, flags: ['照顧', '長輩生病'], next: CH5_POOL },
+        { id: 'money_m', requires: { gender: 'M' }, label: '你被期待的角色是出錢，不是出時間', effects: { money: -2, bond: 1 }, next: CH5_POOL },
         // 花錢解掉日常負擔的人，第6章那個「生活繞著這件事打轉」的長照節點就不該照樣套上去
-        { id: 'hire_caregiver', label: '花錢請了看護，減輕一些負擔', effects: { money: -2, self: 1 }, flags: ['請看護'], next: 'n5_body_signal' },
+        { id: 'hire_caregiver', label: '花錢請了看護，減輕一些負擔', effects: { money: -2, self: 1 }, flags: ['請看護', '長輩生病'], next: CH5_POOL },
         // 前面兩個是性別限定，少了這個的話不論男女都只看得到兩個選項
-        { id: 'institution', label: '送去機構，親戚開始在群組裡說你不孝', effects: { self: 1, health: 1, money: -1, bond: -1 }, flags: ['送機構'], next: 'n5_body_signal' }
+        { id: 'institution', label: '送去機構，親戚開始在群組裡說你不孝', effects: { self: 1, health: 1, money: -1, bond: -1 }, flags: ['送機構', '長輩生病'], next: CH5_POOL }
       ]
     },
 
@@ -323,13 +323,13 @@
       id: 'n5_body_signal', chapter: 5, title: '身體的訊號', ageRange: '28–35歲',
       text: '你已經好幾年沒有好好做過健檢了。身體有些訊號，你處理的方式是{醫療資訊來源}。',
       options: [
-        { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -1, achieve: 1, self: -1 }, next: OVERWORK_OR_SKIP },
-        { id: 'check', label: '抽空去檢查了一次。報告上有幾個字讓你多想了一下，但你把它處理掉了', effects: { health: 2, money: -1, self: -1 }, next: OVERWORK_OR_SKIP },
-        { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: OVERWORK_OR_SKIP },
+        { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -1, achieve: 1, self: -1 }, next: CH5_POOL },
+        { id: 'check', label: '抽空去檢查了一次。報告上有幾個字讓你多想了一下，但你把它處理掉了', effects: { health: 2, money: -1, self: -1 }, next: CH5_POOL },
+        { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: CH5_POOL },
         // 有錢沒時間的人真的會走這條：拿錢換回一點身體，不必拿成就去換
-        { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: OVERWORK_OR_SKIP },
+        { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: CH5_POOL },
         // 爸媽是醫生的人，這件事的成本跟別人完全不一樣
-        { id: 'a_call_away', requires: { flagsAny: ['專業家庭', '富裕'] }, label: '一通電話就掛到號。該處理的當天就處理掉了，你沒有排隊過', effects: { health: 3, money: -1, self: -1 }, next: OVERWORK_OR_SKIP }
+        { id: 'a_call_away', requires: { flagsAny: ['專業家庭', '富裕'] }, label: '一通電話就掛到號。該處理的當天就處理掉了，你沒有排隊過', effects: { health: 3, money: -1, self: -1 }, next: CH5_POOL }
       ]
     },
 
@@ -348,9 +348,9 @@
       id: 'n5_accident', chapter: 5, title: '那場車禍', ageRange: '28–35歲',
       text: '你的代步工具是{交通工具}。那天你趕時間，或者只是太累，一個閃神，車禍發生了。',
       options: [
-        { id: 'own_injury', label: '傷的是自己，復原花了比你想的更久的時間', effects: { health: -2, money: -1 }, next: AFTER_ACCIDENT_NEXT },
-        { id: 'hit_someone', label: '撞到了人，責任在你，賠償跟自責一起壓上來', effects: { money: -2, bond: -1, self: -1 }, flags: ['車禍責任'], next: AFTER_ACCIDENT_NEXT },
-        { id: 'long_lawsuit', label: '對方全責，但你被卷進一場拖了三年的官司', effects: { self: -2, achieve: -1 }, flags: ['車禍訴訟'], next: AFTER_ACCIDENT_NEXT }
+        { id: 'own_injury', label: '傷的是自己，復原花了比你想的更久的時間', effects: { health: -2, money: -1 }, next: CH5_POOL },
+        { id: 'hit_someone', label: '撞到了人，責任在你，賠償跟自責一起壓上來', effects: { money: -2, bond: -1, self: -1 }, flags: ['車禍責任'], next: CH5_POOL },
+        { id: 'long_lawsuit', label: '對方全責，但你被卷進一場拖了三年的官司', effects: { self: -2, achieve: -1 }, flags: ['車禍訴訟'], next: CH5_POOL }
       ]
     },
 
@@ -358,9 +358,9 @@
       id: 'n5_debt', chapter: 5, title: '算不過來的那筆錢', ageRange: '28–35歲',
       text: '有一筆錢，你怎麼算都算不過來。',
       options: [
-        { id: 'credit_cash_card', label: '辦了現金卡，先撐過去', effects: { money: 1, self: -1 }, flags: ['借貸'], next: 'n5_era_storm' },
-        { id: 'borrow_family', label: '跟家人借了一筆，說好會還', effects: { bond: -1, money: 1 }, flags: ['借貸'], next: 'n5_era_storm' },
-        { id: 'grind_through', label: '不借，靠自己硬撐過去，日子變得很緊', effects: { health: -1, self: 1 }, next: 'n5_era_storm' }
+        { id: 'credit_cash_card', label: '辦了現金卡，先撐過去', effects: { money: 1, self: -1 }, flags: ['借貸'], next: CH5_POOL },
+        { id: 'borrow_family', label: '跟家人借了一筆，說好會還', effects: { bond: -1, money: 1 }, flags: ['借貸'], next: CH5_POOL },
+        { id: 'grind_through', label: '不借，靠自己硬撐過去，日子變得很緊', effects: { health: -1, self: 1 }, next: CH5_POOL }
       ]
     },
 
@@ -372,9 +372,9 @@
         { text: '2035年那場推想中的變動，正好在你最沒有準備的時候發生。整個世代都在說{錯過的機會}，而你那時候剛好在別的地方忙。' }
       ],
       options: [
-        { id: 'hit_hard', label: '這場風暴直接打在你身上，損失很實際', effects: { money: -2, self: -1 }, flags: ['遇到風暴'], next: EMIGRATE_OR_SKIP },
-        { id: 'dodge', label: '算你運氣好，躲過了最壞的那一波，但身邊有人沒躲過', effects: { bond: -1, self: 1 }, next: EMIGRATE_OR_SKIP },
-        { id: 'miss_opportunity', label: '風暴過後的復甦期，你因為太保守，沒跟上那波機會', effects: { achieve: -1, money: -1 }, flags: ['錯過紅利'], next: EMIGRATE_OR_SKIP }
+        { id: 'hit_hard', label: '這場風暴直接打在你身上，損失很實際', effects: { money: -2, self: -1 }, flags: ['遇到風暴'], next: CH5_POOL },
+        { id: 'dodge', label: '算你運氣好，躲過了最壞的那一波，但身邊有人沒躲過', effects: { bond: -1, self: 1 }, next: CH5_POOL },
+        { id: 'miss_opportunity', label: '風暴過後的復甦期，你因為太保守，沒跟上那波機會', effects: { achieve: -1, money: -1 }, flags: ['錯過紅利'], next: CH5_POOL }
       ]
     },
 

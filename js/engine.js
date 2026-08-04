@@ -102,12 +102,52 @@
   // 變體陣列可以嵌套：一段路由條件可以整段被另一段引用（第6章的長照/婚變就這樣組合）。
   // 少了這個迴圈，嵌套時會把整個陣列當成 nodeId 塞進 state，而症狀是「跳到一個
   // 叫做 [object Object] 的節點」——很難聯想到是路由組合出來的。
+  // 從池子裡抽 N 個。變體陣列是「第一個成立的勝出」，池子是「全部成立的裡面抽幾個演」。
+  //
+  // 為什麼需要它：第 5、6 章各寫了 13 個節點，而一局會走過 10.6 和 8.8 個——
+  // 前提檢查管的是「這件事對你成不成立」，不是「這一局要不要演它」，所以只要成立就一定演。
+  // 結果是同世代連玩兩局，第二局有 90% 的節點是看過的，而這個遊戲是設計來玩六輪的。
+  //
+  // 抽選必須**可重播**：測試用重播固定的選擇序列來證明稀有結局，用 Math.random 會整個垮掉。
+  // 所以亂數種子取自這一局到目前為止的歷史——同樣的選擇序列必得同一個池子，
+  // 而不同的前段選擇會抽到不同的中段。
+  function seedFrom(state) {
+    var s = state.generation + '/' + state.gender;
+    for (var i = 0; i < state.history.length; i++) s += '|' + state.history[i].optionId;
+    var h = 2166136261;
+    for (var j = 0; j < s.length; j++) { h ^= s.charCodeAt(j); h = (h * 16777619) >>> 0; }
+    return h;
+  }
+  function drawFromPool(pool, state) {
+    if (!pool.id) throw new Error('池子必須有 id，否則兩章的佇列會互相蓋掉');
+    state.pools = state.pools || {};
+    // 存的是「洗好的順序」而不是選好的節點，因為 when 要在**抽的當下**才算——
+    // 章節中途發生的事（買了房、錢變緊）本來就該影響後面還演不演某一段。
+    // 而且 state 會被 JSON 複製（find-paths 在用），所以只能存索引，不能存帶函式的物件。
+    if (!state.pools[pool.id]) {
+      var order = pool.of.map(function (_, i) { return i; });
+      var seed = seedFrom(state);
+      function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+      for (var i = order.length - 1; i > 0; i--) {
+        var k = Math.floor(rnd() * (i + 1));
+        var t = order[i]; order[i] = order[k]; order[k] = t;
+      }
+      state.pools[pool.id] = { order: order, served: 0 };
+    }
+    var q = state.pools[pool.id];
+    while (q.order.length && q.served < pool.pick) {
+      var entry = pool.of[q.order.shift()];
+      if (when(entry.when, state)) { q.served++; return entry.next; }
+    }
+    return pool.then;
+  }
+
   function resolveNext(option, state) {
     var next = option.next;
     var guard = 0;
-    while (Array.isArray(next)) {
-      if (++guard > 10) throw new Error('next 的變體陣列嵌套太深，可能繞成環了');
-      next = pickVariant(next, state, 'next');
+    while (Array.isArray(next) || (next && next.of)) {
+      if (++guard > 10) throw new Error('next 的路由嵌套太深，可能繞成環了');
+      next = Array.isArray(next) ? pickVariant(next, state, 'next') : drawFromPool(next, state);
     }
     return next;
   }
@@ -300,6 +340,12 @@
     if (typeof nextField === 'string') return nextField === 'GAME_END' ? [] : [nextField];
     if (Array.isArray(nextField)) {
       return nextField.reduce(function (acc, variant) { return acc.concat(flattenNextTargets(variant.next)); }, []);
+    }
+    // 池子：池裡每一項，加上抽完之後的出口，全都是這個選項可能去的地方
+    if (nextField.of) {
+      return nextField.of
+        .reduce(function (acc, e) { return acc.concat(flattenNextTargets(e.next)); }, [])
+        .concat(flattenNextTargets(nextField.then));
     }
     return [];
   }
