@@ -17,12 +17,12 @@ Open [https://frankkn.github.io/Unrealized/](https://frankkn.github.io/Unrealize
 It also runs straight from disk — download the repo and double-click `index.html`. There is no build step and no bundler; that is a design constraint, not an oversight.
 
 1. Choose a cohort — **1975 / 1990 / 2005** — and a gender
-2. Walk chapters 0 through 7, from the family you were born into to the years after fifty
+2. Walk chapters 0 through 7, from the family you were born into to the years after fifty. Chapter 0 offers five families to be born into, from a single mother to money
 3. Five stats — money, achievement, bonds, health, and **self** (how close your choices ran to what you actually wanted) — move the whole way through, **hidden until the very end**
 4. From chapter 2 onward you may stop early: *"close the book here and see what I've got."* Stopping has five endings of its own
-5. The codex has a tab per cohort, and each tab only counts what you did as that cohort. Clearing an ending as 1990 leaves it locked on the 1975 tab — reaching it as 1975 is a different achievement. Cohort-locked endings never appear on a tab they were never available on
+5. The codex has a tab per cohort, and each tab only counts what you did as that cohort. Clearing an ending as 1990 leaves it locked on the 1975 tab — reaching it as 1975 is a different achievement. Cohort-locked endings never appear on a tab they were never available on. Unlocked entries carry a green, amber or red dot for how the life turned out; locked ones stay colourless, because the colour would tell you whether an ending is worth chasing before you have found it
 
-**36 full endings and 5 early ones.** Some are cohort-locked.
+**47 full endings and 5 early ones**, across 54 nodes and 231 options — twenty-one of them good, twelve ruinous. Some are cohort-locked.
 
 ## What is this
 
@@ -67,13 +67,19 @@ The design rules above are checked by a script, not by good intentions. `node de
 
 - **Runaway options** — every option is scanned for the two-axis / net ≤ +3 rule; nothing is grandfathered
 - **Broken graph** — nodes unreachable from the start, and options pointing at nodes that don't exist
-- **Dead endings** — all 36 must be provably reachable. Uniform random play only finds most of them, so the rest get targeted proofs. Four have windows too narrow for that (five stats all landing mid-range, or one stat stopping on an exact value) and are proven by replaying concrete paths found offline with `dev/find-paths.js`
-- **Unplayable chapters** — chapters 0–3 are exhaustively enumerated, every branch, all six cohort × gender combinations
+- **Dead endings** — all 47 must be provably reachable. Uniform random play only finds most of them, so the rest get targeted proofs. Five have windows too narrow for that (five stats all landing mid-range, or one stat stopping on an exact value) and are proven by replaying concrete paths found offline with `dev/find-paths.js`
+- **Unplayable chapters** — chapters 0–3 are sampled 40,000 times and every single option must have been walked at least once. They used to be enumerated exhaustively; growing that stretch from five nodes to ten put the path count in the millions, and coverage is what the test was really asserting anyway
+- **Events that aren't events** — every conditional node's firing rate must land between 5% and 95%. 0% means the gate is broken, 100% means it isn't a gate. Both have happened, and neither is visible from playing
+- **Narration that contradicts the run** — every rendered line is scanned against the flags in play. Telling a married player with children that they live alone breaks nothing on screen; it just reads as absurd, and only under particular combinations
+- **Impossible states** — flag pairs that cannot both be true, and any flag written but never read anywhere. Twelve flags once recorded who you were and were then never mentioned again
+- **Buttons that aren't choices** — no node may ever drop below two visible options
 - **Leaked placeholders** — the lexicon substitutes 26 era-specific terms into the script (`{起薪}` becomes *two-four*, *twenty-two K*, or *thirty-six, but rent is eighteen*), and no `{token}` may survive into rendered text
 
 Those checks cover the engine, which is pure data and logic and runs headless. The interface is the part a player actually touches, so `node dev/test-ui.js` hands `index.html` to a real DOM, inlines every script from disk, and clicks through to an ending — all six cohort × gender combinations, stopping early for a mid-ending, a cohort-locked option appearing for 1975 and staying hidden for 2005, multi-paragraph endings, the codex, clearing your history, reduced motion, and replaying your last run. A typo in a `<script src>`, a mis-typed element id, a handler that never got bound: those fail here instead of in front of a player.
 
 This is how the health axis got caught. It had quietly become the stat writers docked whenever an option needed a downside, including on nodes whose narration had nothing to do with the body: across 153 options it summed +4 up against −44 down, and 40 of 44 nodes offered no way to recover any. 90% of runs ended in health collapse regardless of how you played. It read as a difficulty problem and was actually an attribution problem — the costs are now carried by the stats the text actually supports.
+
+That fix wasn't enough, and it took a second kind of measurement to see why. Simulating a player with a dial for how much they follow the ambitious instinct — 0 picks at random, 1 always takes the most driven option — the collapse rate ran 8% / 77% / 98%. By then the ledger was balanced (+31 against −35, 26 options giving and 30 taking), so the numbers were never the problem. **The pressure was all one way**: every option that restores health reads as giving up, and every option that reads as appealing costs it. Bonds ran +87/−87 and plenty of *its* giving options are ones a player wants anyway. Health was the only axis where the interesting choice always hurt it. It is 3% / 40% / 65% now, and the same shape of bug was waiting in money, which had drifted to a median of 2 by the end of a casual run.
 
 ## Stack
 
@@ -91,7 +97,7 @@ js/state.js             save / codex (localStorage)
 js/ui.js                DOM, animation, chapter transitions
 data/config.js          cohorts, lexicon, stat definitions, chapter baseline
 art/                    generated scene images, one per node
-art/PROMPTS.md          the 45 prompts, one per node
+art/PROMPTS.md          the 54 prompts, one per node
 data/nodes-ch0-3.js     chapters 0–3
 data/nodes-ch4-5.js     chapters 4–5
 data/nodes-ch6-7.js     chapters 6–7
@@ -113,7 +119,7 @@ npm run find-paths -- 3000 > paths.txt && npm run swap-paths -- paths.txt   # re
 
 **The dependency is for the tests, never for the game.** `index.html` still opens straight off disk with nothing installed — that is the whole point of the no-build constraint, and it is checked by the interface tests themselves, which load the page exactly as a browser does.
 
-The rare endings are proven in the test suite by replaying concrete paths, so **any balance change invalidates them** — that's what `find-paths.js` is for. Rebalancing the health axis broke three of the four; the chapter baseline broke all four. Both times: rerun, paste back, done.
+The rare endings are proven in the test suite by replaying concrete paths, so **any balance change invalidates them** — that's what `find-paths.js` is for. Rebalancing the health axis broke three of the five; the chapter baseline broke all five. Every time: rerun, paste back, done. When the beam search can't reach a target it falls back to brute-force random play — hand-tuned cost terms fight each other and steer into dead ends, and one ending it couldn't find at beam width 8000 turned up 93 times in 20,000 random runs.
 
 ### Deploy
 
