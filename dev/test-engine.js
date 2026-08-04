@@ -273,16 +273,17 @@ function playScriptedPath(generation, gender, path) {
 // 尤其自己的路在 1990 世代還會被 achieve>=7 的「22K的逆襲」搶先卡走，必須把 achieve 精準停在 6，
 // 這種窄範圍一樣改成離線 beam search 找到的實際路徑，直接重播驗證
 var LUCKY_SELF_PATH = {
-  gen: 1975, gender: "M",
+  gen: 1975, gender: "F",
   path: [
-    'n0_family/labor_family', 'n0_siblings/only_child', 'n1_labor/self_taught',
-    'n2_high_school/elite', 'n2_first_failure/tried_again', 'n3_route/liked_major',
-    'n3m_military/find_clarity', 'n3_first_love/solo', 'n4_job/big_corp',
-    'n4_where/abroad', 'n4_westward/go', 'n4_mlm/refuse_breakup',
-    'n5_career_move/slept_on_it', 'n5_marriage/stay_single', 'n5_children/nephews',
-    'n5_parents_ill/money_m', 'n5_overwork/push_through', 'n5_accident/own_injury',
-    'n6_career_plateau/accept', 'n6_readjust/let_go', 'n6_financial_reckoning/poor_but_clean',
-    'n6_health_reckoning/slow_down', 'n6_parent_dies/was_there', 'n7_body_ledger/paying_off',
+    'n0_family/labor_family', 'n0_siblings/youngest', 'n1_labor/skill',
+    'n1_teacher/saw_me', 'n2_high_school/elite', 'n2_first_failure/tried_again',
+    'n3_route/general_uni', 'n3f_headstart/push_back', 'n3_first_love/same_sex',
+    'n3_love_comingout/75_told_family', 'n3_the_friends/inner_circle', 'n4_job/big_corp',
+    'n4_where/stay_local', 'n4f_interview/honest', 'n4_westward/go',
+    'n5_career_move/steady', 'n5_marriage/breakup_lgbt_1975', 'n5_children/considered_alone',
+    'n5_overwork/pace_self', 'n5_invest/avoid', 'n6_career_plateau/accept',
+    'n6_return_home/commute', 'n6_readjust/double_down', 'n6_readjust/let_go',
+    'n6_health_reckoning/overwork_still', 'n6_parent_dies/was_there', 'n7_body_ledger/decline',
     'n7_look_back/accept'
   ]
 };
@@ -612,6 +613,61 @@ if (vers.length) {
   }
   var found = Object.keys(bad);
   assert(found.length === 0, '不該同時成立的旗標組合: ' + found.map(function (k) { return k + ' ×' + bad[k]; }).join('；'));
+})();
+
+// 6e2. 每一個結局都必須有**某一種玩法**摸得到。以前這只是印出來當參考，
+//      但把遊戲從 40 個節點砍到 25 之後，三個頂點結局（諾貝爾、敲鐘、站上去了）
+//      一起變成不可達——它們的門檻停留在舊的數值經濟，而 25 個節點再也不可能
+//      把兩軸同時衝到 9。這種錯不會讓任何測試變紅，只會讓玩家永遠看不到那三個結局。
+//
+//      斷言是「有某種玩法摸得到」而不是「亂點摸得到」：有些結局本來就設計成
+//      要刻意去追（一樣都沒放掉要五軸都均衡，亂點命中 0.03%，均衡玩法 96%）。
+(function everyEndingIsReachableSomehow() {
+  var AXES = ['money', 'achieve', 'bond', 'health', 'self'];
+  var STYLES = [
+    {}, { money: 2, achieve: 2, health: 1.5 }, { bond: 2, health: 1 },
+    { achieve: 2, self: 2, health: 1.5, abroad: 6 }, { health: 3 },
+    { money: -2, self: 2 }, { achieve: 2, money: 2, bond: -1 },
+    { balanced: true }, { centering: true }   // 一個衝滿、一個往中間靠——「剛好的人生」要五軸都停在 4–6
+  ];
+  var hit = {}, rnd = 777777;
+  function next() { rnd = (rnd * 1103515245 + 12345) & 0x7fffffff; return rnd / 0x7fffffff; }
+  STYLES.forEach(function (w) {
+    for (var i = 0; i < 6000; i++) {
+      var s = engine.createRunState(UNREALIZED.config.generations[i % 3], i % 2 ? 'F' : 'M'), guard = 0;
+      while (!s.ended && guard++ < 80) {
+        var node = engine.getNode(s.nodeId);
+        var opts = engine.visibleOptions(node, s);
+        var scored = opts.map(function (o) {
+          var e = o.effects || {}, sc = next() * 1.2;
+          if (w.centering) {
+            var dev = 0;
+            AXES.forEach(function (k) {
+              dev += Math.abs(Math.max(0, Math.min(10, s.attrs[k] + (e[k] || 0))) - 5);
+            });
+            sc -= dev;
+          } else if (w.balanced) {
+            var total = 0, min = 99;
+            AXES.forEach(function (k) {
+              var v = Math.max(0, Math.min(10, s.attrs[k] + (e[k] || 0)));
+              total += v; if (v < min) min = v;
+            });
+            sc += total + min * 2;
+          } else {
+            AXES.forEach(function (k) { sc += (e[k] || 0) * (w[k] || 0); });
+            if (w.abroad && (o.flags || []).some(function (f) { return f === '出國' || f === '移民'; })) sc += w.abroad;
+          }
+          return { o: o, s: sc };
+        });
+        scored.sort(function (a, b) { return b.s - a.s; });
+        engine.applyOption(s, node, scored[0].o);
+      }
+      hit[engine.evaluateEnding(s).id] = true;
+    }
+  });
+  var miss = UNREALIZED.endings.full.filter(function (e) { return !hit[e.id]; });
+  assert(miss.length === 0, '八種玩法各六千局都摸不到這些結局，門檻可能已經跟不上現在的數值經濟: ' +
+    miss.map(function (e) { return e.title; }).join('、'));
 })();
 
 // 6f. 每個蓋上去的旗標，都要有地方讀它。曾經有 12 個旗標蓋了之後沒有任何條件讀——

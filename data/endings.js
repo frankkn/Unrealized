@@ -70,28 +70,12 @@
         id: 'END_斯德哥爾摩的電話', tier: 'whole', tone: 'good', rarity: '隱藏',
         when: function (state) {
           return (!!state.flags['出國'] || !!state.flags['移民']) &&
-            state.attrs.achieve >= 9 && state.attrs.self >= 9 && state.attrs.health >= 4;
+            // 門檻校正過一次：節點從 40 降到 25 之後，兩軸再也不可能同時衝到 9，
+            // 這幾個頂點結局於是全部變成不可達——不是設計，是被長度砍壞的。
+            state.attrs.achieve >= 8 && state.attrs.self >= 8 && state.attrs.health >= 4;
         },
         title: '斯德哥爾摩的電話',
         text: '電話是清晨五點打來的，瑞典腔的英文，你聽了三秒才確定不是詐騙。掛掉之後你沒有立刻叫醒任何人，只是走到廚房把水煮開，站著等它滾——那一分半鐘，大概是你這輩子最安靜的一段時間。得獎的是三十年前那個沒有人看好的方向。你當初選它不是因為算準了，是因為你真的想知道答案。台灣那邊的新聞跑馬燈把你的名字放大了一整天，配的照片是你二十六歲出國前拍的那張。'
-      },
-      {
-        id: 'END_敲鐘那天', tier: 'whole', tone: 'good', rarity: '隱藏',
-        when: function (state) {
-          return state.attrs.money >= 10 && state.attrs.achieve >= 9;
-        },
-        title: '敲鐘那天',
-        text: '你站在台上，手裡拿著那支槌子，底下是幾百張你認得跟不認得的臉。第一年只有四個人的時候，你們在一間沒有窗戶的辦公室裡吃了半年便當。當年那四個人，今天有三個站在下面。真正奇怪的是，敲下去的那一秒你想的不是這些——你想的是要記得跟會計說，這個月的帳還沒對。到這個位置了，你腦子裡跑的還是那種東西。'
-      },
-      {
-        id: 'END_診間門口那塊名牌', tier: 'whole', tone: 'good', rarity: '稀有',
-        when: function (state) {
-          return (!!state.flags['移民'] || !!state.flags['出國']) &&
-            (!!state.flags['專業家庭'] || !!state.flags['頂大']) &&
-            state.attrs.achieve >= 8 && state.attrs.money >= 8;
-        },
-        title: '診間門口那塊名牌',
-        text: '名牌上是你的名字，拼音的那一版，前面加了個 Dr.。這個國家花了十二年才承認你在台灣念過的那些書，中間有三年你是從頭考起的。現在排你診的人要等六個星期。有時候會遇到台灣來的病人，一聽到鄉音整個人鬆下來，講話速度立刻變成兩倍——那幾分鐘你不會急著看下一個。你爸媽當年講的那個答案，你繞了半個地球，用自己的方式做到了。'
       },
       {
         // 從最低的起點爬到最高的地方。這個刻意設成「非富裕出身限定」——
@@ -111,13 +95,31 @@
         limitedTo: undefined
       },
       {
+        id: 'END_診間門口那塊名牌', tier: 'whole', tone: 'good', rarity: '稀有',
+        when: function (state) {
+          return (!!state.flags['移民'] || !!state.flags['出國']) &&
+            (!!state.flags['專業家庭'] || !!state.flags['頂大']) &&
+            state.attrs.achieve >= 8 && state.attrs.money >= 8;
+        },
+        title: '診間門口那塊名牌',
+        text: '名牌上是你的名字，拼音的那一版，前面加了個 Dr.。這個國家花了十二年才承認你在台灣念過的那些書，中間有三年你是從頭考起的。現在排你診的人要等六個星期。有時候會遇到台灣來的病人，一聽到鄉音整個人鬆下來，講話速度立刻變成兩倍——那幾分鐘你不會急著看下一個。你爸媽當年講的那個答案，你繞了半個地球，用自己的方式做到了。'
+      },
+      {
+        id: 'END_敲鐘那天', tier: 'whole', tone: 'good', rarity: '隱藏',
+        when: function (state) {
+          return state.attrs.money >= 9 && state.attrs.achieve >= 8;
+        },
+        title: '敲鐘那天',
+        text: '你站在台上，手裡拿著那支槌子，底下是幾百張你認得跟不認得的臉。第一年只有四個人的時候，你們在一間沒有窗戶的辦公室裡吃了半年便當。當年那四個人，今天有三個站在下面。真正奇怪的是，敲下去的那一秒你想的不是這些——你想的是要記得跟會計說，這個月的帳還沒對。到這個位置了，你腦子裡跑的還是那種東西。'
+      },
+      {
         // 整個遊戲沒有一個真正「贏了」的結局——最好的幾個也都是溫和的、
         // 收斂的（家裡還很熱鬧、老同事還在約）。那是「整體很壓抑」的另一半原因：
         // 玩家做對了每一件事，遊戲也只給他一句「這樣就不錯了」。
         // 條件刻意很硬：兩軸接近滿，而且身體沒有拿去換。
         id: 'END_站上去了', tier: 'whole', tone: 'good', rarity: '稀有',
         when: function (state) {
-          return state.attrs.achieve >= 9 && state.attrs.money >= 8 && state.attrs.health >= 4;
+          return state.attrs.achieve >= 8 && state.attrs.money >= 8 && state.attrs.health >= 5;
         },
         title: '站上去了',
         text: '你走到了那個位置。不是「還可以」，不是「同輩裡算不錯」——是那個從十幾歲抬頭看的時候，覺得這輩子大概輪不到自己的位置。中間有幾年你確實什麼都沒有，只有一件事一直做下去。現在有人會在會議室裡等你先開口，有人把你當年說過的話當成標準答案。你很清楚運氣占了一部分，但你也很清楚，運氣來的那幾次，你剛好都準備好了。',
