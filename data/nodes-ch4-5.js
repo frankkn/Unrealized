@@ -84,8 +84,9 @@
   // 改成從池子裡抽：前提檢查照舊（不成立的根本抽不到），成立的也只挑四個演。
   // 骨幹留在池子外——職涯波動、婚姻、小孩決定了下游所有結構性旗標，不能抽掉。
   var CH5_POOL = {
-    id: 'ch5', pick: 3, then: EMIGRATE_OR_SKIP,
+    id: 'ch5', pick: 2, then: 'n6_career_plateau',
     of: [
+      { when: emigrationIsOnTheTable, next: 'n5_emigrate' },
       { next: 'n5_house' },
       { when: hasSavingsToWorryAbout, next: 'n5_invest' },
       { when: luckHasSomethingToLandOn, next: 'n5_windfall' },
@@ -386,9 +387,9 @@
         { text: '為了孩子的教育、政治氛圍，或單純想換一個地方生活，你們認真討論起移民這件事。在你這一代，{移民管道}。' }
       ],
       options: [
-        { id: 'emigrate_go', label: '最後決定搬走，把這裡的一切收掉', effects: { bond: -1, money: -2 }, flags: ['移民'], next: 'n6_career_plateau' },
-        { id: 'emigrate_stay', label: '討論了很久，最後決定留下來', effects: { self: -1, bond: 1 }, next: 'n6_career_plateau' },
-        { id: 'emigrate_half', label: '你一個人先過去卡位，家人晚一點再說', effects: { bond: -2, money: 1 }, flags: ['移民'], next: 'n6_career_plateau' }
+        { id: 'emigrate_go', label: '最後決定搬走，把這裡的一切收掉', effects: { bond: -1, money: -2 }, flags: ['移民'], next: CH5_POOL },
+        { id: 'emigrate_stay', label: '討論了很久，最後決定留下來', effects: { self: -1, bond: 1 }, next: CH5_POOL },
+        { id: 'emigrate_half', label: '你一個人先過去卡位，家人晚一點再說', effects: { bond: -2, money: 1 }, flags: ['移民'], next: CH5_POOL }
       ]
     }
 

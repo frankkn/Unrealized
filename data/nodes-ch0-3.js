@@ -18,12 +18,25 @@
     { next: 'n1_single' }
   ];
 
+  // 「那個老師」與「第一次真的失敗」都不是結構性的（旗標只有第6章讀），
+  // 但原本 98% 的局都會演。用池子做成「大概一半的局會遇到」——
+  // 第二個 of 項直接指向出口，抽到它就等於這一局跳過。
+  var TEEN_POOL = {
+    id: 'ch1', pick: 1, then: 'n2_high_school',
+    of: [{ next: 'n1_teacher' }, { next: 'n2_high_school' }]
+  };
+  var CH2_POOL = {
+    id: 'ch2', pick: 1, then: 'n3_route',
+    of: [{ next: 'n2_first_failure' }, { next: 'n3_route' }]
+  };
+
   // 第 3 章的兩個「那幾年」節點抽一個演就好——十八到二十二歲不需要四個畫面
   var CH3_POOL = {
     id: 'ch3', pick: 1, then: 'n4_job',
     of: [
       { next: 'n3_the_friends' },
-      { next: 'n3_first_money' }
+      { next: 'n3_first_money' },
+      { next: 'n4_job' }
     ]
   };
 
@@ -102,11 +115,11 @@
         { text: '書香家庭的期待很安靜，但一直都在。家裡的電腦？{家用電腦}。' }
       ],
       options: [
-        { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, bond: -1 }, next: 'n1_teacher' },
-        { id: 'hobby', label: '偷偷把零用錢存起來，去學一個爸媽不知道的興趣', effects: { self: 1, achieve: -1, money: -1 }, next: 'n1_teacher' },
-        { id: 'skip', label: '有一天早上站在校門口，就是怎麼都不想走進去', effects: { self: 1, bond: -1, achieve: -1 }, next: 'n1_teacher' },
-        { id: 'team', label: '進了校隊，每天練到天黑才回家，成績掉了一點但你不在乎', effects: { health: 2, bond: 1, achieve: -1 }, flags: ['有在動'], next: 'n1_teacher' },
-        { id: 'sent_abroad', requires: { flagsAny: ['富裕', '專業家庭'] }, label: '國三那年被送出國。你在機場才發現，這件事沒有人問過你', effects: { achieve: 2, money: 1, bond: -2, self: -1 }, flags: ['小留學生'], next: 'n1_teacher' }
+        { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, bond: -1 }, next: TEEN_POOL },
+        { id: 'hobby', label: '偷偷把零用錢存起來，去學一個爸媽不知道的興趣', effects: { self: 1, achieve: -1, money: -1 }, next: TEEN_POOL },
+        { id: 'skip', label: '有一天早上站在校門口，就是怎麼都不想走進去', effects: { self: 1, bond: -1, achieve: -1 }, next: TEEN_POOL },
+        { id: 'team', label: '進了校隊，每天練到天黑才回家，成績掉了一點但你不在乎', effects: { health: 2, bond: 1, achieve: -1 }, flags: ['有在動'], next: TEEN_POOL },
+        { id: 'sent_abroad', requires: { flagsAny: ['富裕', '專業家庭'] }, label: '國三那年被送出國。你在機場才發現，這件事沒有人問過你', effects: { achieve: 2, money: 1, bond: -2, self: -1 }, flags: ['小留學生'], next: TEEN_POOL }
       ]
     },
 
@@ -114,9 +127,9 @@
       id: 'n1_labor', chapter: 1, title: '國中', ageRange: '12–15歲',
       text: '沒有人特別盯著你的功課，日子要自己想辦法過。放學後的世界比課本大得多——{娛樂}，{交通工具}。',
       options: [
-        { id: 'self_taught', label: '沒人盯你，自己摸出一套讀書方法，不算頂尖但穩定', effects: { achieve: 1, self: 1, bond: -1 }, next: 'n1_teacher' },
-        { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, health: 1, achieve: -1, self: -1 }, flags: ['有在動'], next: 'n1_teacher' },
-        { id: 'skill', label: '幫忙家裡生意時，發現自己對做東西有一種說不出的手感', effects: { achieve: 1, self: 1, money: -1 }, next: 'n1_teacher' },
+        { id: 'self_taught', label: '沒人盯你，自己摸出一套讀書方法，不算頂尖但穩定', effects: { achieve: 1, self: 1, bond: -1 }, next: TEEN_POOL },
+        { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, health: 1, achieve: -1, self: -1 }, flags: ['有在動'], next: TEEN_POOL },
+        { id: 'skill', label: '幫忙家裡生意時，發現自己對做東西有一種說不出的手感', effects: { achieve: 1, self: 1, money: -1 }, next: TEEN_POOL },
         {
           id: 'factory',
           label: '家裡的攤子撐不下去了，國中一畢業，你就直接進工廠做工',
@@ -131,10 +144,10 @@
       id: 'n1_single', chapter: 1, title: '國中', ageRange: '12–15歲',
       text: '媽媽從沒說過辛苦，但你看得出來。這個年紀能找到的{打工機會}不多，但你有在看。',
       options: [
-        { id: 'scholarship', label: '把所有心力都放在考獎學金上，一分都不能浪費', effects: { achieve: 2, bond: -1 }, next: 'n1_teacher' },
-        { id: 'part_time', label: '放學後開始打工，把薪水拿回家貼補', effects: { money: 1, health: -1, self: -1 }, next: 'n1_teacher' },
-        { id: 'bottle_up', label: '學會把心事都收起來，在媽媽面前永遠說「我很好」', effects: { self: -1, bond: 1, health: -1 }, next: 'n1_teacher' },
-        { id: 'the_court', label: '放學後在球場待到天黑。那是一天裡唯一不用想事情的時間', effects: { health: 2, self: 1, achieve: -1 }, flags: ['有在動'], next: 'n1_teacher' }
+        { id: 'scholarship', label: '把所有心力都放在考獎學金上，一分都不能浪費', effects: { achieve: 2, bond: -1 }, next: TEEN_POOL },
+        { id: 'part_time', label: '放學後開始打工，把薪水拿回家貼補', effects: { money: 1, health: -1, self: -1 }, next: TEEN_POOL },
+        { id: 'bottle_up', label: '學會把心事都收起來，在媽媽面前永遠說「我很好」', effects: { self: -1, bond: 1, health: -1 }, next: TEEN_POOL },
+        { id: 'the_court', label: '放學後在球場待到天黑。那是一天裡唯一不用想事情的時間', effects: { health: 2, self: 1, achieve: -1 }, flags: ['有在動'], next: TEEN_POOL }
       ]
     },
 
@@ -149,10 +162,10 @@
         { text: '國中那三年，有一個老師特別記得你。到現在你還說得出他的名字。' }
       ],
       options: [
-        { id: 'saw_me', label: '他看見了你身上某個連你自己都還不確定的東西', effects: { self: 2, achieve: 1 }, flags: ['被看見'], next: 'n2_high_school' },
-        { id: 'wrote_me_off', label: '他當著全班說你大概就這樣了，那句話你記了三十年', effects: { self: -2, achieve: 1 }, flags: ['被否定'], next: 'n2_high_school' },
-        { id: 'kept_distance', label: '他對你很好，但你那時候不知道怎麼接受別人的好', effects: { self: -1, bond: 1 }, flags: ['被看見'], next: 'n2_high_school' },
-        { id: 'no_one', label: '其實沒有誰特別注意到你，你也習慣了', effects: { self: -1, bond: -1 }, next: 'n2_high_school' }
+        { id: 'saw_me', label: '他看見了你身上某個連你自己都還不確定的東西', effects: { self: 2, achieve: 1 }, flags: ['被看見'], next: TEEN_POOL },
+        { id: 'wrote_me_off', label: '他當著全班說你大概就這樣了，那句話你記了三十年', effects: { self: -2, achieve: 1 }, flags: ['被否定'], next: TEEN_POOL },
+        { id: 'kept_distance', label: '他對你很好，但你那時候不知道怎麼接受別人的好', effects: { self: -1, bond: 1 }, flags: ['被看見'], next: TEEN_POOL },
+        { id: 'no_one', label: '其實沒有誰特別注意到你，你也習慣了', effects: { self: -1, bond: -1 }, next: TEEN_POOL }
       ]
     },
 
@@ -169,13 +182,13 @@
           ],
           effects: { achieve: 2, bond: -1 },
           flags: ['明星高中'],
-          next: 'n2_first_failure'
+          next: CH2_POOL
         },
         {
           id: 'normal',
           label: '上的是一間普通高中，日子過得平淡，沒有誰特別看你一眼',
           effects: { bond: 1, achieve: -1 },
-          next: 'n2_first_failure'
+          next: CH2_POOL
         },
         {
           id: 'vocational',
@@ -186,7 +199,7 @@
           ],
           effects: { achieve: 1, self: 1, bond: -1 },
           flags: ['技職'],
-          next: 'n2_first_failure'
+          next: CH2_POOL
         },
         {
           id: 'no_school',
@@ -197,7 +210,7 @@
           ],
           effects: { money: 1, achieve: -2, bond: -1 },
           flags: ['中離'],
-          next: 'n2_first_failure'
+          next: CH2_POOL
         }
       ]
     },
@@ -212,10 +225,10 @@
         { text: '有一件事你很努力，最後沒有成。那是你第一次知道，努力跟成不成是兩回事。' }
       ],
       options: [
-        { id: 'tried_again', label: '隔年再試一次，這次成了', effects: { achieve: 2, self: 1, money: -1 }, flags: ['再試一次'], next: 'n3_route' },
-        { id: 'gave_up', label: '就此收手。之後你很少再讓自己那樣投入一件事', effects: { health: 1, self: -1, achieve: -1 }, flags: ['收手'], next: 'n3_route' },
-        { id: 'blamed_self', label: '你把原因全歸到自己身上，那個習慣留了很久', effects: { achieve: 1, self: -2 }, flags: ['自責'], next: 'n3_route' },
-        { id: 'shrugged', label: '你聳聳肩就過了，那時候還有的是時間', effects: { self: 1, health: 1, achieve: -1 }, next: 'n3_route' }
+        { id: 'tried_again', label: '隔年再試一次，這次成了', effects: { achieve: 2, self: 1, money: -1 }, flags: ['再試一次'], next: CH2_POOL },
+        { id: 'gave_up', label: '就此收手。之後你很少再讓自己那樣投入一件事', effects: { health: 1, self: -1, achieve: -1 }, flags: ['收手'], next: CH2_POOL },
+        { id: 'blamed_self', label: '你把原因全歸到自己身上，那個習慣留了很久', effects: { achieve: 1, self: -2 }, flags: ['自責'], next: CH2_POOL },
+        { id: 'shrugged', label: '你聳聳肩就過了，那時候還有的是時間', effects: { self: 1, health: 1, achieve: -1 }, next: CH2_POOL }
       ]
     },
 

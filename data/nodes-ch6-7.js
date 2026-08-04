@@ -93,7 +93,7 @@
   // 骨幹留在池子外：事業高原是開場、健康清算是身體那條線唯一能被救回來的地方、
   // 重新調整收束出身的回聲、那通電話（父母過世）是這個年紀真的每個人都會遇到的事。
   var CH6_POOL = {
-    id: 'ch6', pick: 3, then: 'n6_health_reckoning',
+    id: 'ch6', pick: 2, then: 'n6_health_reckoning',
     of: [
       { when: layoffReachesYou, next: 'n6_midlife_unemployment' },
       { when: { flagsAll: ['有小孩'] }, next: 'n6_parenting' },
@@ -103,13 +103,14 @@
       { when: moneyIsNotable, next: 'n6_financial_reckoning' },
       { when: everLeftHome, next: 'n6_return_home' },
       { when: somethingToRepair, next: 'n6_repair' },
-      { when: someoneStillHasYourNumber, next: 'n6_old_friend' }
+      { when: someoneStillHasYourNumber, next: 'n6_old_friend' },
+      { next: 'n6_readjust' }
     ]
   };
 
   // 第 7 章同理：6 個節點一局走 5.1。骨幹只留「回望」——它是整局的收尾。
   var CH7_POOL = {
-    id: 'ch7', pick: 3, then: 'n7_look_back',
+    id: 'ch7', pick: 2, then: 'n7_look_back',
     of: [
       { next: 'n7_retirement_prep' },
       { when: { flagsAll: ['有小孩'] }, next: 'n7_children_settlement' },
@@ -267,11 +268,11 @@
           requires: { attr: { key: 'health', op: '<=', value: 2 } },
           label: '請了長假，把手上的位置交出去，先把身體救回來',
           effects: { health: 4, self: 1, achieve: -1, money: -1 },
-          next: 'n6_readjust'
+          next: 'n6_parent_dies'
         },
-        { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: 'n6_readjust' },
-        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: 'n6_readjust' },
-        { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: 'n6_readjust' }
+        { id: 'overwork_still', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '選擇繼續拼，反正還能撐', effects: { achieve: 1, health: -1 }, next: 'n6_parent_dies' },
+        { id: 'slow_down', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '終於決定把腳步慢下來，重新排一次生活的順序', effects: { self: 1, health: 2 }, next: 'n6_parent_dies' },
+        { id: 'partial_care', requires: { attr: { key: 'health', op: '>', value: 2 } }, label: '開始固定看醫生、吃藥控制，但沒有完全改變生活方式', effects: { health: 1, self: -1 }, next: 'n6_parent_dies' }
       ]
     },
 
@@ -309,9 +310,9 @@
         { text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。' }
       ],
       options: [
-        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: 'n6_parent_dies' },
-        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: 'n6_parent_dies' },
-        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: 'n6_parent_dies' }
+        { id: 'double_down', label: '決定把剩下的力氣，全部押在一件事上', effects: { achieve: 1, bond: -1 }, next: CH6_POOL },
+        { id: 'let_go', label: '放掉了一些原本很在意的事，發現日子反而輕鬆一點', effects: { self: 1, health: 1 }, next: CH6_POOL },
+        { id: 'keep_going', label: '沒有特別調整什麼，就是繼續往前走', effects: { achieve: 1, bond: 1, money: -1, self: -1 }, next: CH6_POOL }
       ]
     },
 
