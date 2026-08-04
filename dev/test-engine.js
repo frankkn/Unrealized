@@ -517,6 +517,26 @@ if (vers.length) {
   });
 })();
 
+// 6c2. 每個節點在任何一局都要至少有兩個可見選項。一個選項不是選擇，是按鈕——
+//      而且它多半是 requires 寫太緊造成的（財務盤點就曾經對買過房的人只剩一個選項，
+//      因為兩個選項用「這輩子沒借過錢」當條件，而房貸旗標永遠不會消失）。
+(function alwaysARealChoice() {
+  var thin = {}, rnd = 24680;
+  function next() { rnd = (rnd * 1103515245 + 12345) & 0x7fffffff; return rnd / 0x7fffffff; }
+  for (var i = 0; i < 3000; i++) {
+    var s = engine.createRunState(UNREALIZED.config.generations[i % 3], i % 2 ? 'F' : 'M'), guard = 0;
+    while (!s.ended && guard++ < 80) {
+      var node = engine.getNode(s.nodeId);
+      var opts = engine.visibleOptions(node, s);
+      if (opts.length < 2) thin[node.id] = (thin[node.id] || 0) + 1;
+      engine.applyOption(s, node, opts[Math.floor(next() * opts.length)]);
+    }
+  }
+  var found = Object.keys(thin);
+  assert(found.length === 0, '這些節點在某些局只剩不到兩個選項: ' +
+    found.map(function (k) { return k + ' ×' + thin[k]; }).join('、'));
+})();
+
 // 6d. 敘述與實況不能互相矛盾。前提檢查（6c）看的是「節點該不該出現」，
 //     這裡看的是「出現的那段文字，講的事情在這一局成不成立」——
 //     例如對成家有小孩的人說「你現在一個人住」，或對沒有小孩的人說「孩子還會回來吃飯」。

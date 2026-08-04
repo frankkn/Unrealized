@@ -222,7 +222,12 @@
       id: 'n6_financial_reckoning', chapter: 6, title: '財務盤點', ageRange: '35–50歲',
       // 沒欠過錢的人不該看到「清算」——那是欠過的人才有的畫面
       text: [
-        { when: { flagsAny: ['借貸', '高槓桿', '投機'] }, text: '這幾年欠的、借的、賭的，開始一筆一筆找上門。' },
+        // 「找上門」是催收的畫面，前提是那筆帳**現在還壓著**。
+        // 旗標不會過期：三十幾歲融資過一次的人，五十歲存到 money 7 了，
+        // 卻還是被告知債主一筆一筆找上門——那是最常見的一種「我明明有好好存錢」。
+        { when: { flagsAny: ['借貸', '高槓桿', '投機'], attr: { key: 'money', op: '<=', value: 5 } }, text: '這幾年欠的、借的、賭的，開始一筆一筆找上門。' },
+        { when: { flagsAny: ['借貸', '投機'] }, text: '你把這些年的帳攤開來算了一次。當年那幾筆早就平掉了，只是對帳的時候，你還記得那時候的心跳。' },
+        { when: { flagsAll: ['高槓桿'] }, text: '你把這些年的帳攤開來算了一次。房貸還剩幾年一目了然，那個數字現在看起來，比當年簽下去的時候小很多。' },
         { text: '四十幾歲的某個晚上，你第一次把所有的帳攤開來，認真算了一次。' }
       ],
       options: [
@@ -235,10 +240,12 @@
           endingId: 'END_法拍'
         },
         // 催收電話只有真的欠過錢的人會遇到
-        { id: 'collections_call', requires: { flagsAny: ['借貸', '高槓桿', '投機'] }, label: '催收電話開始一天打好幾次', effects: { self: -1, bond: -1 }, next: 'n6_health_reckoning' },
+        { id: 'collections_call', requires: { flagsAny: ['借貸', '高槓桿', '投機'], attr: { key: 'money', op: '<=', value: 5 } }, label: '催收電話開始一天打好幾次', effects: { self: -1, bond: -1 }, next: 'n6_health_reckoning' },
         { id: 'manage_through', label: '把手上的東西重新盤點一次，勉強打平', effects: { money: 1, health: -1 }, next: 'n6_health_reckoning' },
-        { id: 'clean_sheet', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '這幾年算是穩住了，沒有欠誰什麼', effects: { self: 1, money: 1 }, next: 'n6_health_reckoning' },
-        { id: 'help_family', requires: { flagsNone: ['高槓桿', '借貸'] }, label: '手頭還算鬆，借了一筆給周轉不過來的家人', effects: { bond: 2, money: -2 }, next: 'n6_health_reckoning' }
+        // 手頭很緊、但從來沒欠過人——這也是一種處境，原本它只剩一個按鈕可以按
+        { id: 'poor_but_clean', requires: { attr: { key: 'money', op: '<=', value: 4 } }, label: '沒有欠誰，只是也沒剩下什麼。你把日子再壓緊一點', effects: { self: 1, health: -1, bond: -1 }, next: 'n6_health_reckoning' },
+        { id: 'clean_sheet', requires: { attr: { key: 'money', op: '>=', value: 5 } }, label: '這幾年算是穩住了，該還的都還得上', effects: { self: 1, money: 1 }, next: 'n6_health_reckoning' },
+        { id: 'help_family', requires: { attr: { key: 'money', op: '>=', value: 6 } }, label: '手頭還算鬆，借了一筆給周轉不過來的家人', effects: { bond: 2, money: -2 }, next: 'n6_health_reckoning' }
       ]
     },
 
