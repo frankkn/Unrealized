@@ -154,27 +154,27 @@
       options: [
         { id: 'quick_reemploy', label: '很快找到下一份工作，但薪水打了折', effects: { bond: 1, money: -1, achieve: -1 }, next: CH6_POOL },
         { id: 'long_gap', label: '花了很長時間才找到下一份，存款一路在掉', effects: { money: -2, self: -1 }, next: CH6_POOL },
-        { id: 'start_over', label: '利用這段空檔，做一件完全不一樣的事，後來真的做起來了', effects: { self: 2, achieve: 1, money: -1 }, next: CH6_POOL }
+        { id: 'start_over', label: '利用這段空檔做一件完全不一樣的事，後來真的做起來了', effects: { self: 2, achieve: 1, money: -1 }, next: CH6_POOL }
       ]
     },
 
     n6_parenting: {
       id: 'n6_parenting', chapter: 6, title: '教養', ageRange: '35–50歲',
       text: [
-        { when: { generation: 2005 }, text: '孩子的成長紀錄從出生就存在雲端，每一天你都翻得到。翻到某一年你忽然發現，自己講的話跟當年父母講的一模一樣。' },
+        { when: { generation: 2005 }, text: '孩子的成長紀錄從出生就存在雲端。翻到某一年你發現，自己講的話跟當年父母一模一樣。' },
         { text: '孩子漸漸大了，你開始看見自己教養方式裡，那些從自己父母身上學來的痕跡。' }
       ],
       options: [
         { id: 'repeat_pattern', label: '發現自己正在重複當年父母對你做的事，一時改不過來', effects: { bond: -1, self: -1 }, flags: ['複製教養'], next: CH6_POOL },
-        { id: 'break_pattern', label: '努力練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: CH6_POOL },
-        { id: 'outsource', label: '把大部分教養的事都交給補習班或安親班，自己專心賺錢', effects: { achieve: 1, money: -1, bond: -1 }, next: CH6_POOL }
+        { id: 'break_pattern', label: '練習用不一樣的方式對待孩子，很累，但你覺得值得', effects: { self: 1, health: -1 }, next: CH6_POOL },
+        { id: 'outsource', label: '把教養交給補習班跟安親班，自己專心賺錢', effects: { achieve: 1, money: -1, bond: -1 }, next: CH6_POOL }
       ]
     },
 
     n6_long_term_care: {
       id: 'n6_long_term_care', chapter: 6, title: '長照黑洞', ageRange: '35–50歲',
       text: [
-        { when: { flagsAll: ['請看護'] }, text: '看護請了好幾年，長輩的狀況一直沒有真正好轉。錢每個月照付，你也一直在旁邊，只是那件事從來沒有結束的一天。' },
+        { when: { flagsAll: ['請看護'] }, text: '看護請了好幾年，狀況一直沒好轉。錢每個月照付，你也一直在，只是這件事沒有結束的一天。' },
         { when: { generation: 2005 }, text: '照顧機器人翻身翻得比人穩，該吃的藥一次都沒漏。但長輩要的不是那個——他還是在等你來。' },
         { text: '長輩的狀況持續了好幾年，沒有真正好轉的一天，你的生活開始繞著這件事打轉。' }
       ],
@@ -199,9 +199,9 @@
     n6_politics: {
       id: 'n6_politics', chapter: 6, title: '餐桌上的戰場', ageRange: '35–50歲',
       text: [
-        { when: { generation: 1975 }, text: '選舉、公投，或某場社會運動，把餐桌變成戰場，你跟長輩站在不同邊。那個年代表達意見的方式是{抗議方式}。' },
+        { when: { generation: 1975 }, text: '一場選舉把餐桌變成戰場，你跟長輩站不同邊。那年代表達意見的方式是{抗議方式}。' },
         { when: { generation: 1990 }, text: '你卡在中間，上一代跟下一代的立場都不太一樣，你哪邊都不太想選。' },
-        { text: '你跟長輩在餐桌上，對同一件事有著完全不同的看法。你們的消息來自不同地方——你這邊是{資訊來源}；而{長輩溝通方式}，也一直沒有對過頻。' }
+        { text: '你跟長輩對同一件事看法完全不同。你的消息來自{資訊來源}，而{長輩溝通方式}一直沒對過頻。' }
       ],
       options: [
         { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: CH6_POOL },
@@ -218,8 +218,8 @@
         // 旗標不會過期：三十幾歲融資過一次的人，五十歲存到 money 7 了，
         // 卻還是被告知債主一筆一筆找上門——那是最常見的一種「我明明有好好存錢」。
         { when: { flagsAny: ['借貸', '高槓桿', '投機'], attr: { key: 'money', op: '<=', value: 5 } }, text: '這幾年欠的、借的、賭的，開始一筆一筆找上門。' },
-        { when: { flagsAny: ['借貸', '投機'] }, text: '你把這些年的帳攤開來算了一次。當年那幾筆早就平掉了，只是對帳的時候，你還記得那時候的心跳。' },
-        { when: { flagsAll: ['高槓桿'] }, text: '你把這些年的帳攤開來算了一次。房貸還剩幾年一目了然，那個數字現在看起來，比當年簽下去的時候小很多。' },
+        { when: { flagsAny: ['借貸', '投機'] }, text: '你把這些年的帳攤開算了一次。當年那幾筆早就平掉了，只是對帳時你還記得那個心跳。' },
+        { when: { flagsAll: ['高槓桿'] }, text: '你把這些年的帳攤開算了一次。房貸還剩幾年一目了然，那數字比當年簽下去時小很多。' },
         { text: '四十幾歲的某個晚上，你第一次把所有的帳攤開來，認真算了一次。' }
       ],
       options: [
@@ -244,7 +244,7 @@
     n6_health_reckoning: {
       id: 'n6_health_reckoning', chapter: 6, title: '健康清算', ageRange: '35–50歲',
       text: [
-        { when: { flagsAll: ['自責'], attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你在辦公室站起來的時候，眼前黑了三秒。第一個念頭是自己怎麼把身體搞成這樣——你一直都是這樣想事情的。' },
+        { when: { flagsAll: ['自責'], attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你站起來眼前黑了三秒。第一個念頭是怪自己——你一直都這樣想事情。' },
         { when: { attr: { key: 'health', op: '<=', value: 2 } }, text: '某天早上你在辦公室站起來的時候，眼前黑了三秒。醫生說再這樣下去，就不是警告了。' },
         { when: { flagsAll: ['有在動'] }, text: '健檢報告出來，幾個數字在邊緣。醫生說幸好你這些年一直有在動，不然現在講的會是別的事。' },
         { text: '身體這幾年欠的債，也開始要還了。' }
@@ -255,7 +255,7 @@
         {
           id: 'collapse',
           requires: { attr: { key: 'health', op: '<=', value: 2 } },
-          label: '沒有停。手上的事還沒交代完，而你的身體已經不打算再等你交代完了',
+          label: '沒有停。手上的事還沒交代完，而你的身體不打算再等',
           effects: {},
           exemptRule: true,
           endingId: [
@@ -279,11 +279,11 @@
     n6_return_home: {
       id: 'n6_return_home', chapter: 6, title: '返鄉', ageRange: '35–50歲',
       text: [
-        { when: { flagsAll: ['移民'] }, text: '你在另一個國家的第八年，家裡打電話來說父母的身體不行了。飛回來要轉兩趟，簽證還得重辦。' },
+        { when: { flagsAll: ['移民'] }, text: '你在另一個國家的第八年，家裡說父母不行了。飛回來要轉兩趟，簽證還得重辦。' },
         { when: { flagsAll: ['單親', '責任'] }, text: '媽媽老了。你從十幾歲就在幫她扛，這件事沒有哪一年真的結束過，只是這次換了一種扛法。' },
         { when: { flagsAll: ['單親'] }, text: '媽媽老了。你這輩子欠她的那些年，現在輪到你有機會還一點回去。' },
         { when: { flagsAll: ['北漂'] }, text: '你在這個城市住了二十年，還是覺得隨時可以打包走人。老家那邊，父母老了。' },
-        { when: { generation: 1975 }, text: '離鄉多年之後，父母老了。那條街上的店一間一間換成你不認識的招牌，只有你家那扇門還是原來的。' },
+        { when: { generation: 1975 }, text: '離鄉多年，父母老了。那條街的店一間間換成你不認識的招牌，只有你家那扇門沒變。' },
         { when: { generation: 2005 }, text: '老家那一帶這幾年淹過兩次，留下來的人不多了。父母還是不肯搬。' },
         { text: '離鄉多年之後，父母老了，老家空了下來。' }
       ],
@@ -298,14 +298,14 @@
     n6_readjust: {
       id: 'n6_readjust', chapter: 6, title: '重新調整', ageRange: '35–50歲',
       text: [
-        { when: { flagsAll: ['老么'] }, text: '走到這裡你重新盤點了一次。你一直是家裡最晚被要求長大的那個，而那個緩衝，好像在某一年就沒有了。' },
+        { when: { flagsAll: ['老么'] }, text: '走到這裡你重新盤點了一次。你一直是家裡最晚被要求長大的那個，那個緩衝某一年就沒了。' },
         { when: { flagsAll: ['排中間'] }, text: '走到這裡你重新盤點了一次。你這輩子很會不吵，會到後來連自己想要什麼都要想很久。' },
-        { when: { flagsAll: ['休息過'] }, text: '走到這裡你重新盤點了一次。三十歲那年你停下來的那一整年，是這輩子唯一一次真的把時間留給自己。' },
+        { when: { flagsAll: ['休息過'] }, text: '走到這裡你重新盤點了一次。三十歲停下來的那一整年，是這輩子唯一真正屬於自己的時間。' },
         { when: { flagsAll: ['好運'] }, text: '走到這裡你重新盤點了一次。你很清楚有一段是運氣，也很清楚運氣不會再來第二次。' },
         { when: { flagsAll: ['被看見'] }, text: '走到這裡你重新盤點了一次。當年那個老師看見的東西，你這些年到底有沒有真的長出來。' },
         { when: { flagsAll: ['被否定'] }, text: '走到這裡你重新盤點了一次。你發現自己一路在證明的，其實是三十年前那句話說錯了。' },
-        { when: { flagsAll: ['書香'] }, text: '走到這裡你重新盤點了一次。從小到大你都在符合某一種期待，這是第一次你認真問，那到底是不是你要的。' },
-        { when: { flagsAll: ['勞動'] }, text: '走到這裡你重新盤點了一次。小時候家裡教你的是先做再說，做到這個年紀你才有空停下來想一下。' },
+        { when: { flagsAll: ['書香'] }, text: '走到這裡你重新盤點了一次。你一直在符合某種期待，這是第一次認真問那是不是你要的。' },
+        { when: { flagsAll: ['勞動'] }, text: '走到這裡你重新盤點了一次。家裡教你的是先做再說，做到這年紀才有空停下來想。' },
         { when: { flagsAll: ['早熟'] }, text: '走到這裡你重新盤點了一次。你從很小就在替別人打算，算到現在才輪到自己。' },
         { text: '走到這裡，你重新盤點了一次，自己現在真正在意的是什麼。' }
       ],
@@ -335,9 +335,9 @@
         { text: '有一段關係，這些年就這樣淡掉了。沒有誰做錯什麼，只是誰都沒有先開口。' }
       ],
       options: [
-        { id: 'made_the_call', label: '你打了那通拖了十年的電話。對方接了，第一句話很客氣', effects: { bond: 2, self: 2, health: -1 }, flags: ['修復過'], next: CH6_POOL },
+        { id: 'made_the_call', label: '你打了那通拖了十年的電話。對方接了，語氣很客氣', effects: { bond: 2, self: 2, health: -1 }, flags: ['修復過'], next: CH6_POOL },
         { id: 'just_showed_up', label: '你什麼都沒解釋，只是開始固定出現', effects: { bond: 3, self: -1, money: -1 }, flags: ['修復過'], next: CH6_POOL },
-        { id: 'wrote_it_down', label: '你寫了一封信，寫完沒有寄。但寫的過程你自己好了一些', effects: { self: 2, health: 1, bond: -1 }, next: CH6_POOL },
+        { id: 'wrote_it_down', label: '你寫了一封信，沒有寄。但寫的過程你自己好了一些', effects: { self: 2, health: 1, bond: -1 }, next: CH6_POOL },
         { id: 'let_it_be', label: '你想過。但你也知道，有些事錯過了就是錯過了', effects: { achieve: 1, self: -1, bond: -1 }, flags: ['沒有回頭'], next: CH6_POOL }
       ]
     },
@@ -370,7 +370,7 @@
       options: [
         { id: 'was_there', label: '你在旁邊，最後那幾天沒有離開', effects: { bond: 1, self: 1, health: -1 }, flags: ['送走父母'], next: CH7_POOL },
         { id: 'too_late', label: '你趕過去的時候，已經來不及了', effects: { self: -2, bond: -1, achieve: 1 }, flags: ['送走父母', '來不及'], next: CH7_POOL },
-        { id: 'relief_and_guilt', label: '你先感覺到的是鬆一口氣，然後為那個鬆一口氣自責很久', effects: { health: 1, self: -1, bond: -1 }, flags: ['送走父母'], next: CH7_POOL },
+        { id: 'relief_and_guilt', label: '你先感覺到鬆一口氣，然後為那個鬆一口氣自責很久', effects: { health: 1, self: -1, bond: -1 }, flags: ['送走父母'], next: CH7_POOL },
         { id: 'handled_it', label: '你把後事一件一件辦完，等到全部結束才敢坐下來', effects: { achieve: 1, bond: 1, health: -1, self: -1 }, flags: ['送走父母', '撐住了'], next: CH7_POOL },
         { id: 'estate_fight', requires: { flagsAll: ['有手足'] }, label: '喪事還沒辦完，房子怎麼分就先吵了起來', effects: { money: 1, bond: -2, self: -1 }, flags: ['送走父母', '手足決裂'], next: CH7_POOL },
         { id: 'estate_ok', requires: { flagsAll: ['有手足'] }, label: '你們把該分的分完，該說的說開，兄弟姐妹沒有散', effects: { bond: 2, money: -1, self: 1 }, flags: ['送走父母', '手足還在'], next: CH7_POOL }
@@ -384,7 +384,7 @@
         { when: { flagsAll: ['接案'] }, text: '你這輩子沒有雇主，也就沒有人幫你提撥。這幾十年要靠什麼，全部寫在你自己那張表上。' },
         { when: { flagsAll: ['公職'] }, text: '你的退休金是這一輩子最穩的一件事，穩到年金改革吵起來的時候，你不太敢在同學會上提。' },
         { when: { generation: 2005 }, text: '超高齡社會，勞保這件事，大家心裡都有個問號，但問題不是新的——只是這次輪到你。' },
-        { text: '退休金、勞保、存款，你開始認真算一次，接下來這幾十年夠不夠用。在你這一代，退休保障是{退休保障}。' }
+        { text: '退休金、勞保、存款，你認真算了一次。在你這一代，退休保障是{退休保障}。' }
       ],
       options: [
         { id: 'prepared', label: '這些年陸續準備了退休金，現在看起來還算夠用', effects: { money: 1, health: 1, self: -1 }, next: CH7_POOL },
@@ -436,9 +436,9 @@
       options: [
         { id: 'thriving_alone', requires: livesAloneNow, label: '把日子過得挺自在，一個人也有自己的節奏', effects: { self: 1, bond: -1 }, next: CH7_POOL },
         { id: 'lonely', requires: livesAloneNow, label: '大部分時間都很安靜，安靜到有時候會嚇自己一下', effects: { bond: -1, health: -1 }, next: CH7_POOL },
-        { id: 'comfortable_silence', requires: notAlone, label: '兩個人的安靜變成一種默契，不用講話也知道對方在哪一間', effects: { bond: 1, self: 1 }, next: CH7_POOL },
+        { id: 'comfortable_silence', requires: notAlone, label: '兩個人的安靜變成默契，不講話也知道對方在哪一間', effects: { bond: 1, self: 1 }, next: CH7_POOL },
         { id: 'same_roof', requires: notAlone, label: '同一個屋簷下，你們各過各的，話一年比一年少', effects: { bond: -1, self: -1 }, next: CH7_POOL },
-        { id: 'community', label: '開始參加社區的活動，認識了一些新朋友，也跟著他們每天早上去走路', effects: { bond: 1, health: 1, money: -1 }, next: CH7_POOL },
+        { id: 'community', label: '開始參加社區活動，認識了新朋友，每天早上跟他們去走路', effects: { bond: 1, health: 1, money: -1 }, next: CH7_POOL },
         { id: 'they_stayed', requires: { flagsAny: ['死黨', '交情還在'] }, label: '老朋友還在，而且這幾年變成固定每個月約一次', effects: { bond: 2, self: 1 }, next: CH7_POOL }
       ]
     },
@@ -469,7 +469,7 @@
         { id: 'proud', label: '為自己撐過來的這些年，感到一種安靜的驕傲', effects: { self: 2, bond: -1 }, next: 'GAME_END' },
         // 回望的最後一個選項照出身給，讓這一局真的收在「你是誰」上
         { id: 'look_back_bookish', requires: { flagsAll: ['書香'] }, label: '第一頁是一張成績單。你想起那時候以為那就是全部', effects: { self: 1, bond: 1 }, next: 'GAME_END' },
-        { id: 'look_back_labor', requires: { flagsAll: ['勞動'] }, label: '第一頁是家裡那間店。你想起自己很小就知道錢是怎麼來的', effects: { self: 1, money: 1 }, next: 'GAME_END' },
+        { id: 'look_back_labor', requires: { flagsAll: ['勞動'] }, label: '第一頁是家裡那間店。你很小就知道錢是怎麼來的', effects: { self: 1, money: 1 }, next: 'GAME_END' },
         { id: 'look_back_single', requires: { flagsAll: ['單親'] }, label: '第一頁只有一個人的字跡。你想起她從來沒說過辛苦', effects: { self: 1, bond: 2 }, next: 'GAME_END' },
         { id: 'look_back_buried', requires: { flagsAll: ['送走父母'] }, label: '你翻到中間那幾頁停了很久，那是送走他們的那幾年', effects: { self: 1, bond: 1 }, next: 'GAME_END' }
       ]

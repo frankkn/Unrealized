@@ -53,35 +53,35 @@
           // 起跳點高不代表輕鬆：錢與成就先給，代價落在 self 與 bond 上，
           // 而那兩軸恰好是這個遊戲裡最難補回來的。
           id: 'wealthy_family',
-          label: '家裡有錢。你從小沒為錢煩惱過，也一直不太確定，別人對你好是因為你，還是因為那個姓',
+          label: '家裡有錢。你沒為錢煩惱過，也沒確定過別人是為了什麼對你好',
           effects: { money: 3, bond: -1, self: -1 },
           flags: ['富裕'],
           next: 'n0_siblings'
         },
         {
           id: 'professional_family',
-          label: '爸媽一個是醫生、一個是律師。家裡從來沒說過你「應該」做什麼，但那個答案一直都在',
+          label: '爸媽是醫生跟律師。沒人說過你「應該」怎樣，但那個答案一直在',
           effects: { achieve: 2, money: 1, self: -2 },
           flags: ['專業家庭', '高期待'],
           next: 'n0_siblings'
         },
         {
           id: 'gov_family',
-          label: '爸媽都是公教人員，家裡重視讀書，什麼事都要「說得出道理」',
+          label: '公教家庭，重視讀書，凡事要「說得出道理」',
           effects: { money: 1, achieve: 1, bond: -1 },
           flags: ['書香'],
           next: 'n0_siblings'
         },
         {
           id: 'labor_family',
-          label: '家裡做小生意或在工廠做工，你很小就自己上下學、自己弄晚餐',
+          label: '家裡做小生意或在工廠做工，你很小就自己弄晚餐',
           effects: { money: -1, health: 1, self: 1 },
           flags: ['勞動', '早熟'],
           next: 'n0_siblings'
         },
         {
           id: 'single_mom',
-          label: '媽媽一個人把你跟弟妹拉拔大，錢永遠是那個沒說出口的緊張',
+          label: '媽媽一個人拉拔你跟弟妹，錢是那個沒說出口的緊張',
           effects: { money: -2, bond: 1, self: -1 },
           flags: ['單親', '責任'],
           next: 'n0_siblings'
@@ -100,7 +100,7 @@
         { text: '家裡有幾個小孩，你排第幾，這件事會跟著你一輩子。' }
       ],
       options: [
-        { id: 'eldest', label: '你是老大。很多事還沒輪到你想不想要，就已經是你的責任', effects: { achieve: 1, bond: 1, self: -2 }, flags: ['有手足', '長子女', '責任'], next: FAMILY_GATE },
+        { id: 'eldest', label: '你是老大。還沒輪到你想要不要，就已經是你的責任', effects: { achieve: 1, bond: 1, self: -2 }, flags: ['有手足', '長子女', '責任'], next: FAMILY_GATE },
         { id: 'youngest', label: '你是老么。前面有人擋著，你被允許任性久一點', effects: { self: 2, money: 1, achieve: -1 }, flags: ['有手足', '老么'], next: FAMILY_GATE },
         { id: 'middle', label: '你排中間。上面下面都有人，你很早就學會不要吵', effects: { bond: 1, health: 1, self: -1 }, flags: ['有手足', '排中間'], next: FAMILY_GATE },
         { id: 'only_child', label: '家裡就你一個。所有的期待跟所有的資源，都在你身上', effects: { money: 1, achieve: 1, bond: -1, self: -1 }, flags: ['獨生'], next: FAMILY_GATE }
@@ -110,29 +110,29 @@
     n1_bookish: {
       id: 'n1_bookish', chapter: 1, title: '國中', ageRange: '12–15歲',
       text: [
-        { when: { flagsAll: ['富裕'] }, text: '家裡的期待很安靜，但一直都在——不是要你出人頭地，是要你「不要讓人看笑話」。家裡的電腦？{家用電腦}。' },
-        { when: { flagsAll: ['專業家庭'] }, text: '沒有人明說過你以後要做什麼，但那個答案在餐桌上出現過太多次了。家裡的電腦？{家用電腦}。' },
+        { when: { flagsAll: ['富裕'] }, text: '家裡的期待很安靜——不是要你出人頭地，是不要讓人看笑話。家裡的電腦？{家用電腦}。' },
+        { when: { flagsAll: ['專業家庭'] }, text: '沒人明說過你以後要做什麼，但答案在餐桌上出現太多次。家裡的電腦？{家用電腦}。' },
         { text: '書香家庭的期待很安靜，但一直都在。家裡的電腦？{家用電腦}。' }
       ],
       options: [
         { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, bond: -1 }, next: TEEN_POOL },
         { id: 'hobby', label: '偷偷把零用錢存起來，去學一個爸媽不知道的興趣', effects: { self: 1, achieve: -1, money: -1 }, next: TEEN_POOL },
         { id: 'skip', label: '有一天早上站在校門口，就是怎麼都不想走進去', effects: { self: 1, bond: -1, achieve: -1 }, next: TEEN_POOL },
-        { id: 'team', label: '進了校隊，每天練到天黑才回家，成績掉了一點但你不在乎', effects: { health: 2, bond: 1, achieve: -1 }, flags: ['有在動'], next: TEEN_POOL },
-        { id: 'sent_abroad', requires: { flagsAny: ['富裕', '專業家庭'] }, label: '國三那年被送出國。你在機場才發現，這件事沒有人問過你', effects: { achieve: 2, money: 1, bond: -2, self: -1 }, flags: ['小留學生'], next: TEEN_POOL }
+        { id: 'team', label: '進了校隊，每天練到天黑，成績掉了一點但你不在乎', effects: { health: 2, bond: 1, achieve: -1 }, flags: ['有在動'], next: TEEN_POOL },
+        { id: 'sent_abroad', requires: { flagsAny: ['富裕', '專業家庭'] }, label: '國三那年被送出國。你在機場才發現沒有人問過你', effects: { achieve: 2, money: 1, bond: -2, self: -1 }, flags: ['小留學生'], next: TEEN_POOL }
       ]
     },
 
     n1_labor: {
       id: 'n1_labor', chapter: 1, title: '國中', ageRange: '12–15歲',
-      text: '沒有人特別盯著你的功課，日子要自己想辦法過。放學後的世界比課本大得多——{娛樂}，{交通工具}。',
+      text: '沒人盯你的功課，日子要自己想辦法。放學後的世界比課本大——{娛樂}，{交通工具}。',
       options: [
         { id: 'self_taught', label: '沒人盯你，自己摸出一套讀書方法，不算頂尖但穩定', effects: { achieve: 1, self: 1, bond: -1 }, next: TEEN_POOL },
         { id: 'hang_out', label: '開始跟著朋友到處晃，考試前才臨時抱佛腳', effects: { bond: 1, health: 1, achieve: -1, self: -1 }, flags: ['有在動'], next: TEEN_POOL },
-        { id: 'skill', label: '幫忙家裡生意時，發現自己對做東西有一種說不出的手感', effects: { achieve: 1, self: 1, money: -1 }, next: TEEN_POOL },
+        { id: 'skill', label: '幫家裡做生意時，發現自己對做東西有手感', effects: { achieve: 1, self: 1, money: -1 }, next: TEEN_POOL },
         {
           id: 'factory',
-          label: '家裡的攤子撐不下去了，國中一畢業，你就直接進工廠做工',
+          label: '家裡的攤子撐不下去，國中一畢業你就進工廠',
           requires: { generation: 1975 },
           effects: { money: 1, achieve: -2, health: -1, self: -1 },
           endingId: 'END_factory15'
@@ -147,7 +147,7 @@
         { id: 'scholarship', label: '把所有心力都放在考獎學金上，一分都不能浪費', effects: { achieve: 2, bond: -1 }, next: TEEN_POOL },
         { id: 'part_time', label: '放學後開始打工，把薪水拿回家貼補', effects: { money: 1, health: -1, self: -1 }, next: TEEN_POOL },
         { id: 'bottle_up', label: '學會把心事都收起來，在媽媽面前永遠說「我很好」', effects: { self: -1, bond: 1, health: -1 }, next: TEEN_POOL },
-        { id: 'the_court', label: '放學後在球場待到天黑。那是一天裡唯一不用想事情的時間', effects: { health: 2, self: 1, achieve: -1 }, flags: ['有在動'], next: TEEN_POOL }
+        { id: 'the_court', label: '放學後在球場待到天黑。那是唯一不用想事情的時間', effects: { health: 2, self: 1, achieve: -1 }, flags: ['有在動'], next: TEEN_POOL }
       ]
     },
 
@@ -171,7 +171,7 @@
 
     n2_high_school: {
       id: 'n2_high_school', chapter: 2, title: '十五到十八', ageRange: '15–18歲',
-      text: '{升學考試}的結果，把你分到了一條路上。{升學率}——你那一屆就是這樣，而{補習方式}是你們共同的記憶。',
+      text: '{升學考試}把你分到一條路上。{升學率}——你那屆就是這樣，{補習方式}是共同記憶。',
       options: [
         {
           id: 'elite',
@@ -186,7 +186,7 @@
         },
         {
           id: 'normal',
-          label: '上的是一間普通高中，日子過得平淡，沒有誰特別看你一眼',
+          label: '上的是普通高中，日子平淡，沒有誰特別看你一眼',
           effects: { bond: 1, achieve: -1 },
           next: CH2_POOL
         },
@@ -237,7 +237,7 @@
       text: '離開高中之後，路開始明顯分岔。',
       options: [
         { id: 'top_hot', label: '考上頂大的熱門科系，大家都說你以後不用愁', effects: { achieve: 2, self: -1, bond: -1 }, flags: ['頂大'], next: GENDER_GATE },
-        { id: 'general_uni', label: '上了一間普通大學的普通科系，日子照著課表走，社團跟球場佔掉大半時間', effects: { bond: 1, health: 1, achieve: -1 }, next: GENDER_GATE },
+        { id: 'general_uni', label: '上了普通大學的普通科系，社團跟球場佔掉大半時間', effects: { bond: 1, health: 1, achieve: -1 }, next: GENDER_GATE },
         { id: 'liked_major', label: '選了自己真的喜歡的科系，雖然大家都問你以後要幹嘛', effects: { self: 2, money: -1, achieve: -1 }, flags: ['喜歡的科系'], next: GENDER_GATE },
         { id: 'gone_abroad_uni', requires: { flagsAny: ['富裕', '小留學生'] }, label: '直接去國外念。學費那件事，家裡沒有跟你討論過', effects: { achieve: 2, money: 1, bond: -2 }, flags: ['頂大', '出國'], next: GENDER_GATE },
         { id: 'vocational_college', label: '念了專科，提早一步進職場學東西', effects: { money: 1, achieve: -1, self: -1 }, next: GENDER_GATE },
@@ -267,7 +267,7 @@
       text: '接下來的{兵役長度}，你的世界從自己身上移開，移到一支部隊裡。',
       options: [
         { id: 'grit_through', label: '把情緒都收起來，只求平安退伍', effects: { achieve: -1, self: -1 }, flags: ['壓抑'], next: 'n3_first_love' },
-        { id: 'make_bonds', label: '退伍時多了幾個能講真心話的朋友，體能也是這輩子最好的一次', effects: { achieve: -1, money: -1, bond: 1, health: 1 }, flags: ['有在動'], next: 'n3_first_love' },
+        { id: 'make_bonds', label: '退伍時多了幾個能講真心話的朋友，體能也是最好的一次', effects: { achieve: -1, money: -1, bond: 1, health: 1 }, flags: ['有在動'], next: 'n3_first_love' },
         { id: 'find_clarity', label: '在被抽走自由的時間裡，意外想清楚了自己到底要什麼', effects: { achieve: -1, money: -1, self: 1 }, next: 'n3_first_love' }
       ]
     },
@@ -285,13 +285,13 @@
 
     n3_first_love: {
       id: 'n3_first_love', chapter: 3, title: '第一次認真的關係', ageRange: '18–22歲',
-      text: '這個階段，總會有一段關係，讓你第一次認真想到「我到底要跟誰過日子」。那個年代的距離感，是{通訊}。',
+      text: '這個階段總有一段關係，讓你第一次想到「我要跟誰過日子」。那年代的距離感是{通訊}。',
       options: [
-        { id: 'straight_stable', label: '透過{戀愛認識方式}認識了一個普通、穩定的人，很快就要決定要不要走下去', effects: { bond: 1, self: -1 }, next: CH3_POOL },
+        { id: 'straight_stable', label: '透過{戀愛認識方式}認識了一個普通、穩定的人', effects: { bond: 1, self: -1 }, next: CH3_POOL },
         { id: 'same_sex', label: '發現自己真正喜歡的是同性', effects: { self: 1, bond: -1 }, flags: ['同性伴侶'], next: 'n3_love_comingout' },
         // 「單身」是一個要往下傳的狀態：第5章的婚姻與小孩節點原本假設每個人都有伴侶，
         // 選了這個的人會被問「決定不婚，繼續在一起」——根本沒有那段關係
-        { id: 'solo', label: '沒特別談戀愛，把時間都留給自己，{娛樂}比約會有趣', effects: { self: 1, bond: -2 }, flags: ['單身'], next: CH3_POOL }
+        { id: 'solo', label: '沒特別談戀愛，{娛樂}比約會有趣', effects: { self: 1, bond: -2 }, flags: ['單身'], next: CH3_POOL }
       ]
     },
 
@@ -324,7 +324,7 @@
         { id: '90_partial', requires: { generation: 1990 }, label: '只在外面的世界出櫃，家裡那邊還沒打算說', effects: { self: -1, bond: 1 }, flags: ['未出櫃'], next: CH3_POOL },
 
         { id: '05_group_chat', requires: { generation: 2005 }, label: '在家庭群組裡直接說了，換來的是已讀不回三天', effects: { bond: -1, self: 1 }, flags: ['已出櫃'], next: CH3_POOL },
-        { id: '05_workplace', requires: { generation: 2005 }, label: '在職場大方帶伴侶出席聚會，卻被「善意」排除在某些場合外', effects: { achieve: -1, self: 1 }, flags: ['已出櫃'], next: CH3_POOL },
+        { id: '05_workplace', requires: { generation: 2005 }, label: '在職場大方帶伴侶出席，卻被「善意」排除在某些場合外', effects: { achieve: -1, self: 1 }, flags: ['已出櫃'], next: CH3_POOL },
         { id: '05_no_need', requires: { generation: 2005 }, label: '還沒打算對誰宣布，覺得這是自己的事，不需要誰批准', effects: { self: 1, bond: -1 }, flags: ['未出櫃'], next: CH3_POOL }
       ]
     }

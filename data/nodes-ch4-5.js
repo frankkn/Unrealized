@@ -111,7 +111,7 @@
     // 而且會漏掉「北漂進大公司」這種最常見的組合。拆成兩步之後每步都只有 3–5 個。
     n4_job: {
       id: 'n4_job', chapter: 4, title: '第一份工作', ageRange: '22–28歲',
-      text: '離開學校之後，第一個真正要面對的問題是：靠什麼過日子。你找工作靠的是{求職方式}，帶你的人要你叫他{職場稱呼}。',
+      text: '離開學校，第一個問題是靠什麼過日子。你找工作靠{求職方式}，帶你的人要你叫他{職場稱呼}。',
       options: [
         { id: 'big_corp', label: '進了一間大公司或外商，制度好，但也很卷', effects: { achieve: 2, money: 1, bond: -1 }, next: 'n4_where' },
         { id: 'public_job', label: '考上了公職，穩定，但升遷排隊排很長', effects: { money: 1, health: 1, achieve: -1, self: -1 }, flags: ['公職'], next: 'n4_where' },
@@ -151,19 +151,19 @@
       text: '公司要派你去東莞，一去可能就是三年。',
       options: [
         { id: 'go', label: '你決定去，三年後回來，故鄉有些東西已經不認得你', effects: { money: 2, bond: -2 }, flags: ['西進'], next: MLM_OR_SKIP },
-        { id: 'stay', label: '你選擇留下，升遷的機會給了那個去的人。那幾年你養成了每天走路回家的習慣', effects: { bond: 1, health: 1, achieve: -2 }, next: MLM_OR_SKIP },
+        { id: 'stay', label: '你選擇留下，機會給了那個去的人。那幾年你養成走路回家的習慣', effects: { bond: 1, health: 1, achieve: -2 }, next: MLM_OR_SKIP },
         { id: 'go_family', label: '你帶著家人一起去，孩子在那邊長大，講話都有腔調了', effects: { money: 1, bond: -1, self: -1 }, flags: ['西進'], next: MLM_OR_SKIP }
       ]
     },
 
     n4_22k: {
       id: 'n4_22k', chapter: 4, title: '{起薪}', ageRange: '22–28歲',
-      text: '起薪{起薪}，你算了一下，連房租都吃緊。同期進來的人已經有兩個走了，走的方式是{離職方式}。',
+      text: '起薪{起薪}，連房租都吃緊。同期的人走了兩個，走的方式是{離職方式}。',
       options: [
         { id: 'endure', label: '先忍著，騎驢找馬', effects: { achieve: 1, money: -1, self: -1 }, next: MLM_OR_SKIP },
         { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, self: -1 }, next: MLM_OR_SKIP },
         { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: MLM_OR_SKIP },
-        { id: 'cheap_and_fit', label: '錢不夠就不出門，改成自己煮、騎車上下班，反而是這幾年最健康的時候', effects: { health: 2, money: 1, bond: -1, achieve: -1 }, flags: ['有在動'], next: MLM_OR_SKIP },
+        { id: 'cheap_and_fit', label: '錢不夠就不出門，自己煮、騎車上下班，反而是最健康的幾年', effects: { health: 2, money: 1, bond: -1, achieve: -1 }, flags: ['有在動'], next: MLM_OR_SKIP },
         { id: 'no_rush', requires: { flagsAny: ['富裕'] }, label: '家裡說不急。你就真的不急，慢慢挑了一年', effects: { health: 2, self: 1, achieve: -1, bond: -1 }, next: MLM_OR_SKIP }
       ]
     },
@@ -175,13 +175,13 @@
         { id: 'pivot', label: '轉去一個模型還碰不到的領域，從頭學', effects: { achieve: -1, money: -1, self: 1 }, flags: ['被取代'], next: MLM_OR_SKIP },
         { id: 'push_up', label: '拼命把自己往上擠，做那些模型還做不到的事', effects: { achieve: 1, self: -1 }, flags: ['被取代'], next: MLM_OR_SKIP },
         { id: 'freeze', label: '花了很長一段時間，才決定下一步是什麼', effects: { self: -1, money: -1 }, flags: ['被取代'], next: MLM_OR_SKIP },
-        { id: 'off_screen', label: '既然機器搶走的是螢幕前的工作，你去做需要用到身體的那一種', effects: { health: 2, self: 1, achieve: -1 }, flags: ['被取代', '有在動'], next: MLM_OR_SKIP }
+        { id: 'off_screen', label: '機器搶走的是螢幕前的工作，你去做需要用到身體的那種', effects: { health: 2, self: 1, achieve: -1 }, flags: ['被取代', '有在動'], next: MLM_OR_SKIP }
       ]
     },
 
     n4_mlm: {
       id: 'n4_mlm', chapter: 4, title: '改變人生的機會', ageRange: '22–28歲',
-      text: '一個家人或大學同學興沖沖跟你介紹一個「能改變人生的機會」——可能是直銷，也可能是一個很懂你的團體。你回去查了一下，說法兩極——你的消息來源是{資訊來源}。',
+      text: '一個家人或大學同學興沖沖介紹你一個「能改變人生的機會」。你回去查了一下，{資訊來源}給的說法兩極。',
       options: [
         { id: 'join', label: '投入了，前期還真的賺到一點錢', effects: { money: 1, bond: -1 }, flags: ['宗教金錢'], next: 'n5_career_move' },
         { id: 'refuse_breakup', label: '直接拒絕，對方覺得你不夠支持，關係漸漸疏遠', effects: { bond: -2, self: 1 }, next: 'n5_career_move' },
@@ -199,8 +199,8 @@
         { when: { flagsAll: ['喜歡的科系'] }, text: '三十歲前後，好幾個機會擠了進來。你發現當年那個沒人看好的科系，繞了一圈還是有人在找。' },
         { when: { flagsAll: ['技職'] }, text: '三十歲前後，好幾個機會或警訊同時擠了進來。你手上那門技術，這幾年變得比很多學歷值錢。' },
         { when: { flagsAll: ['中離'] }, text: '三十歲前後，機會來過幾次。每一次你都要先解釋一遍自己為什麼沒有那張紙。' },
-        { when: { flagsAll: ['頂大'] }, text: '三十歲前後，好幾個機會或警訊同時擠了進來。當年那張學歷幫你開了幾扇門，之後就沒什麼用了。' },
-        { when: { flagsAll: ['明星高中'] }, text: '三十歲前後，好幾個機會或警訊同時擠了進來。高中同學那個群組還在，只是現在大家報的都是職稱。' },
+        { when: { flagsAll: ['頂大'] }, text: '三十歲前後，機會跟警訊同時擠進來。當年那張學歷開過幾扇門，之後就沒什麼用了。' },
+        { when: { flagsAll: ['明星高中'] }, text: '三十歲前後，機會跟警訊同時擠進來。高中同學那個群組還在，只是現在報的都是職稱。' },
         { text: '三十歲前後，好幾個機會或警訊，同時擠進了你的職場生活。' }
       ],
       options: [
@@ -208,7 +208,7 @@
         { id: 'steady', label: '留在原本的位置，穩，年資一年一年疊上去', effects: { bond: 1, health: 1, achieve: 1 }, next: 'n5_marriage' },
         { id: 'setback', label: '一次組織調整，你被降了職', effects: { achieve: -2, self: -1 }, next: 'n5_marriage' },
         { id: 'it_worked', requires: { attr: { key: 'achieve', op: '>=', value: 5 } }, label: '你手上那個做了很久的東西，這一年終於做起來了', effects: { achieve: 2, money: 1 }, next: 'n5_marriage' },
-        { id: 'slept_on_it', label: '你開始固定運動、按時睡覺。睡飽之後才發現，白天的效率是另一回事', effects: { health: 2, achieve: 1, bond: -1, money: -1 }, flags: ['有在動'], next: 'n5_marriage' }
+        { id: 'slept_on_it', label: '你開始固定運動、按時睡覺，睡飽之後效率是另一回事', effects: { health: 2, achieve: 1, bond: -1, money: -1 }, flags: ['有在動'], next: 'n5_marriage' }
       ]
     },
 
@@ -228,7 +228,7 @@
 
         // 單身專屬：遇到人就把「單身」這個狀態拿掉，不然下游會一直以為你還是一個人
         { id: 'met_someone', requires: { flagsAll: ['單身'] }, label: '三十幾歲那年真的遇到一個人，這次你沒有再往後退', effects: { bond: 2, self: 1, money: -1 }, flags: ['成家'], unflags: ['單身'], next: 'n5_children' },
-        { id: 'arranged', requires: { flagsAll: ['單身'] }, label: '你的姻緣是{相親方式}來的，見了幾次，就這樣定下來了', effects: { bond: 1, money: -1, self: -1 }, flags: ['成家'], unflags: ['單身'], next: 'n5_children' },
+        { id: 'arranged', requires: { flagsAll: ['單身'] }, label: '你的姻緣是{相親方式}來的，見了幾次就定下來', effects: { bond: 1, money: -1, self: -1 }, flags: ['成家'], unflags: ['單身'], next: 'n5_children' },
         { id: 'stay_single', requires: { flagsAll: ['單身'] }, label: '一個人也過得好，你沒有打算為了誰改變這件事', effects: { self: 2, bond: -1 }, next: 'n5_children' },
 
         { id: 'register_lgbt', requires: { flagsAll: ['同性伴侶'], generation: [1990, 2005] }, label: '一起去登記，正式成為法律上的家人', effects: { bond: 2, money: -1 }, flags: ['成家'], next: 'n5_children' },
@@ -242,8 +242,8 @@
       id: 'n5_children', chapter: 5, title: '有沒有孩子', ageRange: '28–35歲',
       text: [
         // 一個人的話，親戚問的問題不一樣，選項也不該寫「留給彼此」
-        { when: { flagsAll: ['單身'] }, text: '身邊的人開始有小孩，家庭聚會的話題跟著變了。親戚問你的問題，從「什麼時候結婚」變成「一個人不寂寞嗎」。' },
-        { text: '有沒有孩子，或什麼時候要決定，開始變成一個躲不掉的問題。在你這一代，帶小孩這件事是{育兒資源}。' }
+        { when: { flagsAll: ['單身'] }, text: '身邊的人開始有小孩。親戚問你的問題，從「什麼時候結婚」變成「一個人不寂寞嗎」。' },
+        { text: '有沒有孩子，開始變成一個躲不掉的問題。在你這一代，帶小孩是{育兒資源}。' }
       ],
       options: [
         { id: 'have_kids', requires: { flagsNone: ['單身'], generation: [1990, 2005] }, label: '決定生小孩', effects: { bond: 1, money: -2, self: -1 }, flags: ['有小孩'], next: CH5_POOL },
@@ -254,7 +254,7 @@
         { id: 'dink', requires: { flagsNone: ['單身'] }, label: '決定不生，把資源留給彼此', effects: { money: 1, self: 1, bond: -1 }, flags: ['丁客'], next: CH5_POOL },
         { id: 'nephews', requires: { flagsAll: ['單身'] }, label: '把姪子外甥當自己的孩子疼，紅包給得比誰都大', effects: { bond: 2, money: -1 }, next: CH5_POOL },
         { id: 'considered_alone', requires: { flagsAll: ['單身'] }, label: '認真算過一個人生養小孩的可能，最後決定不要', effects: { self: 1, bond: -1 }, flags: ['無子'], next: CH5_POOL },
-        { id: 'undecided_f', requires: { gender: 'F', flagsNone: ['單身'] }, label: '一直沒有決定，親戚每次見面都要問一次，你開始不太想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: CH5_POOL },
+        { id: 'undecided_f', requires: { gender: 'F', flagsNone: ['單身'] }, label: '一直沒有決定。親戚每次都問，你開始不想出席家庭聚會', effects: { self: -1, bond: -1, health: -1 }, next: CH5_POOL },
         { id: 'undecided_m', requires: { gender: 'M', flagsNone: ['單身'] }, label: '一直沒有決定，反正好像也沒那麼急', effects: { self: -1, bond: -1 }, next: CH5_POOL }
       ]
     },
@@ -325,12 +325,12 @@
       text: '你已經好幾年沒有好好做過健檢了。身體有些訊號，你處理的方式是{醫療資訊來源}。',
       options: [
         { id: 'ignore', label: '告訴自己，再忙一段時間就好', effects: { health: -1, achieve: 1, self: -1 }, next: CH5_POOL },
-        { id: 'check', label: '抽空去檢查了一次。報告上有幾個字讓你多想了一下，但你把它處理掉了', effects: { health: 2, money: -1, self: -1 }, next: CH5_POOL },
+        { id: 'check', label: '抽空去檢查了一次。報告上有幾個字讓你多想了一下', effects: { health: 2, money: -1, self: -1 }, next: CH5_POOL },
         { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: CH5_POOL },
         // 有錢沒時間的人真的會走這條：拿錢換回一點身體，不必拿成就去換
         { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: CH5_POOL },
         // 爸媽是醫生的人，這件事的成本跟別人完全不一樣
-        { id: 'a_call_away', requires: { flagsAny: ['專業家庭', '富裕'] }, label: '一通電話就掛到號。該處理的當天就處理掉了，你沒有排隊過', effects: { health: 3, money: -1, self: -1 }, next: CH5_POOL }
+        { id: 'a_call_away', requires: { flagsAny: ['專業家庭', '富裕'] }, label: '一通電話就掛到號，該處理的當天處理掉，你沒排過隊', effects: { health: 3, money: -1, self: -1 }, next: CH5_POOL }
       ]
     },
 
@@ -339,7 +339,7 @@
       text: '為了那個位置，你開始了一段長時間透支的日子。',
       options: [
         { id: 'could_stop', requires: { flagsAny: ['富裕', '有靠山'] }, label: '你其實不必這樣。某天你就真的停了，家裡什麼都沒說', effects: { health: 2, self: 1, achieve: -2 }, next: OVERWORK_NEXT },
-        { id: 'push_through', label: '連續好幾個月加班到最後一班車，有一次騎車回家時差點打瞌睡', effects: { achieve: 1, health: -2 }, flags: ['疲勞駕駛'], next: OVERWORK_NEXT },
+        { id: 'push_through', label: '連續幾個月加班到最後一班車，有一次騎車差點打瞌睡', effects: { achieve: 1, health: -2 }, flags: ['疲勞駕駛'], next: OVERWORK_NEXT },
         { id: 'pace_self', label: '試著把節奏放慢一點，升遷排在後面一點', effects: { self: 1, health: 1 }, next: OVERWORK_NEXT },
         { id: 'burn_bridge', label: '直接跟主管說做不到，關係從此有點尷尬', effects: { bond: -1, self: 1, achieve: -1 }, next: OVERWORK_NEXT }
       ]
@@ -370,7 +370,7 @@
       text: [
         { when: { generation: 1975 }, text: '1997年，亞洲金融風暴，你的產業正好在浪頭上。' },
         { when: { generation: 1990 }, text: '一場突然來的疫情，把你原本的計畫全部打亂。' },
-        { text: '2035年那場推想中的變動，正好在你最沒有準備的時候發生。整個世代都在說{錯過的機會}，而你那時候剛好在別的地方忙。' }
+        { text: '2035年那場推想中的變動，正好在你最沒準備的時候發生。整個世代都在說{錯過的機會}。' }
       ],
       options: [
         { id: 'hit_hard', label: '這場風暴直接打在你身上，損失很實際', effects: { money: -2, self: -1 }, flags: ['遇到風暴'], next: CH5_POOL },
@@ -383,8 +383,8 @@
       id: 'n5_emigrate', chapter: 5, title: '要不要移民', ageRange: '28–35歲',
       text: [
         { when: { flagsNone: ['成家', '有小孩'] }, text: '你認真查了一次移民的門檻、成本、要放掉什麼。在你這一代，{移民管道}。' },
-        { when: { flagsNone: ['有小孩'] }, text: '政治氛圍，工作機會，或單純想換一個地方生活——你們認真討論起移民這件事。在你這一代，{移民管道}。' },
-        { text: '為了孩子的教育、政治氛圍，或單純想換一個地方生活，你們認真討論起移民這件事。在你這一代，{移民管道}。' }
+        { when: { flagsNone: ['有小孩'] }, text: '政治氛圍、工作機會，或單純想換個地方——你們認真討論起移民。在你這一代，{移民管道}。' },
+        { text: '為了孩子的教育，或單純想換個地方——你們認真討論起移民。在你這一代，{移民管道}。' }
       ],
       options: [
         { id: 'emigrate_go', label: '最後決定搬走，把這裡的一切收掉', effects: { bond: -1, money: -2 }, flags: ['移民'], next: CH5_POOL },
