@@ -11,7 +11,9 @@
 
   // 問完手足之後，回到出身決定的那條國中線
   var FAMILY_GATE = [
-    { when: { flagsAll: ['書香'] }, next: 'n1_bookish' },
+    // 富裕與專業家庭走「期待很重」那條國中線（跟書香同一個節點，敘述分歧）——
+    // 少了這一行，他們會掉進兜底的單親節點，出身跟接下來的三年完全對不起來
+    { when: { flagsAny: ['書香', '富裕', '專業家庭'] }, next: 'n1_bookish' },
     { when: { flagsAll: ['勞動'] }, next: 'n1_labor' },
     { next: 'n1_single' }
   ];
@@ -23,6 +25,24 @@
       id: 'n0_family', chapter: 0, title: '家庭起點', ageRange: '0–10歲',
       text: '你還記不得太多事，但已經隱約知道家裡是什麼氣氛。',
       options: [
+        {
+          // 原本三個出身全是中下（公教、勞動、單親）——每一局都從「要撐」開始，
+          // 那是「整體很壓抑」最上游的原因。人生本來就有人從高處起跳。
+          // 起跳點高不代表輕鬆：錢與成就先給，代價落在 self 與 bond 上，
+          // 而那兩軸恰好是這個遊戲裡最難補回來的。
+          id: 'wealthy_family',
+          label: '家裡有錢。你從小沒為錢煩惱過，也一直不太確定，別人對你好是因為你，還是因為那個姓',
+          effects: { money: 3, bond: -1, self: -1 },
+          flags: ['富裕', '家世'],
+          next: 'n0_siblings'
+        },
+        {
+          id: 'professional_family',
+          label: '爸媽一個是醫生、一個是律師。家裡從來沒說過你「應該」做什麼，但那個答案一直都在',
+          effects: { achieve: 2, money: 1, self: -2 },
+          flags: ['專業家庭', '高期待'],
+          next: 'n0_siblings'
+        },
         {
           id: 'gov_family',
           label: '爸媽都是公教人員，家裡重視讀書，什麼事都要「說得出道理」',
@@ -67,12 +87,17 @@
 
     n1_bookish: {
       id: 'n1_bookish', chapter: 1, title: '國中', ageRange: '12–15歲',
-      text: '書香家庭的期待很安靜，但一直都在。家裡的電腦？{家用電腦}。',
+      text: [
+        { when: { flagsAll: ['富裕'] }, text: '家裡的期待很安靜，但一直都在——不是要你出人頭地，是要你「不要讓人看笑話」。家裡的電腦？{家用電腦}。' },
+        { when: { flagsAll: ['專業家庭'] }, text: '沒有人明說過你以後要做什麼，但那個答案在餐桌上出現過太多次了。家裡的電腦？{家用電腦}。' },
+        { text: '書香家庭的期待很安靜，但一直都在。家裡的電腦？{家用電腦}。' }
+      ],
       options: [
         { id: 'push', label: '把所有時間都投入唸書，模擬考排名一次比一次前面', effects: { achieve: 2, bond: -1 }, next: 'n1_teacher' },
         { id: 'hobby', label: '偷偷把零用錢存起來，去學一個爸媽不知道的興趣', effects: { self: 1, achieve: -1, money: -1 }, next: 'n1_teacher' },
         { id: 'skip', label: '有一天早上站在校門口，就是怎麼都不想走進去', effects: { self: 1, bond: -1, achieve: -1 }, next: 'n1_teacher' },
-        { id: 'team', label: '進了校隊，每天練到天黑才回家，成績掉了一點但你不在乎', effects: { health: 2, bond: 1, achieve: -1 }, flags: ['有在動'], next: 'n1_teacher' }
+        { id: 'team', label: '進了校隊，每天練到天黑才回家，成績掉了一點但你不在乎', effects: { health: 2, bond: 1, achieve: -1 }, flags: ['有在動'], next: 'n1_teacher' },
+        { id: 'sent_abroad', requires: { flagsAny: ['富裕', '專業家庭'] }, label: '國三那年被送出國。你在機場才發現，這件事沒有人問過你', effects: { achieve: 2, money: 1, bond: -2, self: -1 }, flags: ['小留學生'], next: 'n1_teacher' }
       ]
     },
 
@@ -192,6 +217,7 @@
         { id: 'top_hot', label: '考上頂大的熱門科系，大家都說你以後不用愁', effects: { achieve: 2, self: -1, bond: -1 }, flags: ['頂大'], next: 'n3_the_friends' },
         { id: 'general_uni', label: '上了一間普通大學的普通科系，日子照著課表走，社團跟球場佔掉大半時間', effects: { bond: 1, health: 1, achieve: -1 }, next: 'n3_the_friends' },
         { id: 'liked_major', label: '選了自己真的喜歡的科系，雖然大家都問你以後要幹嘛', effects: { self: 2, money: -1, achieve: -1 }, flags: ['喜歡的科系'], next: 'n3_the_friends' },
+        { id: 'gone_abroad_uni', requires: { flagsAny: ['富裕', '小留學生'] }, label: '直接去國外念。學費那件事，家裡沒有跟你討論過', effects: { achieve: 2, money: 1, bond: -2 }, flags: ['頂大', '出國'], next: 'n3_the_friends' },
         { id: 'vocational_college', label: '念了專科，提早一步進職場學東西', effects: { money: 1, achieve: -1, self: -1 }, next: 'n3_the_friends' },
         { id: 'direct_work', label: '沒有繼續念，直接進去工作，比同齡人早幾年開始存錢', effects: { money: 1, bond: -1, self: -1 }, next: 'n3_the_friends' }
       ]

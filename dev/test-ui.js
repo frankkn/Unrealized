@@ -213,7 +213,10 @@ tests.push(function (done) {
   console.log('\n=== 4. 世代限定選項（1975 的工廠早期結局）===');
   boot(function (win, doc, app) {
     startRun(win, app, 1975, 'M');
-    click(win, app.querySelectorAll('[data-opt]')[1]);   // 勞動出身
+    // 用文字找，不要用索引 —— 第0章後來多了兩個出身，寫死的 [1] 會指到別人
+    var labour = Array.prototype.filter.call(app.querySelectorAll('.option-btn'), function (b) { return b.textContent.indexOf('做生意') !== -1 || b.textContent.indexOf('做工') !== -1; })[0];
+    if (!labour) { fail('找不到勞動出身的選項'); return done(); }
+    click(win, labour);
     // 第0章後來多了「家裡幾個小孩」，這裡不再是「點一下就到國中」。
     // 寫死步數會在每次插入節點時壞掉，所以改成往前走到看見工廠選項為止。
     var factory = null;
@@ -228,7 +231,8 @@ tests.push(function (done) {
     stamp && stamp.textContent === '十五歲的工廠' ? ok('直接觸發「十五歲的工廠」') : fail('拿到的是 ' + (stamp && stamp.textContent));
     boot(function (win2, doc2, app2) {
       startRun(win2, app2, 2005, 'M');
-      click(win2, app2.querySelectorAll('[data-opt]')[1]);
+      var labour2 = Array.prototype.filter.call(app2.querySelectorAll('.option-btn'), function (b) { return b.textContent.indexOf('做生意') !== -1 || b.textContent.indexOf('做工') !== -1; })[0];
+      click(win2, labour2 || app2.querySelectorAll('[data-opt]')[0]);
       // 走同樣的步數，但 2005 從頭到尾都不該出現工廠
       var sawFactory = false;
       for (var s2 = 0; s2 < 4; s2++) {

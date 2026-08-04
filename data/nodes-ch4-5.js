@@ -117,7 +117,8 @@
         { id: 'sme', label: '進了一間中小企業，什麼都要學，也什麼都要做', effects: { achieve: 1, bond: -1 }, next: 'n4_where' },
         { id: 'freelance', label: '接案或創作，收入不穩，但時間是自己的', effects: { self: 2, health: 1, money: -2, achieve: -1 }, flags: ['接案'], next: 'n4_where' },
         // 接家業已經回答了「在哪裡」，直接跳過地點那一題
-        { id: 'family_biz', label: '回去接家裡的生意，一切都已經是現成的', effects: { money: 1, bond: 1, self: -2 }, next: JOB_NEXT_GATE }
+        { id: 'family_biz', label: '回去接家裡的生意，一切都已經是現成的', effects: { money: 1, bond: 1, self: -2 }, next: JOB_NEXT_GATE },
+        { id: 'funded_start', requires: { flagsAny: ['富裕', '家世'] }, label: '自己開一間。第一年的燒錢期，家裡替你擋掉了', effects: { achieve: 2, money: 1, self: 1, bond: -1 }, flags: ['創業', '有靠山'], next: 'n4_where' }
       ]
     },
 
@@ -161,7 +162,8 @@
         { id: 'endure', label: '先忍著，騎驢找馬', effects: { achieve: 1, money: -1, self: -1 }, next: MLM_OR_SKIP },
         { id: 'leave', label: '辭職換了一間薪水好一點的公司，隔年剛好遇到無薪假', effects: { money: 1, achieve: -1, self: -1 }, next: MLM_OR_SKIP },
         { id: 'side_job', label: '一邊上班一邊兼第二份差，拿睡眠換錢', effects: { money: 1, health: -2 }, next: MLM_OR_SKIP },
-        { id: 'cheap_and_fit', label: '錢不夠就不出門，改成自己煮、騎車上下班，反而是這幾年最健康的時候', effects: { health: 2, money: 1, bond: -1, achieve: -1 }, flags: ['有在動'], next: MLM_OR_SKIP }
+        { id: 'cheap_and_fit', label: '錢不夠就不出門，改成自己煮、騎車上下班，反而是這幾年最健康的時候', effects: { health: 2, money: 1, bond: -1, achieve: -1 }, flags: ['有在動'], next: MLM_OR_SKIP },
+        { id: 'no_rush', requires: { flagsAny: ['富裕', '家世'] }, label: '家裡說不急。你就真的不急，慢慢挑了一年', effects: { health: 2, self: 1, achieve: -1, bond: -1 }, next: MLM_OR_SKIP }
       ]
     },
 
@@ -262,7 +264,9 @@
       options: [
         { id: 'buy_leverage', label: '砸下所有存款，外加一筆大額房貸，買了', effects: { money: -2, self: 1 }, flags: ['高槓桿'], next: INVEST_OR_SKIP },
         { id: 'rent_forever', label: '放棄買房這件事，把錢花在別的地方', effects: { self: 1, money: 1, achieve: -1 }, next: INVEST_OR_SKIP },
-        { id: 'stay_family', label: '繼續跟家人住，省下這筆錢', effects: { money: 1, bond: -1, self: -1 }, next: INVEST_OR_SKIP }
+        { id: 'stay_family', label: '繼續跟家人住，省下這筆錢', effects: { money: 1, bond: -1, self: -1 }, next: INVEST_OR_SKIP },
+        // 頭期款是台灣最真實的一道分水嶺：同樣的努力，有沒有這一筆，結果差二十年
+        { id: 'family_paid', requires: { flagsAny: ['富裕', '家世'] }, label: '頭期款家裡出。你簽名的時候才知道那個數字', effects: { money: 2, self: -2, bond: 1 }, flags: ['家裡出頭期'], next: INVEST_OR_SKIP }
       ]
     },
 
@@ -323,7 +327,9 @@
         { id: 'check', label: '抽空去檢查了一次。報告上有幾個字讓你多想了一下，但你把它處理掉了', effects: { health: 2, money: -1, self: -1 }, next: OVERWORK_OR_SKIP },
         { id: 'delegate_worry', label: '把這件事丟給旁邊的人念，自己還是沒去', effects: { health: -1, bond: -1 }, next: OVERWORK_OR_SKIP },
         // 有錢沒時間的人真的會走這條：拿錢換回一點身體，不必拿成就去換
-        { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: OVERWORK_OR_SKIP }
+        { id: 'pay_for_it', label: '花錢做了最貴的那種全身健檢，順便請了教練', effects: { health: 2, money: -2 }, next: OVERWORK_OR_SKIP },
+        // 爸媽是醫生的人，這件事的成本跟別人完全不一樣
+        { id: 'a_call_away', requires: { flagsAny: ['專業家庭', '富裕'] }, label: '一通電話就掛到號。該處理的當天就處理掉了，你沒有排隊過', effects: { health: 3, money: -1, self: -1 }, next: OVERWORK_OR_SKIP }
       ]
     },
 
@@ -331,6 +337,7 @@
       id: 'n5_overwork', chapter: 5, title: '超支的日子', ageRange: '28–35歲',
       text: '為了那個位置，你開始了一段長時間透支的日子。',
       options: [
+        { id: 'could_stop', requires: { flagsAny: ['富裕', '家世', '有靠山'] }, label: '你其實不必這樣。某天你就真的停了，家裡什麼都沒說', effects: { health: 2, self: 1, achieve: -2 }, next: OVERWORK_NEXT },
         { id: 'push_through', label: '連續好幾個月加班到最後一班車，有一次騎車回家時差點打瞌睡', effects: { achieve: 1, health: -2 }, flags: ['疲勞駕駛'], next: OVERWORK_NEXT },
         { id: 'pace_self', label: '試著把節奏放慢一點，升遷排在後面一點', effects: { self: 1, health: 1 }, next: OVERWORK_NEXT },
         { id: 'burn_bridge', label: '直接跟主管說做不到，關係從此有點尷尬', effects: { bond: -1, self: 1, achieve: -1 }, next: OVERWORK_NEXT }
