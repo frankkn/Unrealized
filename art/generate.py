@@ -1,5 +1,5 @@
 """
-產生 54 張節點場景圖。
+產生 51 張節點場景圖。
 
 用法：
     1. 到 https://aistudio.google.com/apikey 產一把 key
@@ -64,7 +64,6 @@ NODES = {
     "n4f_interview": "office meeting room interior, an interviewer silhouette across a table, venetian blind light stripes, one person seen from behind in a chair, formal and slightly cold atmosphere",
     "n4_westward": "port container terminal at dawn, stacked shipping containers and cranes, one person seen from behind with a suitcase, cargo ship in the background, 1990s industrial atmosphere",
     "n4_22k": "late night outside a 24h convenience store, its white fluorescent glow spilling onto wet pavement, one person seen from behind holding a paper slip, scooters parked, empty street",
-    "n4_replaced": "night, desk lit only by the cold blue glow of a monitor, one person seen from behind, dark room, floating interface glow reflecting on the wall, quiet displacement",
     "n4_mlm": "rented seminar hall interior, a speaker on a small stage under harsh spotlight, rows of seated attendees seen from behind, folding chairs, banner without text, uneasy enthusiasm",
     "n5_career_move": "office building stairwell, looking upward through the spiral of railings, one person seen from behind climbing, cold institutional lighting with one warm window",
     "n5_marriage": "evening, Taiwanese banquet hall entrance with red lanterns and round tables visible inside, one couple seen from behind at the doorway, warm celebratory light, slight hesitation",
@@ -84,12 +83,10 @@ NODES = {
     "n6_parenting": "night living room, a parent and a child seen from behind sitting at opposite ends of a table, homework spread out, warm ceiling light, tension in the posture",
     "n6_long_term_care": "early morning bedroom, an empty wheelchair beside the window, one caregiver seen from behind opening the curtain, medical supplies on a side table, tired blue-grey light",
     "n6_marriage_crisis": "night living room, two people seen from behind sitting on opposite ends of a sofa with visible space between them, television glow, unspoken distance",
-    "n6_politics": "family reunion dinner around a round table, seen from behind over one person's shoulder, half the table turned away mid-argument, red lanterns and dishes, warm light gone cold",
     "n6_financial_reckoning": "late night home study, passbooks and ledgers spread under a desk lamp, one person seen from behind with a calculator, everything else dark, reckoning",
     "n6_health_reckoning": "clinic consultation room, x-ray films glowing on a light box, doctor silhouette, one patient seen from behind, cold clinical light, the moment before the verdict",
     "n6_return_home": "dusk, the entrance of an old family house in a small town, metal gate and potted plants, one adult seen from behind about to enter, swallows' nest under the eave, homecoming",
     "n6_readjust": "early morning balcony, laundry poles and distant mountains, one person seen from behind holding a cup, city waking below, calm reassessment",
-    "n6_repair": "night, a kitchen table in a Taiwanese apartment, one adult in their forties seen from behind sitting with a phone face-up in front of them, untouched cup of tea, the number on screen, a decade of not calling",
     "n6_old_friend": "night, a balcony of an apartment block, one adult in their forties seen from behind holding a phone to their ear, city lights below, laundry drying beside them, the call going on longer than expected",
     "n6_parent_dies": "4am hospital corridor in Taiwan, one adult seen from behind standing still, a lit phone screen in their hand, a half-open door further down the corridor, fluorescent tubes reflecting on the polished floor, nobody else awake",
     "n7_retirement_prep": "bank counter interior at midday, one older person seen from behind at the window, passbook on the counter, institutional quiet, soft daylight",
@@ -215,7 +212,7 @@ def main():
                         "\n生圖配額為 0 —— 這把 key 的專案還沒開帳單。\n"
                         "Gemini API 的免費層不含圖像生成（文字模型可以用，圖像 limit: 0）。\n"
                         "到 https://aistudio.google.com/ 把這把 key 所屬的專案升級成付費，再重跑。\n"
-                        "54 張大約 US$2–7，看用到哪個模型。"
+                        "51 張大約 US$2–7，看用到哪個模型。"
                     )
                 if "NOT_FOUND" in text or "not found" in text.lower():
                     continue          # 這個模型不能用，換下一個

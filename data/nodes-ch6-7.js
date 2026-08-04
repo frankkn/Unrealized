@@ -52,7 +52,7 @@
   function layoffReachesYou(state) {
     if (state.attrs.achieve <= 5) return true;
     if (state.attrs.achieve >= 8) return false;
-    return !!(state.flags['被取代'] || state.flags['遇到風暴']);
+    return !!state.flags['遇到風暴'];
   }
   // 五十歲以後是不是一個人住：分開了、或本來就沒有過伴侶
   function livesAloneNow(state) {
@@ -78,7 +78,7 @@
   function somethingToRepair(state) {
     // 只列「一段具體的、有對象的關係壞掉了」。第一版還放了 被否定（十五歲老師的
     // 一句話，不是一段要修的關係）、壓抑、宗教金錢，OR 起來 92% 的局都會遇到。
-    var scars = ['家庭政治撕裂', '未出櫃', '複製教養', '朋友走散',
+    var scars = ['未出櫃', '複製教養', '朋友走散',
       '手足決裂', '手足沒出現', '分開'];
     for (var i = 0; i < scars.length; i++) {
       if (state.flags[scars[i]]) return true;
@@ -99,10 +99,8 @@
       { when: { flagsAll: ['有小孩'] }, next: 'n6_parenting' },
       { when: longTermCareStillOnYou, next: 'n6_long_term_care' },
       { when: relationshipUnderStrain, next: 'n6_marriage_crisis' },
-      { next: 'n6_politics' },
       { when: moneyIsNotable, next: 'n6_financial_reckoning' },
       { when: everLeftHome, next: 'n6_return_home' },
-      { when: somethingToRepair, next: 'n6_repair' },
       { when: someoneStillHasYourNumber, next: 'n6_old_friend' },
       { next: 'n6_readjust' }
     ]
@@ -196,19 +194,6 @@
       ]
     },
 
-    n6_politics: {
-      id: 'n6_politics', chapter: 6, title: '餐桌上的戰場', ageRange: '35–50歲',
-      text: [
-        { when: { generation: 1975 }, text: '一場選舉把餐桌變成戰場，你跟長輩站不同邊。那年代表達意見的方式是{抗議方式}。' },
-        { when: { generation: 1990 }, text: '你卡在中間，上一代跟下一代的立場都不太一樣，你哪邊都不太想選。' },
-        { text: '你跟長輩對同一件事看法完全不同。你的消息來自{資訊來源}，而{長輩溝通方式}一直沒對過頻。' }
-      ],
-      options: [
-        { id: 'fight', label: '吵到不再往來，一段時間沒再說話', effects: { bond: -2, self: 1 }, flags: ['家庭政治撕裂'], next: CH6_POOL },
-        { id: 'silence', label: '選擇閉嘴吃飯，把話都吞回去', effects: { self: -1, bond: 1 }, next: CH6_POOL },
-        { id: 'try_understand', label: '試著理解對方為什麼會這樣想，雖然還是很難', effects: { bond: 2, self: -1 }, next: CH6_POOL }
-      ]
-    },
 
     n6_financial_reckoning: {
       id: 'n6_financial_reckoning', chapter: 6, title: '財務盤點', ageRange: '35–50歲',
@@ -316,31 +301,6 @@
       ]
     },
 
-    // 照顧那條線原本沒有收束：第5章父母生病、第6章長照，然後就沒有下文了。
-    // 這個節點不加條件——父母會走，是這個年紀唯一真的每個人都會遇到的事。
-    // 友誼那條線在中年的結算：朋友不會像家人一樣自動留在你的生活裡，
-    // 到這個年紀還在的，都是有人主動維持過的
-    // 這是全遊戲少數幾個「可以真的把東西補回來」的節點。
-    // 沒有它的話，五軸就只是流水帳，而人生不是——四十幾歲那通拖了十年的電話，
-    // 是真的會發生的事，而且真的會改變後面三十年。
-    n6_repair: {
-      id: 'n6_repair', chapter: 6, title: '那通一直沒打的電話', ageRange: '35–50歲',
-      text: [
-        { when: { flagsAll: ['家庭政治撕裂'] }, text: '你們為了那件事，快兩年沒說話了。手機裡那個號碼你一直沒刪。' },
-        { when: { flagsAll: ['未出櫃'] }, text: '有一件關於你自己的事，你這輩子沒對他們說過。你偶爾會想，如果現在說了會怎樣。' },
-        { when: { flagsAll: ['手足決裂'] }, text: '那次之後，兄弟姐妹就散了。群組還在，沒有人講話。' },
-        { when: { flagsAll: ['朋友走散'] }, text: '有幾個人，你其實一直記得。只是每過一年，開口就更難一點。' },
-        { when: { flagsAll: ['複製教養'] }, text: '你知道自己對孩子講過幾句很重的話。那幾句你到現在都還記得，一個字都沒忘。' },
-        { when: { flagsAll: ['分開'] }, text: '分開之後你們沒有真的說完。有些話卡在那裡，卡了很多年。' },
-        { text: '有一段關係，這些年就這樣淡掉了。沒有誰做錯什麼，只是誰都沒有先開口。' }
-      ],
-      options: [
-        { id: 'made_the_call', label: '你打了那通拖了十年的電話。對方接了，語氣很客氣', effects: { bond: 2, self: 2, health: -1 }, flags: ['修復過'], next: CH6_POOL },
-        { id: 'just_showed_up', label: '你什麼都沒解釋，只是開始固定出現', effects: { bond: 3, self: -1, money: -1 }, flags: ['修復過'], next: CH6_POOL },
-        { id: 'wrote_it_down', label: '你寫了一封信，沒有寄。但寫的過程你自己好了一些', effects: { self: 2, health: 1, bond: -1 }, next: CH6_POOL },
-        { id: 'let_it_be', label: '你想過。但你也知道，有些事錯過了就是錯過了', effects: { achieve: 1, self: -1, bond: -1 }, flags: ['沒有回頭'], next: CH6_POOL }
-      ]
-    },
 
     n6_old_friend: {
       id: 'n6_old_friend', chapter: 6, title: '很久沒接到的那通電話', ageRange: '35–50歲',
@@ -361,7 +321,7 @@
       id: 'n6_parent_dies', chapter: 6, title: '那通電話', ageRange: '35–50歲',
       text: [
         { when: { flagsAll: ['手足有分擔'] }, text: '這幾年你們輪班輪出了默契。清晨四點的電話，是排到今晚的那個人打來的。' },
-        { when: { flagsAll: ['家庭政治撕裂'] }, text: '你們為了那件事吵到快兩年沒說話。清晨四點的電話打來的時候，你發現自己還記得他的號碼。' },
+        { when: { generation: 1975 }, text: '清晨四點的電話。你們這些年也吵過——那個年代表達意見的方式是{抗議方式}，而在家裡是不表達。' },
         { when: { flagsAll: ['照顧'] }, text: '照顧了那麼久，最後那通電話還是在清晨四點響起。你比自己以為的更早接起來。' },
         { when: { flagsAll: ['送機構'] }, text: '機構在清晨四點打來。你上一次去看，是三個星期前的事了。' },
         { when: { flagsAll: ['返鄉'] }, text: '你就睡在隔壁房間。清晨四點，你聽見的不是聲音，是突然安靜下來。' },
@@ -397,7 +357,7 @@
       id: 'n7_children_settlement', chapter: 7, title: '與孩子的關係結算', ageRange: '50歲以後',
       text: [
         { when: { generation: 2005 }, text: '孩子在另一個時區工作。你們每週固定通話，畫面很清楚，話題很少。' },
-        { text: '孩子長大以後，你們的關係變成現在這個樣子，已經是某種定局。' }
+        { text: '孩子長大以後，你們的關係變成現在這個樣子。{長輩溝通方式}——現在換成你是那個長輩。' }
       ],
       options: [
         { id: 'close', label: '現在還是常聯絡，偶爾一起吃飯', effects: { bond: 2, self: -1 }, next: CH7_POOL },

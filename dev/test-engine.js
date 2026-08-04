@@ -218,7 +218,7 @@ UNREALIZED.config.generations.forEach(function (g) {
 var SAFE_BASELINE = {
   n5_house: 'rent_forever', n5_invest: 'avoid', n5_debt: 'grind_through',
   n4_mlm: 'refuse_breakup', n3m_military: 'make_bonds', n5_era_storm: 'dodge',
-  n5_emigrate: 'emigrate_stay', n6_politics: 'silence', n6_long_term_care: 'hire_full_time'
+  n5_emigrate: 'emigrate_stay', n6_long_term_care: 'hire_full_time'
 };
 function withBaseline(extra) { return Object.assign({}, SAFE_BASELINE, extra || {}); }
 
@@ -245,14 +245,14 @@ function injuryPick(node, options, state) {
 var LUCKY_MIDBAND_PATH = {
   gen: 1975, gender: "M",
   path: [
-    'n0_family/professional_family', 'n0_siblings/eldest', 'n1_bookish/hobby',
-    'n2_high_school/normal', 'n3_route/liked_major', 'n3m_military/find_clarity',
-    'n3_first_love/solo', 'n4_job/public_job', 'n4_where/abroad',
-    'n4_westward/go', 'n5_career_move/setback', 'n5_marriage/stay_single',
-    'n5_children/nephews', 'n5_parents_ill/institution', 'n5_house/stay_family',
-    'n6_career_plateau/push_more', 'n6_politics/silence', 'n6_readjust/let_go',
-    'n6_health_reckoning/overwork_still', 'n6_parent_dies/was_there', 'n7_body_ledger/careful',
-    'n7_look_back/regret'
+    'n0_family/single_mom', 'n0_siblings/only_child', 'n1_single/scholarship',
+    'n2_high_school/normal', 'n3_route/vocational_college', 'n3m_military/find_clarity',
+    'n3_first_love/solo', 'n3_the_friends/inner_circle', 'n4_job/sme',
+    'n4_where/beipiao', 'n4_westward/stay', 'n5_career_move/setback',
+    'n5_marriage/met_someone', 'n5_children/undecided_m', 'n5_era_storm/dodge',
+    'n5_body_signal/ignore', 'n6_career_plateau/change_lane', 'n6_readjust/double_down',
+    'n6_midlife_unemployment/start_over', 'n6_health_reckoning/partial_care', 'n6_parent_dies/handled_it',
+    'n7_body_ledger/careful', 'n7_look_back/look_back_buried'
   ]
 };
 function playScriptedPath(generation, gender, path) {
@@ -278,25 +278,26 @@ var LUCKY_SELF_PATH = {
     'n0_family/labor_family', 'n0_siblings/only_child', 'n1_labor/self_taught',
     'n2_high_school/elite', 'n2_first_failure/tried_again', 'n3_route/liked_major',
     'n3m_military/find_clarity', 'n3_first_love/solo', 'n4_job/big_corp',
-    'n4_where/beipiao', 'n4_westward/go', 'n5_career_move/slept_on_it',
-    'n5_marriage/stay_single', 'n5_children/nephews', 'n5_parents_ill/money_m',
-    'n5_windfall/kept_quiet', 'n6_career_plateau/accept', 'n6_return_home/commute',
-    'n6_readjust/let_go', 'n6_readjust/let_go', 'n6_health_reckoning/overwork_still',
-    'n6_parent_dies/was_there', 'n7_body_ledger/decline', 'n7_look_back/accept'
+    'n4_where/abroad', 'n4_westward/go', 'n4_mlm/refuse_breakup',
+    'n5_career_move/slept_on_it', 'n5_marriage/stay_single', 'n5_children/nephews',
+    'n5_parents_ill/money_m', 'n5_overwork/push_through', 'n5_accident/own_injury',
+    'n6_career_plateau/accept', 'n6_readjust/let_go', 'n6_financial_reckoning/poor_but_clean',
+    'n6_health_reckoning/slow_down', 'n6_parent_dies/was_there', 'n7_body_ledger/paying_off',
+    'n7_look_back/accept'
   ]
 };
 var LUCKY_QUIET_PATH = {
   gen: 1975, gender: "M",
   path: [
     'n0_family/professional_family', 'n0_siblings/middle', 'n1_bookish/team',
-    'n1_teacher/no_one', 'n2_high_school/elite', 'n3_route/direct_work',
-    'n3m_military/find_clarity', 'n3_first_love/straight_stable', 'n3_the_friends/inner_circle',
-    'n4_job/big_corp', 'n4_where/stay_local', 'n4_westward/go',
-    'n5_career_move/steady', 'n5_marriage/breakup_common', 'n5_children/nephews',
-    'n5_windfall/gave_family', 'n5_invest/etf', 'n6_career_plateau/headhunted',
-    'n6_return_home/bring_them', 'n6_readjust/let_go', 'n6_old_friend/kept_it_light',
-    'n6_health_reckoning/slow_down', 'n6_parent_dies/estate_ok', 'n7_retirement_prep/underprepared',
-    'n7_solo_aging/community', 'n7_look_back/regret'
+    'n1_teacher/saw_me', 'n2_high_school/elite', 'n2_first_failure/blamed_self',
+    'n3_route/vocational_college', 'n3m_military/make_bonds', 'n3_first_love/straight_stable',
+    'n3_the_friends/inner_circle', 'n4_job/big_corp', 'n4_where/stay_local',
+    'n4_westward/go_family', 'n4_mlm/refuse_breakup', 'n5_career_move/steady',
+    'n5_marriage/stay_unmarried', 'n5_children/undecided_m', 'n5_windfall/gave_family',
+    'n5_body_signal/delegate_worry', 'n6_career_plateau/headhunted', 'n6_return_home/move_back',
+    'n6_readjust/let_go', 'n6_readjust/keep_going', 'n6_health_reckoning/partial_care',
+    'n6_parent_dies/handled_it', 'n7_body_ledger/paying_off', 'n7_look_back/regret'
   ]
 };
 
@@ -311,8 +312,8 @@ var LUCKY_22K_PATH = {
     'n4_job/big_corp', 'n4_where/stay_local', 'n4f_interview/honest',
     'n4_22k/endure', 'n4_mlm/join', 'n5_career_move/big_jump',
     'n5_marriage/marry_common', 'n5_children/have_kids', 'n5_house/buy_leverage',
-    'n5_era_storm/hit_hard', 'n6_career_plateau/accept', 'n6_politics/silence',
-    'n6_financial_reckoning/manage_through', 'n6_health_reckoning/slow_down', 'n6_parent_dies/estate_fight',
+    'n5_era_storm/hit_hard', 'n6_career_plateau/accept', 'n6_parenting/repeat_pattern',
+    'n6_financial_reckoning/manage_through', 'n6_health_reckoning/partial_care', 'n6_parent_dies/estate_fight',
     'n7_body_ledger/careful', 'n7_look_back/accept'
   ]
 };
@@ -320,15 +321,15 @@ var LUCKY_22K_PATH = {
 var LUCKY_ERA_PATH = {
   gen: 2005, gender: "F",
   path: [
-    'n0_family/wealthy_family', 'n0_siblings/youngest', 'n1_bookish/hobby',
-    'n1_teacher/saw_me', 'n2_high_school/normal', 'n2_first_failure/gave_up',
-    'n3_route/general_uni', 'n3f_headstart/lean_in', 'n3_first_love/solo',
-    'n3_the_friends/inner_circle', 'n4_job/public_job', 'n4_where/stay_local',
-    'n4f_interview/honest', 'n4_replaced/pivot', 'n4_mlm/refuse_breakup',
-    'n5_career_move/big_jump', 'n5_marriage/met_someone', 'n5_children/have_kids',
-    'n5_debt/grind_through', 'n5_house/rent_forever', 'n6_career_plateau/push_more',
-    'n6_old_friend/said_no', 'n6_midlife_unemployment/long_gap', 'n6_health_reckoning/slow_down',
-    'n6_parent_dies/too_late', 'n7_body_ledger/indulge', 'n7_look_back/proud'
+    'n0_family/wealthy_family', 'n0_siblings/youngest', 'n1_bookish/skip',
+    'n2_high_school/normal', 'n2_first_failure/shrugged', 'n3_route/general_uni',
+    'n3f_headstart/push_back', 'n3_first_love/straight_stable', 'n3_first_money/gave_home',
+    'n4_job/sme', 'n4_where/stay_local', 'n4f_interview/honest',
+    'n4_mlm/refuse_breakup', 'n5_career_move/setback', 'n5_marriage/stay_unmarried',
+    'n5_children/undecided_f', 'n5_house/rent_forever', 'n5_emigrate/emigrate_stay',
+    'n6_career_plateau/accept', 'n6_midlife_unemployment/quick_reemploy', 'n6_readjust/double_down',
+    'n6_health_reckoning/slow_down', 'n6_parent_dies/handled_it', 'n7_body_ledger/careful',
+    'n7_look_back/accept'
   ]
 };
 
@@ -351,7 +352,10 @@ assert(engine.evaluateEnding(comeback22kProof).id === 'END_22K的逆襲',
 var targetedProofs = [
   { id: 'END_登記那天', combos: [[1990, 'F'], [1990, 'M']], tries: 600,
     pick: steeringPick({ bond: 0.4, health: 2 }, withBaseline({ n3_first_love: 'same_sex', n3_love_comingout: '90_registered', n5_marriage: 'register_lgbt' })) },
-  { id: 'END_差一年', combos: [[2005, 'F']], tries: 400, pick: steeringPick({ health: 0.5 }, SAFE_BASELINE) },
+  // 需要成就、錢、關係同時偏低，而且要抽到那一場風暴——刪掉「被取代」之後
+  // 旗標來源只剩第5章的風暴節點（本身也是抽的），所以要往下壓才找得到
+  { id: 'END_差一年', combos: ALL_COMBOS, tries: 4000,
+    pick: steeringPick({ health: 1.5, achieve: -1, money: -1, bond: -0.5 }, withBaseline({ n5_era_storm: 'miss_opportunity' })) },
   { id: 'END_職災', combos: [[1975, 'M'], [1990, 'M'], [1975, 'F'], [1990, 'F']], tries: 2000, pick: injuryPick },
   { id: 'END_循環的重量', combos: ALL_COMBOS, tries: 600,
     pick: steeringPick({ health: 0.3 }, withBaseline({ n5_children: 'have_kids', n6_parenting: 'repeat_pattern' })) },
@@ -466,11 +470,11 @@ if (vers.length) {
 (function gatedNodesActuallyGate() {
   var CHAPTER_ENTRY = { 5: 'n5_career_move', 6: 'n6_career_plateau', 7: 'n7_look_back' };
   var WATCH = {
-    n4_mlm: ['n4_westward', 'n4_22k', 'n4_replaced'],
+    n4_mlm: ['n4_westward', 'n4_22k', 'n5_career_move'],
     n5_house: 5, n5_invest: 5, n5_windfall: 5, n5_parents_ill: 5, n5_body_signal: 5,
     n5_overwork: 5, n5_debt: 5, n5_era_storm: 5, n5_accident: 5, n5_emigrate: 5,
     n6_midlife_unemployment: 6, n6_parenting: 6, n6_long_term_care: 6, n6_marriage_crisis: 6,
-    n6_politics: 6, n6_financial_reckoning: 6, n6_return_home: 6, n6_repair: 6, n6_old_friend: 6,
+ n6_financial_reckoning: 6, n6_return_home: 6, n6_old_friend: 6,
     n7_retirement_prep: 7, n7_children_settlement: 7, n7_scam_call: 7, n7_solo_aging: 7, n7_body_ledger: 7
   };
   var seen = {}, rnd = 123456789;

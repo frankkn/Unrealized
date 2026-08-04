@@ -3,17 +3,32 @@
   var UNREALIZED = global.UNREALIZED = global.UNREALIZED || {};
   UNREALIZED.nodes = UNREALIZED.nodes || {};
 
-  // 第4章共用工作節點結束後：女性先進面試提問節點，男性直接進世代專屬重點戲
+  // 「一個家人或大學同學興沖沖跟你介紹一個能改變人生的機會」——
+  // 這是被找上門，不是每個人都會被找上。真的聽下去的是手頭很緊的人，
+  // 或身邊真有那麼近的人開得了這個口。原本 100% 觸發，「宗教金錢」旗標也就近乎人人有。
+  //
+  // 這一段必須定義在下面兩個 gate 之前：var 會提升但值是 undefined，
+  // 寫在後面等於 gate 的 next 指向 undefined。
+  function pitchLandsOnYou(state) {
+    return state.attrs.money <= 4 || state.attrs.bond >= 7;
+  }
+  var MLM_OR_SKIP = [
+    { when: pitchLandsOnYou, next: 'n4_mlm' },
+    { next: 'n5_career_move' }
+  ];
+
+  // 第4章共用工作節點結束後：女性先進面試提問節點，男性直接進世代專屬重點戲。
+  // 2005 沒有專屬節點（「被取代」已刪），直接進推銷那一關的判斷。
   var JOB_NEXT_GATE = [
     { when: { gender: 'F' }, next: 'n4f_interview' },
     { when: { generation: 1975 }, next: 'n4_westward' },
     { when: { generation: 1990 }, next: 'n4_22k' },
-    { next: 'n4_replaced' }
+    { next: MLM_OR_SKIP }
   ];
   var GEN_GATE_CH4 = [
     { when: { generation: 1975 }, next: 'n4_westward' },
     { when: { generation: 1990 }, next: 'n4_22k' },
-    { next: 'n4_replaced' }
+    { next: MLM_OR_SKIP }
   ];
 
   // 第5章：只有騎過「疲勞駕駛」伏筆，或健康已經很差，才會遇到車禍節點
@@ -35,17 +50,6 @@
     if (state.attrs.money >= 8) return false;
     return !!(state.flags['高槓桿'] || state.flags['有小孩'] || state.flags['照顧']);
   }
-
-  // 「一個家人或大學同學興沖沖跟你介紹一個能改變人生的機會」——
-  // 這是被找上門，不是每個人都會被找上。真的聽下去的是手頭很緊的人，
-  // 或身邊真有那麼近的人開得了這個口。原本 100% 觸發，「宗教金錢」旗標也就近乎人人有。
-  function pitchLandsOnYou(state) {
-    return state.attrs.money <= 4 || state.attrs.bond >= 7;
-  }
-  var MLM_OR_SKIP = [
-    { when: pitchLandsOnYou, next: 'n4_mlm' },
-    { next: 'n5_career_move' }
-  ];
 
   // 移民要同時有推力跟能力：有小孩（教育）、已經在外面待過、或錢真的夠。
   // 沒有任何一項的人不會在三十歲「認真討論起移民」。
@@ -168,16 +172,6 @@
       ]
     },
 
-    n4_replaced: {
-      id: 'n4_replaced', chapter: 4, title: '被取代', ageRange: '22–28歲',
-      text: '你剛學會、還不算熟練的入門工作，被一個模型接手了。',
-      options: [
-        { id: 'pivot', label: '轉去一個模型還碰不到的領域，從頭學', effects: { achieve: -1, money: -1, self: 1 }, flags: ['被取代'], next: MLM_OR_SKIP },
-        { id: 'push_up', label: '拼命把自己往上擠，做那些模型還做不到的事', effects: { achieve: 1, self: -1 }, flags: ['被取代'], next: MLM_OR_SKIP },
-        { id: 'freeze', label: '花了很長一段時間，才決定下一步是什麼', effects: { self: -1, money: -1 }, flags: ['被取代'], next: MLM_OR_SKIP },
-        { id: 'off_screen', label: '機器搶走的是螢幕前的工作，你去做需要用到身體的那種', effects: { health: 2, self: 1, achieve: -1 }, flags: ['被取代', '有在動'], next: MLM_OR_SKIP }
-      ]
-    },
 
     n4_mlm: {
       id: 'n4_mlm', chapter: 4, title: '改變人生的機會', ageRange: '22–28歲',
